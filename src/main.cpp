@@ -3,7 +3,9 @@
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
-    SDL_Surface* winSurface = NULL;
+    SDL_Surface* winSurface = NULL; 
+    bool quit = false;
+    SDL_Event event;
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
         std::cerr << "Error initializing SDL:" << SDL_GetError() << std::endl;
@@ -25,7 +27,17 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    system("pause");
+    while (!quit) {
+
+        while (SDL_PollEvent(&event)) {
+            switch(event.type) {
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+            }
+        }
+
+    }
 
     SDL_DestroyWindow(window);
     SDL_Quit();
