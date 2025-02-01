@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
