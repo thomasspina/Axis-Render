@@ -45,13 +45,6 @@ FetchContent_Declare(glm
     SYSTEM   
 )
 
-# FetchContent_Declare(GLEW
-#     GIT_REPOSITORY https://github.com/nigels-com/glew.git
-#     GIT_TAG glew-2.2.0
-#     GIT_SHALLOW ON
-#     SYSTEM
-# )
-
 FetchContent_Declare(GLEW
     GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
     GIT_TAG glew-cmake-2.2.0
