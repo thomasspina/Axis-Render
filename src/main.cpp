@@ -1,5 +1,7 @@
-#include <SDL.h>
 #include <iostream>
+#include <SDL.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
@@ -35,14 +37,21 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    SDL_GLContext main_context = SDL_GL_CreateContext(window);
+    SDL_GLContext mainContext = SDL_GL_CreateContext(window);
 
     // Enable V-Sync
     SDL_GL_SetSwapInterval(1);
 
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "GLEW failed to initialize!" << std::endl;
+        return -1;
+    }
+
+    glClearColor(0, 0, 0, 1.0f);
+
     while (!quit) {
 
-        while (SDL_PollEvent(&event)) {
+        while (SDL_PollEvent(&event) > 0) {
             switch(event.type) {
                 case SDL_QUIT:
                     quit = true;
@@ -50,8 +59,12 @@ int main(int argc, char* argv[]) {
             }
         }
 
+        // OpenGL double buffering buffer clear and swap
+        // glClear()
+        SDL_GL_SwapWindow(window); 
     }
 
+    SDL_GL_DeleteContext(mainContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
