@@ -61,6 +61,8 @@ set(SDL_HAPTIC OFF CACHE BOOL "" FORCE)
 set(SDL_HIDAPI OFF CACHE BOOL "" FORCE)
 set(SDL_POWER OFF CACHE BOOL "" FORCE)
 
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Disable Assimp tests" FORCE)
+
 FetchContent_MakeAvailable(SDL2 SDL2_image assimp glm GLEW)
 
 if (TARGET libglew_shared)
@@ -87,7 +89,8 @@ target_include_directories(${PROJECT_NAME}
 # Link libraries
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        SDL2::SDL2
+        SDL2::SDL2-static
+        SDL2::SDL2main
         SDL2_image
         OpenGL::GL
         libglew_static
