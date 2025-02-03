@@ -1,3 +1,4 @@
+#include "shader.hpp"
 #include <iostream>
 #include <SDL.h>
 #include <GL/glew.h>
@@ -21,7 +22,7 @@ int main(int argc, char* argv[]) {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    window = SDL_CreateWindow("Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (!window) {
         std::cerr << "Failed to create a window! Error: " << SDL_GetError() << std::endl;
@@ -39,11 +40,17 @@ int main(int argc, char* argv[]) {
 
     SDL_GLContext mainContext = SDL_GL_CreateContext(window);
 
+    // Check current version of OpenGL
+    const GLubyte* version = glGetString(GL_VERSION);  
+    if (version) {
+        std::cout << "OpenGL Version: " << version << std::endl;
+    } 
+
     // Enable V-Sync
     SDL_GL_SetSwapInterval(1);
 
     if (glewInit() != GLEW_OK) {
-        std::cerr << "GLEW failed to initialize!" << std::endl;
+        std::cerr << "GLEW failed to initialize! Error: " << glewGetErrorString(glewInit()) << std::endl;
         return -1;
     }
 
@@ -54,14 +61,29 @@ int main(int argc, char* argv[]) {
         0.0f, 0.5f, 0.0f
     };
 
-    // Vertex buffer object
+    // Vertex Array Object
+    unsigned int VAO;
+    // Vertex Buffer Object
     unsigned int VBO;
 
-    // Assigns a unique shader ID
+    // Assigns a unique ID
+    glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
+    // Bind VAO
+    glBindVertexArray(VAO);
+
+    // Copy vertices array into a buffer for OpenGL to use
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Set vertex attributes pointers which tells OpenGL how it should interpret vertex data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Initialize shader
+    Shader shaderProgram = Shader("../../asset/vertex.vert", "../../asset/fragment.frag");
+
 
     while (!quit) {
 
@@ -72,6 +94,11 @@ int main(int argc, char* argv[]) {
                     break;
             }
         }
+
+        // Draw object
+        shaderProgram.use();
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // OpenGL double buffering buffer clear and swap
         // glClear()
