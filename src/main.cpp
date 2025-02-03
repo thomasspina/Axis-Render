@@ -48,6 +48,20 @@ int main(int argc, char* argv[]) {
     }
 
     glClearColor(0, 0, 0, 1.0f);
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f, 0.5f, 0.0f
+    };
+
+    // Vertex buffer object
+    unsigned int VBO;
+
+    // Assigns a unique shader ID
+    glGenBuffers(1, &VBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     while (!quit) {
 
