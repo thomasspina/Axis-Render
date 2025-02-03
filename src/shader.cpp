@@ -6,7 +6,13 @@
 #include <GL/gl.h>
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+    std::pair<const char*, const char*> shaderCodes = loadShader(vertexPath, fragmentPath);
+    std::pair <unsigned int, unsigned int> shaders = compileShader(shaderCodes.first, shaderCodes.second);
+    linkShader(shaders.first, shaders.second);
+}
 
+void Shader::use() {
+    glUseProgram(ID);
 }
 
 std::pair<const char*, const char*> Shader::loadShader(const char* vertexPath, const char* fragmentPath) {
@@ -84,6 +90,7 @@ std::pair <unsigned int, unsigned int> Shader::compileShader(const char* vShader
 }
 
 void Shader::linkShader(unsigned int vertexShader, unsigned int fragmentShader) {
+    // Creates a program object and assign its ID
     ID = glCreateProgram();
     int isSuccess;
     char infoLog[512];
@@ -101,6 +108,7 @@ void Shader::linkShader(unsigned int vertexShader, unsigned int fragmentShader) 
         infoLog << std::endl;
     }
 
+    // Delete shader objects after creating shader program
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }

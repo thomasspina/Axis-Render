@@ -4,9 +4,11 @@
 
 class Shader {
     public:
+        // Shader program ID
         unsigned int ID;
 
         Shader(const char* vertexPath, const char* fragmentPath);
+        void use();
         
     private:
         std::pair<const char*, const char*> loadShader(const char* vertexPath, const char* fragmentPath);
