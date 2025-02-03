@@ -47,7 +47,7 @@ std::pair<const char*, const char*> Shader::loadShader(const char* vertexPath, c
     return {vShaderCode, fShaderCode};
 }
 
-void compileShader(const char* vShaderCode, const char* fShaderCode) {
+std::pair <unsigned int, unsigned int> Shader::compileShader(const char* vShaderCode, const char* fShaderCode) {
     unsigned int vertexShader, fragmentShader;
     int isSuccess;
     char infoLog[512];
@@ -79,5 +79,29 @@ void compileShader(const char* vShaderCode, const char* fShaderCode) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         std::cerr << "Failed to compile Fragment Shader!\n" << infoLog << std::endl;
     }
+
+    return {vertexShader, fragmentShader};
+}
+
+void Shader::linkShader(unsigned int vertexShader, unsigned int fragmentShader) {
+    ID = glCreateProgram();
+    int isSuccess;
+    char infoLog[512];
+
+
+    glAttachShader(ID, vertexShader);
+    glAttachShader(ID, fragmentShader);
+    glLinkProgram(ID);
+
+    glGetProgramiv(ID, GL_LINK_STATUS, &isSuccess);
+    if(!isSuccess)
+    {
+        glGetProgramInfoLog(ID, 512, NULL, infoLog);
+        std::cout << "Failed to link shaders!\n" <<
+        infoLog << std::endl;
+    }
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 }
 
