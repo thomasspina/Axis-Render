@@ -1,10 +1,12 @@
 #pragma once
-
-
+#include <utility>
+#include <GL/glew.h>
 
 class Shader {
     private:
-        void loadShaderFiles(const char* vertexPath, const char* fragmentPath);
+        std::pair<const char*, const char*> loadShader(const char* vertexPath, const char* fragmentPath);
+        void compileShader(const char* vShaderCode, const char* fShaderCode);
+        void linkShader();
 
     public:
         unsigned int ID;
