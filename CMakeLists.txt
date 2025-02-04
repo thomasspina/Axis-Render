@@ -61,6 +61,12 @@ set(SDL_HAPTIC OFF CACHE BOOL "" FORCE)
 set(SDL_HIDAPI OFF CACHE BOOL "" FORCE)
 set(SDL_POWER OFF CACHE BOOL "" FORCE)
 
+# Disable Assimp extras
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Disable Assimp tests" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Disable Assimp tools" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Disable Assimp samples" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "Disable Assimp install" FORCE)
+
 FetchContent_MakeAvailable(SDL2 SDL2_image assimp glm GLEW)
 
 if (TARGET libglew_shared)
@@ -70,6 +76,20 @@ endif()
 # Source files
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+
+# Copy shaders assets to build directory
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/shader)
+file(GLOB SHADER_FILES 
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.vert 
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.geom
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.tesc
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.tese
+)
+foreach(SHADER ${SHADER_FILES})
+    file(COPY ${SHADER} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/shader)
+endforeach()
+
 
 # Create executable
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
@@ -81,6 +101,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets
 )
 
 
