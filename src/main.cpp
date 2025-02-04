@@ -1,6 +1,7 @@
 #include "shader.hpp"
 #include <iostream>
 #include <SDL.h>
+#include <SDL_timer.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 
@@ -99,6 +100,10 @@ int main(int argc, char* argv[]) {
     // Initialize shader
     Shader shaderProgram = Shader("../../asset/vertex.vert", "../../asset/fragment.frag");
 
+    // Show max number of vertex attributes able to be declared
+    int nrAttributes;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+    std::cout << "Maximum number of vertex attributes supported: " << nrAttributes << std::endl;
 
     while (!quit) {
 
@@ -110,14 +115,22 @@ int main(int argc, char* argv[]) {
             }
         }
 
+        glClear(GL_COLOR_BUFFER_BIT);
+
         // Draw object
         shaderProgram.use();
+
+        const Uint64 time = SDL_GetTicks64() / 1000.0f;
+        float colorValue = (sin(time) / 2.0f) + 0.5f;
+
+        int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
-        // OpenGL double buffering buffer clear and swap
-        // glClear()
+        // OpenGL double buffering buffer swap
         SDL_GL_SwapWindow(window); 
     }
 
