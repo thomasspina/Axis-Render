@@ -15,9 +15,8 @@ class Shader {
 private:
     ShaderType shaderType;
     GLuint shaderID;
-    const char* source;
 
-    static const char* readSourceFile(const std::string& sourceFile);
+    static const GLchar* readSourceFile(const std::string& sourceFile);
 public:
     Shader(ShaderType shaderType);
     Shader(ShaderType shaderType, const std::string& sourceFile);
@@ -26,6 +25,7 @@ public:
     void compile();
 
     GLuint getShaderID() const;
+    ShaderType getShaderType() const;
 
     ~Shader();
 };

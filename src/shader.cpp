@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-const char* Shader::readSourceFile(const std::string& sourceFile) {
+const GLchar* Shader::readSourceFile(const std::string& sourceFile) {
     std::ifstream source(sourceFile, std::ios::binary | std::ios::ate);
     if (!source.is_open()) {
         std::cerr << "Error: Failed to open file '" << sourceFile << "'. Please check if the file exists and you have read permissions." << std::endl;
@@ -13,7 +13,7 @@ const char* Shader::readSourceFile(const std::string& sourceFile) {
     size_t size = source.tellg();
     source.seekg(0, std::ios::beg); // set stream start to beginning of file
 
-    char* buffer = new char[size + 1];
+    GLchar* buffer = new char[size + 1];
 
     source.read(buffer, size);
     buffer[size] = '\0'; // null to terminate string
@@ -26,22 +26,24 @@ Shader::Shader(ShaderType shaderType) : Shader(shaderType, "") {}
 
 Shader::Shader(ShaderType shaderType, const std::string& sourceFile) {
     this->shaderID = glCreateShader(shaderType);
-    this->source = nullptr;
+    const GLchar* source = nullptr;
 
     // set shader source
-    if (!sourceFile.empty() && (this->source = readSourceFile(sourceFile))) {
-        glShaderSource(shaderID, 1, &this->source, NULL);
+    if (!sourceFile.empty() && (source = readSourceFile(sourceFile))) {
+        glShaderSource(shaderID, 1, &source, NULL);
         compile();
     }
+
+    delete[] source;
 }
 
 void Shader::loadSource(const std::string& sourceFile) {
-    const char* temp;
-    if (temp = readSourceFile(sourceFile)) {
-        delete[] this->source;
-        this->source = temp;
-        glShaderSource(shaderID, 1, &this->source, NULL);
+    const GLchar* source = nullptr;
+    if (source = readSourceFile(sourceFile)) {
+        glShaderSource(shaderID, 1, &source, NULL);
     }
+
+    delete[] source;
 }
 
 void Shader::compile() {
@@ -60,6 +62,5 @@ void Shader::compile() {
 GLuint Shader::getShaderID() const { return shaderID; }
 
 Shader::~Shader() {
-    delete[] this->source;
     glDeleteShader(shaderID);
 }
