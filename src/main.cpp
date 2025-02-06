@@ -1,5 +1,6 @@
 #include "constants.hpp"
 #include "shader.hpp"
+#include "config.h"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -64,24 +65,18 @@ int main(int argc, char* argv[]) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    Shader vertexShader = Shader(Vertex, "assets/shader/test_vertex.vert");
-
-
-    int  success;
-    char infoLog[512];
+    Shader vertexShader = Shader(Vertex, std::string(ASSETS_PATH) + "shaders/test_vertex.vert");
+    Shader fragmentShader = Shader(Fragement, std::string(ASSETS_PATH) + "shaders/test_fragment.frag");
     
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
+    
 
     unsigned int shaderProgram;
     shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader.getShaderID());
-    glAttachShader(shaderProgram, fragmentShader);
+    glAttachShader(shaderProgram, fragmentShader.getShaderID());
 
-    glDeleteShader(fragmentShader);
-
+    int success;
+    char infoLog[512];
     glLinkProgram(shaderProgram);
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
@@ -101,23 +96,9 @@ int main(int argc, char* argv[]) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
     glEnableVertexAttribArray(0);
 
-    unsigned int fragmentShader2;
-    fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader2, 1, &fragmentShaderSource2, NULL);
-    glCompileShader(fragmentShader2);
-
-    unsigned int shaderProgram2;
-    shaderProgram2 = glCreateProgram();
-    glAttachShader(shaderProgram2, vertexShader.getShaderID());
-    glAttachShader(shaderProgram2, fragmentShader2);
-    glLinkProgram(shaderProgram2);
-
-
-
-
     
     
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
     while (!quit) {
@@ -138,7 +119,6 @@ int main(int argc, char* argv[]) {
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO[0]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glUseProgram(shaderProgram2);
         glBindVertexArray(VAO[1]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         

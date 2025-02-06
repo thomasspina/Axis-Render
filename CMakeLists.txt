@@ -77,19 +77,11 @@ endif()
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-# Copy shaders assets to build directory
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/shader)
-file(GLOB SHADER_FILES 
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.vert 
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.frag
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.geom
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.tesc
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shader/*.tese
+set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+    ${CMAKE_BINARY_DIR}/config.h
 )
-foreach(SHADER ${SHADER_FILES})
-    file(COPY ${SHADER} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/shader)
-endforeach()
-
 
 # Create executable
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
@@ -101,7 +93,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/assets
+        ${CMAKE_BINARY_DIR}
 )
 
 
