@@ -25,6 +25,7 @@ const GLchar* Shader::readSourceFile(const std::string& sourceFile) {
 Shader::Shader(ShaderType shaderType) : Shader(shaderType, "") {}
 
 Shader::Shader(ShaderType shaderType, const std::string& sourceFile) {
+    this->shaderType = shaderType;
     this->shaderID = glCreateShader(shaderType);
     const GLchar* source = nullptr;
 
@@ -39,6 +40,7 @@ Shader::Shader(ShaderType shaderType, const std::string& sourceFile) {
 
 void Shader::loadSource(const std::string& sourceFile) {
     const GLchar* source = nullptr;
+
     if (source = readSourceFile(sourceFile)) {
         glShaderSource(shaderID, 1, &source, NULL);
     }
@@ -60,6 +62,8 @@ void Shader::compile() {
 }
 
 GLuint Shader::getShaderID() const { return shaderID; }
+
+ShaderType Shader::getShaderType() const { return shaderType; }
 
 Shader::~Shader() {
     glDeleteShader(shaderID);
