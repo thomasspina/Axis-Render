@@ -1,3 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include "shader.hpp"
 #include <iostream>
 #include <SDL.h>
@@ -58,11 +61,11 @@ int main(int argc, char* argv[]) {
     glClearColor(0, 0, 0, 1.0f);
 
    float vertices[] = {
-        // Positions       // Colors
-        0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // top right
-        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-       -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,  // bottom left
-       -0.5f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top left
+        // Positions       // Colors          // Texture Coords
+        0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f, // top right
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  1.0f, 0.0f, // bottom right
+       -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,  0.0f, 0.0f, // bottom left
+       -0.5f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f  // top left
     };
 
     unsigned int indices[] = {
@@ -76,12 +79,15 @@ int main(int argc, char* argv[]) {
     unsigned int VBO;
     // Element Buffer Object: Holds indices for indexed drawing to optimize memory usage and performance.
     unsigned int EBO;
+    // Texture
+    unsigned int texture;
 
 
     // Assigns a unique ID
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+    glGenTextures(1, &texture);
 
     // Bind VAO
     glBindVertexArray(VAO);
@@ -94,13 +100,23 @@ int main(int argc, char* argv[]) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     // Set vertex attributes pointers which tells OpenGL how it should interpret vertex data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // Set color attribute pointers
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // Set texture attribute pointers
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     // Initialize shader
     Shader shaderProgram = Shader("../../asset/vertex.vert", "../../asset/fragment.frag");
@@ -109,6 +125,21 @@ int main(int argc, char* argv[]) {
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     std::cout << "Maximum number of vertex attributes supported: " << nrAttributes << std::endl;
+
+    // Load and generate texture
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("../../asset/textures/paperTexture.jpg", &width, &height, &nrChannels, 0);
+
+    if (data) {
+        // Generate a texture on currently bounded texture object
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else{
+        std::cerr << "Failed to generate texture!" << std::endl;
+    }
+
+    stbi_image_free(data);
 
     while (!quit) {
 
@@ -130,6 +161,7 @@ int main(int argc, char* argv[]) {
         // int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
         // glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
 
+        glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
