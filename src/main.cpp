@@ -80,14 +80,16 @@ int main(int argc, char* argv[]) {
     // Element Buffer Object: Holds indices for indexed drawing to optimize memory usage and performance.
     unsigned int EBO;
     // Texture
-    unsigned int texture;
+    unsigned int texture1;
+    unsigned int texture2;
 
 
     // Assigns a unique ID
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-    glGenTextures(1, &texture);
+    glGenTextures(1, &texture1);
+    glGenTextures(1, &texture2);
 
     // Bind VAO
     glBindVertexArray(VAO);
@@ -100,7 +102,7 @@ int main(int argc, char* argv[]) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texture1);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -141,6 +143,29 @@ int main(int argc, char* argv[]) {
 
     stbi_image_free(data);
 
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    unsigned char *data1 = stbi_load("../../asset/textures/stripes.jpg", &width, &height, &nrChannels, 0);
+
+    if (data1) {
+        // Generate a texture on currently bounded texture object
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else{
+        std::cerr << "Failed to generate texture!" << std::endl;
+    }
+
+    stbi_image_free(data1);
+
+    shaderProgram.use();
+    glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture2"), 1);
+
     while (!quit) {
 
         while (SDL_PollEvent(&event) > 0) {
@@ -161,7 +186,11 @@ int main(int argc, char* argv[]) {
         // int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
         // glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
