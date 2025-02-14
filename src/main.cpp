@@ -7,6 +7,9 @@
 #include <SDL_timer.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
@@ -185,6 +188,13 @@ int main(int argc, char* argv[]) {
         // float colorValue = (sin(time) / 2.0f) + 0.5f;
         // int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
         // glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
+
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5, 0.0f));
+        trans = glm::rotate(trans, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+
+        unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
