@@ -104,7 +104,9 @@ void Shader::linkShader(unsigned int vertexShader, unsigned int fragmentShader) 
     }
 
     // Delete shader objects after creating shader program
+    glDetachShader(ID, vertexShader);
     glDeleteShader(vertexShader);
+    glDetachShader(ID, fragmentShader);
     glDeleteShader(fragmentShader);
 }
 

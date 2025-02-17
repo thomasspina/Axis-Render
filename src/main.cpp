@@ -61,9 +61,12 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    glClearColor(0, 0, 0, 1.0f);
+    // INITIALIZATION SECTION
 
-   float vertices[] = {
+    // Initialize shader
+    Shader shaderProgram = Shader("../../asset/vertex.vert", "../../asset/fragment.frag");
+
+    float vertices[] = {
         // Positions       // Colors          // Texture Coords
         0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f, // top right
         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  1.0f, 0.0f, // bottom right
@@ -97,19 +100,65 @@ int main(int argc, char* argv[]) {
     // Bind VAO
     glBindVertexArray(VAO);
 
-    // Copy vertices array into a buffer for OpenGL to use
+    // Bind VBO and store vertice data into the currently bounded buffer object
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // Copy indices into buffer
+    // Bind to EBO within the vertex array and store indice data
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+
+    int width, height, nrChannels;
+    unsigned char *data;
+
+    // TEXTURE 1
+
+    // Bind to Texture state 2D and store texture info to currently bounded texture object
     glBindTexture(GL_TEXTURE_2D, texture1);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    data = stbi_load("../../asset/textures/paperTexture.jpg", &width, &height, &nrChannels, 0);
+
+    if (data) {
+        // Generate a texture on currently bounded texture object
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else{
+        std::cerr << "Failed to generate texture!" << std::endl;
+    }
+
+    stbi_image_free(data);
+
+    // TEXTURE 2
+
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    data = stbi_load("../../asset/textures/stripes.jpg", &width, &height, &nrChannels, 0);
+
+    if (data) {
+        // Generate a texture on currently bounded texture object
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else{
+        std::cerr << "Failed to generate texture!" << std::endl;
+    }
+
+    stbi_image_free(data);
+
+
+    // RENDERING SECTION
+
+    glClearColor(0, 0, 0, 1.0f);
 
     // Set vertex attributes pointers which tells OpenGL how it should interpret vertex data
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -123,51 +172,39 @@ int main(int argc, char* argv[]) {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    // Initialize shader
-    Shader shaderProgram = Shader("../../asset/vertex.vert", "../../asset/fragment.frag");
-
-    // Show max number of vertex attributes able to be declared
-    int nrAttributes;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-    std::cout << "Maximum number of vertex attributes supported: " << nrAttributes << std::endl;
-
-    // Load and generate texture
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("../../asset/textures/paperTexture.jpg", &width, &height, &nrChannels, 0);
-
-    if (data) {
-        // Generate a texture on currently bounded texture object
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else{
-        std::cerr << "Failed to generate texture!" << std::endl;
-    }
-
-    stbi_image_free(data);
-
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    unsigned char *data1 = stbi_load("../../asset/textures/stripes.jpg", &width, &height, &nrChannels, 0);
-
-    if (data1) {
-        // Generate a texture on currently bounded texture object
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else{
-        std::cerr << "Failed to generate texture!" << std::endl;
-    }
-
-    stbi_image_free(data1);
-
+    // Activate defined shader program 
     shaderProgram.use();
+
+    // Declare active textures and bind the texture objects to them
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
     glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture1"), 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
     glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture2"), 1);
+
+    // Model Matrix
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    // View Matrix
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+    // Projection Matrix
+    glm::mat4 projection = glm::mat4(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+
+    int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+    int projectionLoc = glGetUniformLocation(shaderProgram.ID, "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     while (!quit) {
 
@@ -181,58 +218,29 @@ int main(int argc, char* argv[]) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Draw object
-        shaderProgram.use();
-
-        // Flucuating colors
-        // const Uint64 time = SDL_GetTicks64() / 1000.0f;
-        // float colorValue = (sin(time) / 2.0f) + 0.5f;
-        // int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
-        // glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
-
-
-        // Object uniform transformation
-        // glm::mat4 trans = glm::mat4(1.0f);
-        // trans = glm::translate(trans, glm::vec3(0.5f, -0.5, 0.0f));
-        // trans = glm::rotate(trans, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-        // unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
-        // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-
-        // Model Matrix
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-        // View Matrix
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-
-        // Projection Matrix
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-
-
-        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-        int projectionLoc = glGetUniformLocation(shaderProgram.ID, "projection");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-
-        glBindVertexArray(VAO);
+        glBindVertexArray(VAO); // Activate VAO
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+        glBindVertexArray(0); // Unbind VAO
 
         // OpenGL double buffering buffer swap
         SDL_GL_SwapWindow(window); 
     }
+
+    // TESTING CODE:
+
+     // Flucuating colors
+    // const Uint64 time = SDL_GetTicks64() / 1000.0f;
+    // float colorValue = (sin(time) / 2.0f) + 0.5f;
+    // int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
+    // glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
+
+
+    // Object uniform transformation
+    // glm::mat4 trans = glm::mat4(1.0f);
+    // trans = glm::translate(trans, glm::vec3(0.5f, -0.5, 0.0f));
+    // trans = glm::rotate(trans, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+    // unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
+    // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
     SDL_GL_DeleteContext(mainContext);
     SDL_DestroyWindow(window);
