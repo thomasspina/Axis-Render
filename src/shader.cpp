@@ -1,13 +1,12 @@
 #include "shader.hpp"
-#include <string>
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <GL/gl.h>
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
-    std::pair<const char*, const char*> shaderCodes = loadShader(vertexPath, fragmentPath);
-    std::pair <unsigned int, unsigned int> shaders = compileShader(shaderCodes.first, shaderCodes.second);
+    auto shaderCodes = loadShader(vertexPath, fragmentPath);
+    std::pair <unsigned int, unsigned int> shaders = compileShader(shaderCodes.first.c_str(), shaderCodes.second.c_str());
     linkShader(shaders.first, shaders.second);
 }
 
@@ -15,7 +14,7 @@ void Shader::use() {
     glUseProgram(ID);
 }
 
-std::pair<const char*, const char*> Shader::loadShader(const char* vertexPath, const char* fragmentPath) {
+std::pair<std::string, std::string> Shader::loadShader(const char* vertexPath, const char* fragmentPath) {
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
@@ -46,11 +45,7 @@ std::pair<const char*, const char*> Shader::loadShader(const char* vertexPath, c
         std::cerr << "Failed to read shader files!" << std::endl;
     }
 
-    // OpenGL only accepts c string
-    const char* vShaderCode = vertexCode.c_str();
-    const char* fShaderCode = fragmentCode.c_str();
-
-    return {vShaderCode, fShaderCode};
+    return {vertexCode, fragmentCode};
 }
 
 std::pair <unsigned int, unsigned int> Shader::compileShader(const char* vShaderCode, const char* fShaderCode) {
