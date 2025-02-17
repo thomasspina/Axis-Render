@@ -184,17 +184,42 @@ int main(int argc, char* argv[]) {
         // Draw object
         shaderProgram.use();
 
+        // Flucuating colors
         // const Uint64 time = SDL_GetTicks64() / 1000.0f;
         // float colorValue = (sin(time) / 2.0f) + 0.5f;
         // int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
         // glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
 
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5, 0.0f));
-        trans = glm::rotate(trans, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 
-        unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        // Object uniform transformation
+        // glm::mat4 trans = glm::mat4(1.0f);
+        // trans = glm::translate(trans, glm::vec3(0.5f, -0.5, 0.0f));
+        // trans = glm::rotate(trans, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+        // unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
+        // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+        // Model Matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+        // View Matrix
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+        // Projection Matrix
+        glm::mat4 projection = glm::mat4(1.0f);
+        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+
+        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        int projectionLoc = glGetUniformLocation(shaderProgram.ID, "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
