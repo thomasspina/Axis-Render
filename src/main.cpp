@@ -116,7 +116,21 @@ int main(int argc, char* argv[]) {
         glm::vec3( 1.5f, 2.0f, -2.5f),
         glm::vec3( 1.5f, 0.2f, -1.5f),
         glm::vec3(-1.3f, 1.0f, -1.5f)
-     };
+    };
+
+    // Vector in world space that points to the camera's position
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+
+    // Vector that represents what the camera is pointing at, Z axis
+    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
+    // Vector that points to the X axis
+    glm::vec3 globalUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
+
+    // Vector that points to the Y axis
+    glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 
     // float vertices[] = {
     //     // Positions       // Colors          // Texture Coords
@@ -254,9 +268,11 @@ int main(int argc, char* argv[]) {
         // glm::mat4 model = glm::mat4(1.0f);
         // model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 
-        // View Matrix
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        const float radius = 10.0f;
+        float camX = sin((float)SDL_GetTicks() / 1000.0f) * radius;
+        float camZ = cos((float)SDL_GetTicks() / 1000.0f) * radius;
+        // Transformation matrix to convert vectors into view space
+        glm::mat4 view = glm::lookAt(glm::vec3(camX, 0.0, camZ), cameraTarget, globalUp);
 
         // Projection Matrix
         glm::mat4 projection = glm::mat4(1.0f);
@@ -282,6 +298,7 @@ int main(int argc, char* argv[]) {
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
         glBindVertexArray(0); // Unbind VAO
 
         // OpenGL double buffering buffer swap
