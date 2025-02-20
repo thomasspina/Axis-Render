@@ -118,6 +118,8 @@ int main(int argc, char* argv[]) {
         glm::vec3(-1.3f, 1.0f, -1.5f)
     };
 
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+
     // Vector in world space that points to the camera's position
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
@@ -251,13 +253,74 @@ int main(int argc, char* argv[]) {
     glBindTexture(GL_TEXTURE_2D, texture2);
     glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture2"), 1);
 
-    while (!quit) {
 
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+    float lastX = 640;
+    float lastY = 360;
+    bool firstMouse = true;
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
+   
+    float yaw = -90.0f;
+    float pitch = 0.0f;
+
+    while (!quit) {
+        float currFrame = (float)SDL_GetTicks64();
+        deltaTime = currFrame - lastFrame;
+        lastFrame = currFrame;
+
+        std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
+        const float cameraSpeed = 0.05f * deltaTime;
         while (SDL_PollEvent(&event) > 0) {
             switch(event.type) {
                 case SDL_QUIT:
                     quit = true;
                     break;
+
+                case SDL_MOUSEMOTION: {
+                    if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+                        float xOffset = event.motion.xrel;
+                        float yOffset = event.motion.yrel;
+
+                        const float sensitivity = 0.1f;
+                        xOffset *= sensitivity;
+                        yOffset *= sensitivity;
+
+                        yaw += xOffset;
+                        pitch += yOffset;
+
+                        // Clamp pitch to avoid flipping
+                        if (pitch > 89.0f)
+                            pitch = 89.0f;
+                        if (pitch < -89.0f)
+                            pitch = -89.0f;
+
+                        glm::vec3 direction;
+                        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+                        direction.y = sin(glm::radians(pitch));
+                        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+                        cameraFront = glm::normalize(direction);
+                    }
+                    break;
+                }
+                case SDL_KEYDOWN: {
+                    switch(event.key.keysym.scancode) {
+                        case SDL_SCANCODE_W:
+                            cameraPos += cameraSpeed * cameraFront;
+                            break;
+                        case SDL_SCANCODE_A:
+                            cameraPos -= glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+                            break;
+                        case SDL_SCANCODE_S:
+                            cameraPos -= cameraSpeed * cameraFront;
+                            break;
+                        case SDL_SCANCODE_D:
+                            cameraPos += glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+                            break;
+                    }
+                }
             }
         }
 
@@ -272,7 +335,8 @@ int main(int argc, char* argv[]) {
         float camX = sin((float)SDL_GetTicks() / 1000.0f) * radius;
         float camZ = cos((float)SDL_GetTicks() / 1000.0f) * radius;
         // Transformation matrix to convert vectors into view space
-        glm::mat4 view = glm::lookAt(glm::vec3(camX, 0.0, camZ), cameraTarget, globalUp);
+        // glm::mat4 view = glm::lookAt(glm::vec3(camX, 0.0, camZ), cameraTarget, globalUp);
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, globalUp);
 
         // Projection Matrix
         glm::mat4 projection = glm::mat4(1.0f);
