@@ -259,6 +259,7 @@ int main(int argc, char* argv[]) {
     float lastX = 640;
     float lastY = 360;
     bool firstMouse = true;
+    float fov = 45.0f;
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -278,6 +279,21 @@ int main(int argc, char* argv[]) {
                 case SDL_QUIT:
                     quit = true;
                     break;
+
+                case SDL_MOUSEWHEEL: {
+                    float yOffset = event.wheel.y;
+                    fov -= yOffset;
+
+                    if (fov < 1.0f) {
+                        fov = 1.0f;
+                    }
+
+                    if (fov > 45.0f) {
+                        fov = 45.0f;
+                    }
+
+                    break;
+                }
 
                 case SDL_MOUSEMOTION: {
                     if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
@@ -340,7 +356,7 @@ int main(int argc, char* argv[]) {
 
         // Projection Matrix
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
 
 
         // int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
