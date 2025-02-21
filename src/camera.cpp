@@ -1,0 +1,71 @@
+#include "camera.hpp"
+#include <glm/glm.hpp>
+
+Camera::Camera() {
+    glm::vec3 globalUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+
+    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
+    glm::vec3 cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
+
+    glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
+}
+
+void Camera::applyZoom(float yOffset) {
+    fov -= yOffset;
+
+    if (fov < 1.0f) {
+        fov = 1.0f;
+    }
+
+    if (fov > 45.0f) {
+        fov = 45.0f;
+    }
+}
+
+void Camera::applyRotation(float xOffset, float yOffset) {
+    xOffset *= DEFAULT_CAMERA_SENSITIVITY;
+    yOffset *= DEFAULT_CAMERA_SENSITIVITY;
+
+    yaw += xOffset;
+    pitch += yOffset;
+
+    // Clamp pitch to avoid lookat flipping
+    if (pitch > MAX_CAMERA_PITCH_ANGLE)
+        pitch = MAX_CAMERA_PITCH_ANGLE;
+    if (pitch < MIN_CAMERA_PITCH_ANGLE)
+        pitch = MIN_CAMERA_PITCH_ANGLE;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
+}
+
+void Camera::setCameraPos(glm::vec3 newCameraPos) {
+    cameraPos = newCameraPos;
+}
+
+const glm::vec3 Camera::getCameraPos() {
+    return cameraPos;
+}
+
+const glm::vec3 Camera::getCameraFront() {
+    return cameraFront;
+}
+
+const glm::vec3 Camera::getGlobalUp() {
+    return globalUp;
+}
+
+const float Camera::getFov() {
+    return fov;
+}
+

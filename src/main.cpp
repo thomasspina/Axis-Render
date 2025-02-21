@@ -10,6 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "constants.hpp"
+#include "camera.hpp"
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
@@ -117,22 +119,6 @@ int main(int argc, char* argv[]) {
         glm::vec3( 1.5f, 0.2f, -1.5f),
         glm::vec3(-1.3f, 1.0f, -1.5f)
     };
-
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-
-    // Vector in world space that points to the camera's position
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-
-    // Vector that represents what the camera is pointing at, Z axis
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
-    // Vector that points to the X axis
-    glm::vec3 globalUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
-
-    // Vector that points to the Y axis
-    glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 
     // float vertices[] = {
     //     // Positions       // Colors          // Texture Coords
@@ -256,16 +242,10 @@ int main(int argc, char* argv[]) {
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
-    float lastX = 640;
-    float lastY = 360;
-    bool firstMouse = true;
-    float fov = 45.0f;
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
-   
-    float yaw = -90.0f;
-    float pitch = 0.0f;
+    Camera camera = Camera();
 
     while (!quit) {
         float currFrame = (float)SDL_GetTicks64();
@@ -282,15 +262,8 @@ int main(int argc, char* argv[]) {
 
                 case SDL_MOUSEWHEEL: {
                     float yOffset = event.wheel.y;
-                    fov -= yOffset;
-
-                    if (fov < 1.0f) {
-                        fov = 1.0f;
-                    }
-
-                    if (fov > 45.0f) {
-                        fov = 45.0f;
-                    }
+                   
+                    camera.applyZoom(yOffset);
 
                     break;
                 }
@@ -299,43 +272,30 @@ int main(int argc, char* argv[]) {
                     if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
                         float xOffset = event.motion.xrel;
                         float yOffset = event.motion.yrel;
-
-                        const float sensitivity = 0.1f;
-                        xOffset *= sensitivity;
-                        yOffset *= sensitivity;
-
-                        yaw += xOffset;
-                        pitch += yOffset;
-
-                        // Clamp pitch to avoid flipping
-                        if (pitch > 89.0f)
-                            pitch = 89.0f;
-                        if (pitch < -89.0f)
-                            pitch = -89.0f;
-
-                        glm::vec3 direction;
-                        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-                        direction.y = sin(glm::radians(pitch));
-                        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-                        cameraFront = glm::normalize(direction);
+                        
+                        camera.applyRotation(xOffset, yOffset);
                     }
                     break;
                 }
                 case SDL_KEYDOWN: {
+                    glm::vec3 newCameraPos;
+
                     switch(event.key.keysym.scancode) {
                         case SDL_SCANCODE_W:
-                            cameraPos += cameraSpeed * cameraFront;
+                            newCameraPos = camera.getCameraPos() + cameraSpeed * camera.getCameraFront();
                             break;
                         case SDL_SCANCODE_A:
-                            cameraPos -= glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+                            newCameraPos = camera.getCameraPos() - glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * cameraSpeed;
                             break;
                         case SDL_SCANCODE_S:
-                            cameraPos -= cameraSpeed * cameraFront;
+                            newCameraPos = camera.getCameraPos() - cameraSpeed * camera.getCameraFront();
                             break;
                         case SDL_SCANCODE_D:
-                            cameraPos += glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+                            newCameraPos = camera.getCameraPos() + glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * cameraSpeed;
                             break;
                     }
+
+                    camera.setCameraPos(newCameraPos);
                 }
             }
         }
@@ -343,24 +303,15 @@ int main(int argc, char* argv[]) {
         // Clear depth buffer from previous iteration
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Model Matrix
-        // glm::mat4 model = glm::mat4(1.0f);
-        // model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-
         const float radius = 10.0f;
         float camX = sin((float)SDL_GetTicks() / 1000.0f) * radius;
         float camZ = cos((float)SDL_GetTicks() / 1000.0f) * radius;
-        // Transformation matrix to convert vectors into view space
-        // glm::mat4 view = glm::lookAt(glm::vec3(camX, 0.0, camZ), cameraTarget, globalUp);
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, globalUp);
+
+        glm::mat4 view = glm::lookAt(camera.getCameraPos(), camera.getCameraPos() + camera.getCameraFront(), camera.getGlobalUp());
 
         // Projection Matrix
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
-
-
-        // int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-        // glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        projection = glm::perspective(glm::radians(camera.getFov()), 800.0f / 600.0f, 0.1f, 100.0f);
 
         int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -386,6 +337,16 @@ int main(int argc, char* argv[]) {
     }
 
     // TESTING CODE:
+
+     // Transformation matrix to convert vectors into view space
+    // glm::mat4 view = glm::lookAt(glm::vec3(camX, 0.0, camZ), cameraTarget, globalUp);
+
+    // Model Matrix
+    // glm::mat4 model = glm::mat4(1.0f);
+    // model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+    
+    // int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+    // glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
      // Flucuating colors
     // const Uint64 time = SDL_GetTicks64() / 1000.0f;
