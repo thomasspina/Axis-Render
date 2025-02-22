@@ -1,5 +1,5 @@
 #pragma once
-
+#include <glm/glm.hpp>
 #include "constants.hpp"
 
 class Camera {
@@ -24,6 +24,8 @@ class Camera {
         // Camera Y axis Vector
         glm::vec3 cameraUp;
 
+        float cameraSpeed;
+
         // Yaw angle: Rotates the camera left/right around the Y-axis (horizontal rotation).
         float yaw = DEFAULT_YAW_ANGLE;
 
@@ -42,11 +44,15 @@ class Camera {
 
         void setCameraPos(glm::vec3 newCameraPos);
 
+        void updateCameraSpeed(float deltaTime);
+
         const glm::vec3 getCameraPos();
 
         const glm::vec3 getCameraFront();
 
         const glm::vec3 getGlobalUp();
+
+        const float getCameraSpeed();
 
         const float getFov();
 };

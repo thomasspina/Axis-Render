@@ -253,8 +253,10 @@ int main(int argc, char* argv[]) {
         lastFrame = currFrame;
 
         std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
-        const float cameraSpeed = 0.05f * deltaTime;
+        camera.updateCameraSpeed(deltaTime);
+
         while (SDL_PollEvent(&event) > 0) {
+
             switch(event.type) {
                 case SDL_QUIT:
                     quit = true;
@@ -282,16 +284,16 @@ int main(int argc, char* argv[]) {
 
                     switch(event.key.keysym.scancode) {
                         case SDL_SCANCODE_W:
-                            newCameraPos = camera.getCameraPos() + cameraSpeed * camera.getCameraFront();
+                            newCameraPos = camera.getCameraPos() + camera.getCameraSpeed() * camera.getCameraFront();
                             break;
                         case SDL_SCANCODE_A:
-                            newCameraPos = camera.getCameraPos() - glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * cameraSpeed;
+                            newCameraPos = camera.getCameraPos() - glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * camera.getCameraSpeed();
                             break;
                         case SDL_SCANCODE_S:
-                            newCameraPos = camera.getCameraPos() - cameraSpeed * camera.getCameraFront();
+                            newCameraPos = camera.getCameraPos() - camera.getCameraSpeed() * camera.getCameraFront();
                             break;
                         case SDL_SCANCODE_D:
-                            newCameraPos = camera.getCameraPos() + glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * cameraSpeed;
+                            newCameraPos = camera.getCameraPos() + glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * camera.getCameraSpeed();
                             break;
                     }
 

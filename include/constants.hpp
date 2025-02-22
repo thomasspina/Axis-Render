@@ -8,7 +8,7 @@
 #define DEFAULT_YAW_ANGLE -90.0f
 
 // A default value of 0.0f keeps the camera level, preventing an initial tilt.
-#define DEFAULT_PITCH_ANGLE -90.0f
+#define DEFAULT_PITCH_ANGLE 0.0f
 #define MAX_CAMERA_PITCH_ANGLE 89.0f
 #define MIN_CAMERA_PITCH_ANGLE -89.0f
 
