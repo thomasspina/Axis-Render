@@ -1,18 +1,39 @@
 #pragma once
-#include <utility>
-#include <GL/glew.h>
+
 #include <string>
+#include <GL/glew.h>
 
+/// @brief OpenGL shader types
+enum ShaderType {
+    Vertex = GL_VERTEX_SHADER,
+    Fragment = GL_FRAGMENT_SHADER,
+    Geometry = GL_GEOMETRY_SHADER,
+    TessControl = GL_TESS_CONTROL_SHADER,
+    TessEvaluation = GL_TESS_EVALUATION_SHADER
+};
+/**
+ * Manages an individual OpenGL shader object (vert, frag, geom, etc)
+ * Handles loading from file. compilation and cleanup. 
+ * File paths are relative to the assets folder. 
+ */
 class Shader {
-    public:
-        // Shader program ID
-        unsigned int ID;
+private:
+    ShaderType shaderType;
+    GLuint shaderID;
 
-        Shader(const char* vertexPath, const char* fragmentPath);
-        void use();
-        
-    private:
-        std::pair<std::string, std::string> loadShader(const char* vertexPath, const char* fragmentPath);
-        std::pair <unsigned int, unsigned int> compileShader(const char* vShaderCode, const char* fShaderCode);
-        void linkShader(unsigned int vertexShader, unsigned int fragmentShader);
+    static const GLchar* readSourceFile(const std::string& sourceFile);
+public:
+    
+    /// @brief creates a Shader object. loads the source code, and compiles it
+    Shader(ShaderType shaderType, const std::string& sourceFile);
+    Shader(ShaderType shaderType);
+    
+    /// @brief only loads the new source code without compiling it
+    void loadSource(const std::string& sourceFile);
+    void compile();
+
+    GLuint getShaderID() const;
+    ShaderType getShaderType() const;
+
+    ~Shader();
 };

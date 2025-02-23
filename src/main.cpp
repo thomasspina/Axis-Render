@@ -1,9 +1,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "shader.hpp"
+#include "shaderProgram.hpp"
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <SDL_timer.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "constants.hpp"
 #include "camera.hpp"
+#include "config.h"
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
@@ -66,7 +67,9 @@ int main(int argc, char* argv[]) {
     // ============================ INITIALIZATION SECTION =====================================
 
     // Initialize shader
-    Shader shaderProgram = Shader("../../asset/vertex.vert", "../../asset/fragment.frag");
+    Shader vertShader = Shader(Vertex, std::string(ASSETS_PATH) + "shaders/vertex.vert");
+    Shader fragShader = Shader(Fragment, std::string(ASSETS_PATH) + "shaders/fragment.frag");
+    ShaderProgram shaderProgram = ShaderProgram(vertShader, fragShader);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
@@ -233,11 +236,11 @@ int main(int argc, char* argv[]) {
     // Declare active textures and bind the texture objects to them
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
-    glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture1"), 0);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture2);
-    glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture2"), 1);
+    glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture2"), 1);
 
 
     float deltaTime = 0.0f;
@@ -313,10 +316,10 @@ int main(int argc, char* argv[]) {
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(camera.getFov()), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+        int viewLoc = glGetUniformLocation(shaderProgram.ID(), "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-        int projectionLoc = glGetUniformLocation(shaderProgram.ID, "projection");
+        int projectionLoc = glGetUniformLocation(shaderProgram.ID(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(VAO); // Activate VAO
@@ -325,7 +328,7 @@ int main(int argc, char* argv[]) {
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * (i+1);
             model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f * glm::radians(50.0f) * glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+            int modelLoc = glGetUniformLocation(shaderProgram.ID(), "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
