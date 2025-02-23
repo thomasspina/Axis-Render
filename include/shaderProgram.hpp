@@ -4,14 +4,22 @@
 
 #include <unordered_map>
 #include <memory>
+#include <vector>
 
 class ShaderProgram {
 private:
     GLuint programID;
-    std::unordered_map<ShaderType, std::shared_ptr<Shader>> shaders;
 public:
     ShaderProgram();
-    ~ShaderProgram();
+    ShaderProgram(const Shader& vertShader, const Shader& fragShader);
 
-    bool addShader(const Shader& shader);
+    void addShader(const Shader& shader);
+    void removeShader(GLuint shaderID);
+
+    void use();
+    void link();
+
+    GLuint getProgramID() const;
+
+    ~ShaderProgram();
 };
