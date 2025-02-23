@@ -178,7 +178,7 @@ int main(int argc, char* argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    data = stbi_load("../../asset/textures/download.jpg", &width, &height, &nrChannels, 0);
+    data = stbi_load((std::string(ASSETS_PATH) + "textures/download.jpg").c_str(), &width, &height, &nrChannels, 0);
 
     if (data) {
         // Generate a texture on currently bounded texture object
@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    data = stbi_load("../../asset/textures/stripes.jpg", &width, &height, &nrChannels, 0);
+    data = stbi_load((std::string(ASSETS_PATH) + "textures/stripes.jpg").c_str(), &width, &height, &nrChannels, 0);
 
     if (data) {
         // Generate a texture on currently bounded texture object
@@ -255,7 +255,7 @@ int main(int argc, char* argv[]) {
         deltaTime = currFrame - lastFrame;
         lastFrame = currFrame;
 
-        std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
+        //std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
         const float cameraSpeed = 0.05f * deltaTime;
         while (SDL_PollEvent(&event) > 0) {
             switch(event.type) {
