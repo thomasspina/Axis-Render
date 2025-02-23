@@ -1,12 +1,11 @@
 #include "constants.hpp"
 #include "shader.hpp"
+#include "shaderProgram.hpp"
 #include "config.h"
 
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
-
-
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
@@ -67,27 +66,11 @@ int main(int argc, char* argv[]) {
 
     Shader vertexShader = Shader(Vertex, std::string(ASSETS_PATH) + "shaders/test_vertex.vert");
     Shader fragmentShader = Shader(Fragement, std::string(ASSETS_PATH) + "shaders/test_fragment.frag");
-    
-    
-
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader.getShaderID());
-    glAttachShader(shaderProgram, fragmentShader.getShaderID());
-
-    int success;
-    char infoLog[512];
-    glLinkProgram(shaderProgram);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+    ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
     glEnableVertexAttribArray(0);
 
-    
 
     glBindVertexArray(VAO[1]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
@@ -116,7 +99,7 @@ int main(int argc, char* argv[]) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // Black background
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glUseProgram(shaderProgram);
+        shaderProgram.use();
         glBindVertexArray(VAO[0]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(VAO[1]);

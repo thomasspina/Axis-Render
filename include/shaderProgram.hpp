@@ -6,11 +6,18 @@
 #include <memory>
 #include <vector>
 
+
+/**
+ * Manages a single OpenGL shader program.
+ * Handles linking, attaching shaders, and cleanup.
+ */
 class ShaderProgram {
 private:
     GLuint programID;
 public:
     ShaderProgram();
+
+    /// @brief  Construct a new Shader Program object with a vertex and fragment shader and link them
     ShaderProgram(const Shader& vertShader, const Shader& fragShader);
 
     void addShader(const Shader& shader);

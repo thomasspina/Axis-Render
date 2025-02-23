@@ -6,6 +6,13 @@ ShaderProgram::ShaderProgram() {
     programID = glCreateProgram();
 }
 
+ShaderProgram::ShaderProgram(const Shader& vertShader, const Shader& fragShader) {
+    programID = glCreateProgram();
+    addShader(vertShader);
+    addShader(fragShader);
+    link();
+}
+
 void ShaderProgram::addShader(const Shader& shader) {
     glAttachShader(programID, shader.getShaderID());
 }
