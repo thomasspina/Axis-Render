@@ -2,6 +2,7 @@
 #include "stb_image.h"
 
 #include "shaderProgram.hpp"
+#include "config.h"
 #include <iostream>
 #include <SDL.h>
 #include <SDL_timer.h>
@@ -12,7 +13,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "constants.hpp"
 #include "camera.hpp"
-#include "config.h"
 
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
@@ -67,9 +67,9 @@ int main(int argc, char* argv[]) {
     // ============================ INITIALIZATION SECTION =====================================
 
     // Initialize shader
-    Shader vertShader = Shader(Vertex, std::string(ASSETS_PATH) + "shaders/vertex.vert");
-    Shader fragShader = Shader(Fragment, std::string(ASSETS_PATH) + "shaders/fragment.frag");
-    ShaderProgram shaderProgram = ShaderProgram(vertShader, fragShader);
+    Shader vertexShader = Shader(Vertex, std::string(ASSETS_PATH) + "shaders/vertex.vert");
+    Shader fragmentShader = Shader(Fragment, std::string(ASSETS_PATH) + "shaders/fragment.frag");
+    ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
@@ -255,7 +255,7 @@ int main(int argc, char* argv[]) {
         deltaTime = currFrame - lastFrame;
         lastFrame = currFrame;
 
-        //std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
+        // std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
         const float cameraSpeed = 0.05f * deltaTime;
         while (SDL_PollEvent(&event) > 0) {
             switch(event.type) {
