@@ -2,19 +2,13 @@
 #include <glm/glm.hpp>
 
 Camera::Camera() {
-    glm::vec3 globalUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-
-    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
-    glm::vec3 cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
-
-    glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
+    globalUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    cameraDirection = glm::normalize(cameraPos - cameraTarget);
+    cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
+    cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 }
 
 void Camera::applyZoom(float yOffset) {
