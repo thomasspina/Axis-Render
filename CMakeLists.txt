@@ -61,7 +61,11 @@ set(SDL_HAPTIC OFF CACHE BOOL "" FORCE)
 set(SDL_HIDAPI OFF CACHE BOOL "" FORCE)
 set(SDL_POWER OFF CACHE BOOL "" FORCE)
 
+# Disable Assimp extras
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Disable Assimp tests" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Disable Assimp tools" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Disable Assimp samples" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "Disable Assimp install" FORCE)
 
 FetchContent_MakeAvailable(SDL2 SDL2_image assimp glm GLEW)
 
@@ -73,6 +77,12 @@ endif()
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
+set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+    ${CMAKE_BINARY_DIR}/config.h
+)
+
 # Create executable
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
@@ -83,6 +93,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_BINARY_DIR}
 )
 
 

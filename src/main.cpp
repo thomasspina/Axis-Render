@@ -1,7 +1,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "shader.hpp"
+#include "shaderProgram.hpp"
+#include "config.h"
 #include <iostream>
 #include <SDL.h>
 #include <SDL_timer.h>
@@ -66,7 +67,9 @@ int main(int argc, char* argv[]) {
     // ============================ INITIALIZATION SECTION =====================================
 
     // Initialize shader
-    Shader shaderProgram = Shader("../../asset/vertex.vert", "../../asset/fragment.frag");
+    Shader vertexShader = Shader(Vertex, std::string(ASSETS_PATH) + "shaders/vertex.vert");
+    Shader fragmentShader = Shader(Fragment, std::string(ASSETS_PATH) + "shaders/fragment.frag");
+    ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
@@ -175,7 +178,7 @@ int main(int argc, char* argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    data = stbi_load("../../asset/textures/download.jpg", &width, &height, &nrChannels, 0);
+    data = stbi_load((std::string(ASSETS_PATH) + "textures/download.jpg").c_str(), &width, &height, &nrChannels, 0);
 
     if (data) {
         // Generate a texture on currently bounded texture object
@@ -196,7 +199,7 @@ int main(int argc, char* argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    data = stbi_load("../../asset/textures/stripes.jpg", &width, &height, &nrChannels, 0);
+    data = stbi_load((std::string(ASSETS_PATH) + "textures/stripes.jpg").c_str(), &width, &height, &nrChannels, 0);
 
     if (data) {
         // Generate a texture on currently bounded texture object
@@ -233,11 +236,11 @@ int main(int argc, char* argv[]) {
     // Declare active textures and bind the texture objects to them
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
-    glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture1"), 0);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture2);
-    glUniform1i(glGetUniformLocation(shaderProgram.ID, "texture2"), 1);
+    glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture2"), 1);
 
 
     float deltaTime = 0.0f;
@@ -315,10 +318,10 @@ int main(int argc, char* argv[]) {
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(camera.getFov()), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+        int viewLoc = glGetUniformLocation(shaderProgram.ID(), "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-        int projectionLoc = glGetUniformLocation(shaderProgram.ID, "projection");
+        int projectionLoc = glGetUniformLocation(shaderProgram.ID(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(VAO); // Activate VAO
@@ -327,7 +330,7 @@ int main(int argc, char* argv[]) {
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * (i+1);
             model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f * glm::radians(50.0f) * glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+            int modelLoc = glGetUniformLocation(shaderProgram.ID(), "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
