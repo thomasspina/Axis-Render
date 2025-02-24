@@ -13,56 +13,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "constants.hpp"
 #include "camera.hpp"
+#include "window.hpp"
 
 int main(int argc, char* argv[]) {
-    SDL_Window* window = NULL;
-    SDL_Surface* winSurface = NULL; 
-    bool quit = false;
-    SDL_Event event;
 
-    if (SDL_Init(SDL_INIT_VIDEO)) {
-        std::cerr << "Error initializing SDL:" << SDL_GetError() << std::endl;
-    }
-
-    // Access to OpenGL 4.6
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-
-    // Prevent screen flickering
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-    window = SDL_CreateWindow("Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-
-    if (!window) {
-        std::cerr << "Failed to create a window! Error: " << SDL_GetError() << std::endl;
-        system("pause");
-        return -1;
-    }
-
-    winSurface = SDL_GetWindowSurface(window);
-    
-    if (!winSurface) {
-        std::cerr << "Error getting surface! Error: " << SDL_GetError() << std::endl;
-        system("pause");
-        return -1;
-    }
-
-    SDL_GLContext mainContext = SDL_GL_CreateContext(window);
-
-    // Check current version of OpenGL
-    const GLubyte* version = glGetString(GL_VERSION);  
-    if (version) {
-        std::cout << "OpenGL Version: " << version << std::endl;
-    } 
-
-    // Enable V-Sync
-    SDL_GL_SetSwapInterval(1);
-
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "GLEW failed to initialize! Error: " << glewGetErrorString(glewInit()) << std::endl;
-        return -1;
-    }
+    Window window = Window();
 
     // ============================ INITIALIZATION SECTION =====================================
 
@@ -250,19 +205,21 @@ int main(int argc, char* argv[]) {
 
     Camera camera = Camera();
 
-    while (!quit) {
+    while (!window.isQuit()) {
         float currFrame = (float)SDL_GetTicks64();
         deltaTime = currFrame - lastFrame;
         lastFrame = currFrame;
 
-        std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
+        // std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
         camera.updateCameraSpeed(deltaTime);
+        SDL_Event event = window.getEvent();
 
         while (SDL_PollEvent(&event) > 0) {
 
             switch(event.type) {
                 case SDL_QUIT:
-                    quit = true;
+                    window.setQuit();
+                    // quit = true;
                     break;
 
                 case SDL_MOUSEWHEEL: {
@@ -338,7 +295,7 @@ int main(int argc, char* argv[]) {
         glBindVertexArray(0); // Unbind VAO
 
         // OpenGL double buffering buffer swap
-        SDL_GL_SwapWindow(window); 
+        window.swapWindow();
     }
 
     // TESTING CODE:
@@ -367,9 +324,7 @@ int main(int argc, char* argv[]) {
     // unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
     // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-    SDL_GL_DeleteContext(mainContext);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    window.closeWindow();
 
     return 0;
 }
