@@ -16,7 +16,6 @@ set(GLEW_BUILD_SHARED OFF CACHE BOOL "Disable GLEW shared" FORCE)
 set(GLEW_BUILD_STATIC ON CACHE BOOL "Enable GLEW static" FORCE)
 set(GLEW_BUILD_UTILS OFF CACHE BOOL "Disable GLEW utils" FORCE)
 
-# SDL2 configuration
 include(FetchContent)
 FetchContent_Declare(SDL2
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
@@ -25,7 +24,6 @@ FetchContent_Declare(SDL2
     SYSTEM
 )
 
-# SDL2_image configuration
 FetchContent_Declare(SDL2_image
     GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
     GIT_TAG release-2.8.x
@@ -52,6 +50,13 @@ FetchContent_Declare(GLEW
     SYSTEM
 )
 
+FetchContent_Declare(stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+    GIT_SHALLOW ON
+    SYSTEM
+)
+
 # SDL2 build options
 set(SDL_TEST OFF CACHE BOOL "" FORCE)
 set(SDL_RENDER OFF CACHE BOOL "" FORCE) # TODO: Check if this is necessary
@@ -67,7 +72,11 @@ set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Disable Assimp tools" FORCE)
 set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Disable Assimp samples" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "Disable Assimp install" FORCE)
 
-FetchContent_MakeAvailable(SDL2 SDL2_image assimp glm GLEW)
+FetchContent_MakeAvailable(SDL2 SDL2_image assimp glm GLEW stb)
+
+# stb library
+add_library(stb_image INTERFACE)
+target_include_directories(stb_image INTERFACE ${stb_SOURCE_DIR})
 
 if (TARGET libglew_shared)
     set_target_properties(libglew_shared PROPERTIES EXCLUDE_FROM_ALL TRUE)
@@ -107,6 +116,7 @@ target_link_libraries(${PROJECT_NAME}
         libglew_static
         glm
         assimp
+        stb_image
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
