@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <memory>
 #include <vector>
+#include <glm/glm.hpp>
 
 
 /**
@@ -27,6 +28,12 @@ public:
     void link();
 
     GLuint ID() const;
+
+    void setUniform(const std::string& name, int value);
+    void setUniform(const std::string& name, float value);
+    void setUniform(const std::string& name, const glm::vec2& value);
+    void setUniform(const std::string& name, const glm::vec3& value);
+    void setUniform(const std::string& name, const glm::vec4& value);
 
     ~ShaderProgram();
 };
