@@ -71,3 +71,19 @@ const float Camera::getFov() {
     return fov;
 }
 
+void Camera::moveForward() {
+    cameraPos += cameraSpeed * cameraFront;
+}
+
+void Camera::moveBackward() {
+    cameraPos -= cameraSpeed * cameraFront;
+}
+
+void Camera::moveRight() {
+    cameraPos += glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+}
+
+void Camera::moveLeft() {
+    cameraPos -= glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+}
+

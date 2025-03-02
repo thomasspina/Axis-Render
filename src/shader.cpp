@@ -10,7 +10,7 @@ const GLchar* Shader::readSourceFile(const std::string& sourceFile) {
         return nullptr;
     }
 
-    size_t size = source.tellg();
+    size_t size = source.tellg();   // Get the shader file size
     source.seekg(0, std::ios::beg); // set stream start to beginning of file
 
     GLchar* buffer = new char[size + 1];
@@ -64,6 +64,18 @@ void Shader::compile() {
 GLuint Shader::getShaderID() const { return shaderID; }
 
 ShaderType Shader::getShaderType() const { return shaderType; }
+
+void Shader::setBool(const std::string &name, bool value) const {
+    glUniform1i(glGetUniformLocation(shaderID, name.c_str()), (int)value);
+}
+
+void Shader::setInt(const std::string &name, int value) const {
+    glUniform1i(glGetUniformLocation(shaderID, name.c_str()), value);
+}
+
+void Shader::setFloat(const std::string &name, float value) const {
+    glUniform1f(glGetUniformLocation(shaderID, name.c_str()), value);
+}
 
 Shader::~Shader() {
     glDeleteShader(shaderID);

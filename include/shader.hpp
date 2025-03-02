@@ -5,11 +5,11 @@
 
 /// @brief OpenGL shader types
 enum ShaderType {
-    Vertex = GL_VERTEX_SHADER,
-    Fragment = GL_FRAGMENT_SHADER,
-    Geometry = GL_GEOMETRY_SHADER,
-    TessControl = GL_TESS_CONTROL_SHADER,
-    TessEvaluation = GL_TESS_EVALUATION_SHADER
+    vertex = GL_VERTEX_SHADER,
+    fragment = GL_FRAGMENT_SHADER,
+    geometry = GL_GEOMETRY_SHADER,
+    tessControl = GL_TESS_CONTROL_SHADER,
+    tessEvaluation = GL_TESS_EVALUATION_SHADER
 };
 /**
  * Manages an individual OpenGL shader object (vert, frag, geom, etc)
@@ -34,6 +34,10 @@ public:
 
     GLuint getShaderID() const;
     ShaderType getShaderType() const;
+
+    void setBool(const std::string &name, bool value) const;
+    void setInt(const std::string &name, int value) const;
+    void setFloat(const std::string &name, float value) const;
 
     ~Shader();
 };

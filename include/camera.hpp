@@ -58,4 +58,12 @@ class Camera {
         const float getCameraSpeed();
 
         const float getFov();
+
+        void moveForward();
+
+        void moveBackward();
+
+        void moveRight();
+
+        void moveLeft();
 };

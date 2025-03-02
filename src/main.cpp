@@ -22,8 +22,10 @@ int main(int argc, char* argv[]) {
     // ============================ INITIALIZATION SECTION =====================================
 
     // Initialize shader
-    Shader vertexShader = Shader(Vertex, std::string(ASSETS_PATH) + "shaders/vertex.vert");
-    Shader fragmentShader = Shader(Fragment, std::string(ASSETS_PATH) + "shaders/fragment.frag");
+    Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/vertex.vert");
+    Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/fragment.frag");
+    // Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/vertexLight.vert");
+    // Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/fragmentLight.frag");
     ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
 
     float vertices[] = {
@@ -91,6 +93,7 @@ int main(int argc, char* argv[]) {
         1, 2, 3
     };
 
+    unsigned int lightVAO;
     // Vertex Array Object: Manages vertex attribute configurations and bindings to VBOs and EBOs.
     unsigned int VAO;
     // Vertex Buffer Object: Stores vertex data like positions, normals, and texture coordinates in GPU memory.
@@ -103,6 +106,7 @@ int main(int argc, char* argv[]) {
 
 
     // Assigns a unique ID
+    glGenVertexArrays(1, &lightVAO);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -110,6 +114,7 @@ int main(int argc, char* argv[]) {
     glGenTextures(1, &texture2);
 
     // Bind VAO
+    glBindVertexArray(lightVAO);
     glBindVertexArray(VAO);
 
     // Bind VBO and store vertice data into the currently bounded buffer object
@@ -189,13 +194,13 @@ int main(int argc, char* argv[]) {
     shaderProgram.use();
 
     // Declare active textures and bind the texture objects to them
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture1"), 0);
+    // glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_2D, texture1);
+    // glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture1"), 0);
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture2"), 1);
+    // glActiveTexture(GL_TEXTURE1);
+    // glBindTexture(GL_TEXTURE_2D, texture2);
+    // glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture2"), 1);
 
 
     float deltaTime = 0.0f;
@@ -240,24 +245,21 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 case SDL_KEYDOWN: {
-                    glm::vec3 newCameraPos;
 
                     switch(event.key.keysym.scancode) {
                         case SDL_SCANCODE_W:
-                            newCameraPos = camera.getCameraPos() + camera.getCameraSpeed() * camera.getCameraFront();
+                            camera.moveForward();
                             break;
                         case SDL_SCANCODE_A:
-                            newCameraPos = camera.getCameraPos() - glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * camera.getCameraSpeed();
+                            camera.moveLeft();
                             break;
                         case SDL_SCANCODE_S:
-                            newCameraPos = camera.getCameraPos() - camera.getCameraSpeed() * camera.getCameraFront();
+                            camera.moveBackward();
                             break;
                         case SDL_SCANCODE_D:
-                            newCameraPos = camera.getCameraPos() + glm::normalize(glm::cross(camera.getCameraFront(), camera.getGlobalUp())) * camera.getCameraSpeed();
+                            camera.moveRight();
                             break;
                     }
-
-                    camera.setCameraPos(newCameraPos);
                 }
             }
         }
