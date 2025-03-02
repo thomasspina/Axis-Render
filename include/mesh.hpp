@@ -4,20 +4,25 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-
 #include "shader.hpp"
 
+/// @brief Vertex data structure for the Mesh class
 struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec3 texCoords;
 };
 
+/// @brief Texture data structure for the Mesh class
 struct Texture {
     unsigned int id;
     std::string type;
 };
 
+/**
+ * Manages a mesh object.
+ * Handles rendering and cleanup.
+ */
 class Mesh {
     private:
         // Vertex Array Object: Manages vertex attribute configurations and bindings to VBOs and EBOs.
