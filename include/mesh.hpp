@@ -1,7 +1,10 @@
 #pragma once
+
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+
+
 #include "shader.hpp"
 
 struct Vertex {
