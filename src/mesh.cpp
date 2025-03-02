@@ -1,6 +1,8 @@
 #include "mesh.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
+#include <GL/glew.h>
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
@@ -22,7 +24,7 @@ void Mesh::setupMesh() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     // Store indice data into the currently bounded EBO
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
     // Set vertex attributes pointers which tells OpenGL how it should interpret vertex data
     glEnableVertexAttribArray(0);
@@ -40,10 +42,10 @@ void Mesh::setupMesh() {
 }
 
 void Mesh::draw(Shader& shader) {
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
+    GLuint diffuseNr = 1;
+    GLuint specularNr = 1;
 
-    for (unsigned int i=0; i <textures.size(); i++) {
+    for (GLuint i = 0; i < textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         std::string number;
         std::string name = textures[i].type;

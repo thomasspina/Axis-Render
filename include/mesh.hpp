@@ -15,7 +15,7 @@ struct Vertex {
 
 /// @brief Texture data structure for the Mesh class
 struct Texture {
-    unsigned int id;
+    GLuint id;
     std::string type;
 };
 
@@ -28,16 +28,16 @@ class Mesh {
         // Vertex Array Object: Manages vertex attribute configurations and bindings to VBOs and EBOs.
         // Vertex Buffer Object: Stores vertex data like positions, normals, and texture coordinates in GPU memory.
         // Element Buffer Object: Holds indices for indexed drawing to optimize memory usage and performance.    
-        unsigned VAO, VBO, EBO;
+        GLuint VAO, VBO, EBO;
 
         void setupMesh();
 
     public:
         std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
+        std::vector<GLuint> indices;
         std::vector<Texture> textures;
 
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+        Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures);
 
         void draw(Shader& shader);
 };

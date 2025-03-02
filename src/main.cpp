@@ -14,193 +14,103 @@
 #include "camera.hpp"
 #include "window.hpp"
 
+#include "mesh.hpp"
+
+// Function to generate a cube mesh
+Mesh createCubeMesh(float size, std::vector<Texture> textures = {}) {
+    float halfSize = size * 0.5f;
+    
+    // Define the 8 vertices of the cube
+    std::vector<Vertex> vertices = {
+        // Front face
+        {{-halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
+        {{ halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
+        {{ halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
+        {{-halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
+        
+        // Back face
+        {{-halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-left
+        {{-halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 0.0f}}, // Top-left
+        {{ halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}}, // Top-right
+        {{ halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-right
+        
+        // Top face
+        {{-halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
+        {{-halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
+        {{ halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
+        {{ halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
+        
+        // Bottom face
+        {{-halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
+        {{ halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}, // Top-right
+        {{ halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
+        {{-halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
+        
+        // Right face
+        {{ halfSize, -halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
+        {{ halfSize,  halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
+        {{ halfSize,  halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
+        {{ halfSize, -halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
+        
+        // Left face
+        {{-halfSize, -halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
+        {{-halfSize, -halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
+        {{-halfSize,  halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
+        {{-halfSize,  halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}  // Top-right
+    };
+    
+    // Define the indices for the 12 triangles (6 faces, 2 triangles each)
+    std::vector<GLuint> indices = {
+        // Front face
+        0, 1, 2,
+        2, 3, 0,
+        
+        // Back face
+        4, 5, 6,
+        6, 7, 4,
+        
+        // Top face
+        8, 9, 10,
+        10, 11, 8,
+        
+        // Bottom face
+        12, 13, 14,
+        14, 15, 12,
+        
+        // Right face
+        16, 17, 18,
+        18, 19, 16,
+        
+        // Left face
+        20, 21, 22,
+        22, 23, 20
+    };
+    
+    // Create and return the mesh
+    return Mesh(vertices, indices, textures);
+}
+
 int main(int argc, char* argv[]) {
 
     Window window = Window();
+    glEnable(GL_DEPTH_TEST);
 
     // ============================ INITIALIZATION SECTION =====================================
 
     // Initialize shader
-    Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/vertex.vert");
-    Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/fragment.frag");
-    // Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/vertexLight.vert");
-    // Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/fragmentLight.frag");
+    Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/vertexLight.vert");
+    Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/fragmentLight.frag");
     ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
 
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f
-    };
-
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f, 0.0f, 0.0f),
-        glm::vec3( 2.0f, 5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f, 3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f, 2.0f, -2.5f),
-        glm::vec3( 1.5f, 0.2f, -1.5f),
-        glm::vec3(-1.3f, 1.0f, -1.5f)
-    };
-
-    // float vertices[] = {
-    //     // Positions       // Colors          // Texture Coords
-    //     0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f, // top right
-    //     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  1.0f, 0.0f, // bottom right
-    //    -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,  0.0f, 0.0f, // bottom left
-    //    -0.5f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f  // top left
-    // };
-
-    unsigned int indices[] = {
-        0, 1, 3,
-        1, 2, 3
-    };
-
-    unsigned int lightVAO;
-    // Vertex Array Object: Manages vertex attribute configurations and bindings to VBOs and EBOs.
-    unsigned int VAO;
-    // Vertex Buffer Object: Stores vertex data like positions, normals, and texture coordinates in GPU memory.
-    unsigned int VBO;
-    // Element Buffer Object: Holds indices for indexed drawing to optimize memory usage and performance.
-    unsigned int EBO;
-    // Texture
-    unsigned int texture1;
-    unsigned int texture2;
-
-
-    // Assigns a unique ID
-    glGenVertexArrays(1, &lightVAO);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-    glGenTextures(1, &texture1);
-    glGenTextures(1, &texture2);
-
-    // Bind VAO
-    glBindVertexArray(lightVAO);
-    glBindVertexArray(VAO);
-
-    // Bind VBO and store vertice data into the currently bounded buffer object
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Bind to EBO within the vertex array and store indice data
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-    int width, height, nrChannels;
-    unsigned char *data;
-
-    // TEXTURE 1
-
-    // Bind to Texture state 2D and store texture info to currently bounded texture object
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    data = stbi_load((std::string(ASSETS_PATH) + "textures/download.jpg").c_str(), &width, &height, &nrChannels, 0);
-
-    if (data) {
-        // Generate a texture on currently bounded texture object
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else{
-        std::cerr << "Failed to generate texture!" << std::endl;
-    }
-
-    stbi_image_free(data);
-
-    // TEXTURE 2
-
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    data = stbi_load((std::string(ASSETS_PATH) + "textures/stripes.jpg").c_str(), &width, &height, &nrChannels, 0);
-
-    if (data) {
-        // Generate a texture on currently bounded texture object
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else{
-        std::cerr << "Failed to generate texture!" << std::endl;
-    }
-
-    stbi_image_free(data);
-
-    glEnable(GL_DEPTH_TEST);
+    // Create a cube mesh
+    Mesh cubeMesh = createCubeMesh(1.0f);
 
     // ============================ RENDERING SECTION =====================================
 
     glClearColor(0, 0, 0, 1.0f);
 
-    // Set vertex attributes pointers which tells OpenGL how it should interpret vertex data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Set color attribute pointers
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    // Set texture attribute pointers
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
     // Activate defined shader program 
     shaderProgram.use();
-
-    // Declare active textures and bind the texture objects to them
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, texture1);
-    // glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture1"), 0);
-
-    // glActiveTexture(GL_TEXTURE1);
-    // glBindTexture(GL_TEXTURE_2D, texture2);
-    // glUniform1i(glGetUniformLocation(shaderProgram.ID(), "texture2"), 1);
-
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
@@ -214,7 +124,6 @@ int main(int argc, char* argv[]) {
         deltaTime = currFrame - lastFrame;
         lastFrame = currFrame;
 
-        // std::cout << 1000.0f / deltaTime << "fps\n" << std::endl;
         camera.updateCameraSpeed(deltaTime);
         SDL_Event event = window.getEvent();
 
@@ -281,49 +190,29 @@ int main(int argc, char* argv[]) {
 
         int projectionLoc = glGetUniformLocation(shaderProgram.ID(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        
+        // In your rendering loop, before drawing the cube
+        glm::mat4 model = glm::mat4(1.0f);
+        // Add some rotation to see the 3D nature of the cube
+        model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.5f, 1.0f, 0.0f));
 
-        glBindVertexArray(VAO); // Activate VAO
-        for (unsigned int i=0; i < 10; i++) {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * (i+1);
-            model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f * glm::radians(50.0f) * glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            int modelLoc = glGetUniformLocation(shaderProgram.ID(), "model");
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        // Set the model, view, and projection matrices in the shader
+        int modelLoc = glGetUniformLocation(shaderProgram.ID(), "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        
+        // Set object color and light color uniforms
+        int objectColorLoc = glGetUniformLocation(shaderProgram.ID(), "objectColor");
+        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f); // Copper-like color
 
-        glBindVertexArray(0); // Unbind VAO
+        int lightColorLoc = glGetUniformLocation(shaderProgram.ID(), "lightColor");
+        glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
+
+        // Render the cube
+        cubeMesh.draw(vertexShader); // TODO: dummy shader
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
     }
-
-    // TESTING CODE:
-
-     // Transformation matrix to convert vectors into view space
-    // glm::mat4 view = glm::lookAt(glm::vec3(camX, 0.0, camZ), cameraTarget, globalUp);
-
-    // Model Matrix
-    // glm::mat4 model = glm::mat4(1.0f);
-    // model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-    
-    // int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-    // glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-     // Flucuating colors
-    // const Uint64 time = SDL_GetTicks64() / 1000.0f;
-    // float colorValue = (sin(time) / 2.0f) + 0.5f;
-    // int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "ourColor");
-    // glUniform4f(vertexColorLocation, 0.0f, colorValue, 0.0f, 1.0f);
-
-
-    // Object uniform transformation
-    // glm::mat4 trans = glm::mat4(1.0f);
-    // trans = glm::translate(trans, glm::vec3(0.5f, -0.5, 0.0f));
-    // trans = glm::rotate(trans, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-    // unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
-    // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
     window.closeWindow();
 
