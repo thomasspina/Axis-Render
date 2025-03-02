@@ -46,6 +46,8 @@ void Mesh::draw(Shader& shader) {
     GLuint specularNr = 1;
 
     for (GLuint i = 0; i < textures.size(); i++) {
+
+        // Shift to next texture unit macro
         glActiveTexture(GL_TEXTURE0 + i);
         std::string number;
         std::string name = textures[i].type;
@@ -56,9 +58,12 @@ void Mesh::draw(Shader& shader) {
             number = std::to_string(specularNr++);
         }
 
+        // Tells the shader which texture unit index to use
         shader.setFloat(("material." + name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+    
+    // Reset active texture unit 
     glActiveTexture(GL_TEXTURE0);
     
     // draw mesh
