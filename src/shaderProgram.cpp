@@ -50,22 +50,27 @@ void ShaderProgram::link() {
 
 GLuint ShaderProgram::ID() const { return programID; }
 
+// Update uniform variables of type integer
 void ShaderProgram::setUniform(const std::string& name, int value) {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
 
+// Update uniform variables of type float
 void ShaderProgram::setUniform(const std::string& name, float value) {
     glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
 }
 
+// Update uniform variables of type vec2
 void ShaderProgram::setUniform(const std::string& name, const glm::vec2& value) {
     glUniform2fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }
 
+// Update uniform variables of type vec3
 void ShaderProgram::setUniform(const std::string& name, const glm::vec3& value) {
     glUniform3fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }
 
+// Update uniform variables of type vec4
 void ShaderProgram::setUniform(const std::string& name, const glm::vec4& value) {
     glUniform4fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }

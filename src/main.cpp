@@ -202,6 +202,7 @@ int main(int argc, char* argv[]) {
         // Set the model, view, and projection matrices in the shader
         int modelLoc = glGetUniformLocation(shaderProgram.ID(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
         
         // Set object color and light color uniforms
         // int objectColorLoc = glGetUniformLocation(shaderProgram.ID(), "objectColor");
