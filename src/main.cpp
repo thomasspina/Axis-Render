@@ -13,82 +13,82 @@
 #include "constants.hpp"
 #include "camera.hpp"
 #include "window.hpp"
-
+#include "model.hpp"
 #include "mesh.hpp"
 
 // Function to generate a cube mesh
-Mesh createCubeMesh(float size, std::vector<Texture> textures = {}) {
-    float halfSize = size * 0.5f;
+// Mesh createCubeMesh(float size, std::vector<Texture> textures = {}) {
+//     float halfSize = size * 0.5f;
     
-    // Define the 8 vertices of the cube
-    std::vector<Vertex> vertices = {
-        // Front face
-        {{-halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
-        {{ halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
-        {{ halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
-        {{-halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
+//     // Define the 8 vertices of the cube
+//     std::vector<Vertex> vertices = {
+//         // Front face
+//         {{-halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
+//         {{ halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
+//         {{ halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
+//         {{-halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
         
-        // Back face
-        {{-halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-left
-        {{-halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 0.0f}}, // Top-left
-        {{ halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}}, // Top-right
-        {{ halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-right
+//         // Back face
+//         {{-halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-left
+//         {{-halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 0.0f}}, // Top-left
+//         {{ halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}}, // Top-right
+//         {{ halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-right
         
-        // Top face
-        {{-halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
-        {{-halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
-        {{ halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
-        {{ halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
+//         // Top face
+//         {{-halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
+//         {{-halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
+//         {{ halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
+//         {{ halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
         
-        // Bottom face
-        {{-halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
-        {{ halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}, // Top-right
-        {{ halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
-        {{-halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
+//         // Bottom face
+//         {{-halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
+//         {{ halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}, // Top-right
+//         {{ halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
+//         {{-halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
         
-        // Right face
-        {{ halfSize, -halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
-        {{ halfSize,  halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
-        {{ halfSize,  halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
-        {{ halfSize, -halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
+//         // Right face
+//         {{ halfSize, -halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
+//         {{ halfSize,  halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
+//         {{ halfSize,  halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
+//         {{ halfSize, -halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
         
-        // Left face
-        {{-halfSize, -halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
-        {{-halfSize, -halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
-        {{-halfSize,  halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
-        {{-halfSize,  halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}  // Top-right
-    };
+//         // Left face
+//         {{-halfSize, -halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
+//         {{-halfSize, -halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
+//         {{-halfSize,  halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
+//         {{-halfSize,  halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}  // Top-right
+//     };
     
-    // Define the indices for the 12 triangles (6 faces, 2 triangles each)
-    std::vector<GLuint> indices = {
-        // Front face
-        0, 1, 2,
-        2, 3, 0,
+//     // Define the indices for the 12 triangles (6 faces, 2 triangles each)
+//     std::vector<GLuint> indices = {
+//         // Front face
+//         0, 1, 2,
+//         2, 3, 0,
         
-        // Back face
-        4, 5, 6,
-        6, 7, 4,
+//         // Back face
+//         4, 5, 6,
+//         6, 7, 4,
         
-        // Top face
-        8, 9, 10,
-        10, 11, 8,
+//         // Top face
+//         8, 9, 10,
+//         10, 11, 8,
         
-        // Bottom face
-        12, 13, 14,
-        14, 15, 12,
+//         // Bottom face
+//         12, 13, 14,
+//         14, 15, 12,
         
-        // Right face
-        16, 17, 18,
-        18, 19, 16,
+//         // Right face
+//         16, 17, 18,
+//         18, 19, 16,
         
-        // Left face
-        20, 21, 22,
-        22, 23, 20
-    };
+//         // Left face
+//         20, 21, 22,
+//         22, 23, 20
+//     };
     
-    // Create and return the mesh
-    return Mesh(vertices, indices, textures);
-}
+//     // Create and return the mesh
+//     return Mesh(vertices, indices, textures);
+// }
 
 int main(int argc, char* argv[]) {
 
@@ -97,13 +97,16 @@ int main(int argc, char* argv[]) {
 
     // ============================ INITIALIZATION SECTION =====================================
 
+    stbi_set_flip_vertically_on_load(true);
+
     // Initialize shader
-    Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/vertexLight.vert");
-    Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/fragmentLight.frag");
+    Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/model.vert");
+    Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/model.frag");
     ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
 
     // Create a cube mesh
-    Mesh cubeMesh = createCubeMesh(1.0f);
+    // Mesh cubeMesh = createCubeMesh(1.0f);
+    Model objModel = Model(std::string(ASSETS_PATH) + "models/backpack/backpack.obj");
 
     // ============================ RENDERING SECTION =====================================
 
@@ -201,14 +204,14 @@ int main(int argc, char* argv[]) {
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         
         // Set object color and light color uniforms
-        int objectColorLoc = glGetUniformLocation(shaderProgram.ID(), "objectColor");
-        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f); // Copper-like color
+        // int objectColorLoc = glGetUniformLocation(shaderProgram.ID(), "objectColor");
+        // glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f); // Copper-like color
 
-        int lightColorLoc = glGetUniformLocation(shaderProgram.ID(), "lightColor");
-        glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
+        // int lightColorLoc = glGetUniformLocation(shaderProgram.ID(), "lightColor");
+        // glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
 
         // Render the cube
-        cubeMesh.draw(vertexShader); // TODO: dummy shader
+        objModel.draw(vertexShader); // TODO: dummy shader
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
@@ -217,4 +220,4 @@ int main(int argc, char* argv[]) {
     window.closeWindow();
 
     return 0;
-}
+};
