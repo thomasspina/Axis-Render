@@ -9,16 +9,17 @@
 
 class Model {
     private:
-        // model data
+        std::vector<Texture> textures_loaded;
         std::vector<Mesh> meshes;
         std::string directory;
-        void loadModel(std::string path);
+        void loadModel(const std::string &path);
         void processNode(aiNode *node, const aiScene *scene);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+        unsigned int Model::textureFromFile(const std::string &path, const std::string &directory, bool gamma = false);
 
     public:
-        Model(char *path);
+        Model(const std::string &path);
 
         void draw(Shader &shader);
 };
