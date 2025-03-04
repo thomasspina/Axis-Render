@@ -4,7 +4,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-// #include "shader.hpp"
 #include "shaderProgram.hpp"
 
 /// @brief Vertex data structure for the Mesh class

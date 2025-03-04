@@ -58,18 +58,17 @@ void Mesh::draw(ShaderProgram& shader) {
             number = std::to_string(specularNr++);
         }
 
-        // Tells the shader which texture unit index to use
-        shader.setUniform((name + number).c_str(), i);
+        shader.setUniform(std::string("material.") + name + number, i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
-    
-    // Reset active texture unit 
-    glActiveTexture(GL_TEXTURE0);
     
     // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+
+    // reset to default texture
+    glActiveTexture(GL_TEXTURE0);
 }
 
 

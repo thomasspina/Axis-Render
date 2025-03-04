@@ -29,8 +29,8 @@ public:
 
     GLuint ID() const;
 
-    void setUniform(const std::string& name, GLuint value);
     void setUniform(const std::string& name, GLint value);
+    void setUniform(const std::string& name, GLuint value);
     void setUniform(const std::string& name, GLfloat value);
     void setUniform(const std::string& name, const glm::vec2& value);
     void setUniform(const std::string& name, const glm::vec3& value);

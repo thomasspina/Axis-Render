@@ -50,11 +50,11 @@ void ShaderProgram::link() {
 
 GLuint ShaderProgram::ID() const { return programID; }
 
-void ShaderProgram::setUniform(const std::string& name, GLuint value) {
-    glUniform1ui(glGetUniformLocation(programID, name.c_str()), value);
+void ShaderProgram::setUniform(const std::string& name, GLint value) {
+    glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-void ShaderProgram::setUniform(const std::string& name, GLint value) {
+void ShaderProgram::setUniform(const std::string& name, GLuint value) {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
 
