@@ -33,7 +33,6 @@ uniform int nr_point_lights;
 uniform PointLight pointLights[nr_point_lights];
 uniform DirLight dirLight;
 
-uniform float material_shininess;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -96,7 +95,7 @@ mat3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos)
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(normal, reflectDir), 0.0), material_shininess);
+    float spec = pow(max(dot(normal, reflectDir), 0.0), 32.0); // TODO: find a solution for the hard-coded shininess value
     // attenuation
     float distance = length(lightPos - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));

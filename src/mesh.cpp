@@ -41,9 +41,9 @@ void Mesh::setupMesh() {
     glBindVertexArray(0); // Unbind VAO
 }
 
-void Mesh::draw(ShaderProgram& shader) {
-    GLuint diffuseNr = 1;
-    GLuint specularNr = 1;
+void Mesh::draw(ShaderProgram& shaderProgram) {
+    GLuint diffuseNr = 0;
+    GLuint specularNr = 0;
 
     for (GLuint i = 0; i < textures.size(); i++) {
 
@@ -53,14 +53,18 @@ void Mesh::draw(ShaderProgram& shader) {
         std::string name = textures[i].type;
 
         if (name == "texture_diffuse") {
+            shaderProgram.setUniform("material.texture_diffuse[" + number + "]", i);
             number = std::to_string(diffuseNr++);
         } else if (name == "texture_specular") {
+            shaderProgram.setUniform("material.texture_specular[" + number + "]", i);
             number = std::to_string(specularNr++);
         }
 
-        shader.setUniform(std::string("material.") + name + number, i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+
+    shaderProgram.setUniform("material.diffuse_count", diffuseNr);
+    shaderProgram.setUniform("material.specular_count", specularNr);
     
     // draw mesh
     glBindVertexArray(VAO);
