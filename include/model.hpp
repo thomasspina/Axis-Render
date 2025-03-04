@@ -19,5 +19,5 @@ class Model {
     public:
         Model(const std::string &path);
 
-        void draw(Shader &shader);
+        void draw(ShaderProgram &shader);
 };

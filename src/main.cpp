@@ -97,8 +97,6 @@ int main(int argc, char* argv[]) {
 
     // ============================ INITIALIZATION SECTION =====================================
 
-    stbi_set_flip_vertically_on_load(true);
-
     // Initialize shader
     Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/model.vert");
     Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/model.frag");
@@ -106,7 +104,7 @@ int main(int argc, char* argv[]) {
 
     // Create a cube mesh
     // Mesh cubeMesh = createCubeMesh(1.0f);
-    Model objModel = Model(std::string(ASSETS_PATH) + "models/backpack/backpack.obj");
+    Model objModel = Model(std::string(ASSETS_PATH) + "models/spaceShuttle/spaceShuttle.obj");
 
     // ============================ RENDERING SECTION =====================================
 
@@ -212,7 +210,7 @@ int main(int argc, char* argv[]) {
         // glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
 
         // Render the cube
-        objModel.draw(vertexShader); // TODO: dummy shader
+        objModel.draw(shaderProgram); // TODO: dummy shader
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

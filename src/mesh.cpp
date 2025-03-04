@@ -41,7 +41,7 @@ void Mesh::setupMesh() {
     glBindVertexArray(0); // Unbind VAO
 }
 
-void Mesh::draw(Shader& shader) {
+void Mesh::draw(ShaderProgram& shader) {
     GLuint diffuseNr = 1;
     GLuint specularNr = 1;
 
