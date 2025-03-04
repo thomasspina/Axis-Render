@@ -59,7 +59,7 @@ void Mesh::draw(ShaderProgram& shader) {
         }
 
         // Tells the shader which texture unit index to use
-        shader.setFloat((name + number).c_str(), i);
+        shader.setUniform((name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
     

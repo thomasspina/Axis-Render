@@ -50,41 +50,36 @@ void ShaderProgram::link() {
 
 GLuint ShaderProgram::ID() const { return programID; }
 
-void ShaderProgram::setBool(const std::string &name, bool value) const {
-    glUniform1i(glGetUniformLocation(programID, name.c_str()), (int)value);
+void ShaderProgram::setUniform(const std::string& name, GLuint value) {
+    glUniform1ui(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-void ShaderProgram::setInt(const std::string &name, int value) const {
+void ShaderProgram::setUniform(const std::string& name, GLint value) {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-void ShaderProgram::setFloat(const std::string &name, float value) const {
+void ShaderProgram::setUniform(const std::string& name, GLfloat value) {
     glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-// Update uniform variables of type integer
-void ShaderProgram::setUniform(const std::string& name, int value) {
-    glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
-}
-
-// Update uniform variables of type float
-void ShaderProgram::setUniform(const std::string& name, float value) {
-    glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
-}
-
-// Update uniform variables of type vec2
 void ShaderProgram::setUniform(const std::string& name, const glm::vec2& value) {
     glUniform2fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }
 
-// Update uniform variables of type vec3
 void ShaderProgram::setUniform(const std::string& name, const glm::vec3& value) {
     glUniform3fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }
 
-// Update uniform variables of type vec4
 void ShaderProgram::setUniform(const std::string& name, const glm::vec4& value) {
     glUniform4fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
+}
+
+void ShaderProgram::setUniform(const std::string& name, const glm::mat3& value) {
+    glUniformMatrix3fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &value[0][0]);
+}
+
+void ShaderProgram::setUniform(const std::string& name, const glm::mat4& value) {
+    glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &value[0][0]);
 }
 
 ShaderProgram::~ShaderProgram() {

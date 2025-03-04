@@ -16,80 +16,6 @@
 #include "model.hpp"
 #include "mesh.hpp"
 
-// Function to generate a cube mesh
-// Mesh createCubeMesh(float size, std::vector<Texture> textures = {}) {
-//     float halfSize = size * 0.5f;
-    
-//     // Define the 8 vertices of the cube
-//     std::vector<Vertex> vertices = {
-//         // Front face
-//         {{-halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
-//         {{ halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
-//         {{ halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
-//         {{-halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
-        
-//         // Back face
-//         {{-halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-left
-//         {{-halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 0.0f}}, // Top-left
-//         {{ halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}}, // Top-right
-//         {{ halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-right
-        
-//         // Top face
-//         {{-halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
-//         {{-halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
-//         {{ halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
-//         {{ halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
-        
-//         // Bottom face
-//         {{-halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
-//         {{ halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}, // Top-right
-//         {{ halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
-//         {{-halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
-        
-//         // Right face
-//         {{ halfSize, -halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},  // Bottom-left
-//         {{ halfSize,  halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Top-left
-//         {{ halfSize,  halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},  // Top-right
-//         {{ halfSize, -halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},  // Bottom-right
-        
-//         // Left face
-//         {{-halfSize, -halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // Bottom-right
-//         {{-halfSize, -halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}, // Bottom-left
-//         {{-halfSize,  halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}, // Top-left
-//         {{-halfSize,  halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}}  // Top-right
-//     };
-    
-//     // Define the indices for the 12 triangles (6 faces, 2 triangles each)
-//     std::vector<GLuint> indices = {
-//         // Front face
-//         0, 1, 2,
-//         2, 3, 0,
-        
-//         // Back face
-//         4, 5, 6,
-//         6, 7, 4,
-        
-//         // Top face
-//         8, 9, 10,
-//         10, 11, 8,
-        
-//         // Bottom face
-//         12, 13, 14,
-//         14, 15, 12,
-        
-//         // Right face
-//         16, 17, 18,
-//         18, 19, 16,
-        
-//         // Left face
-//         20, 21, 22,
-//         22, 23, 20
-//     };
-    
-//     // Create and return the mesh
-//     return Mesh(vertices, indices, textures);
-// }
-
 int main(int argc, char* argv[]) {
 
     Window window = Window();
@@ -103,7 +29,6 @@ int main(int argc, char* argv[]) {
     ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
 
     // Create a cube mesh
-    // Mesh cubeMesh = createCubeMesh(1.0f);
     Model objModel = Model(std::string(ASSETS_PATH) + "models/spaceShuttle/spaceShuttle.obj");
 
     // ============================ RENDERING SECTION =====================================
@@ -186,31 +111,20 @@ int main(int argc, char* argv[]) {
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(camera.getFov()), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        int viewLoc = glGetUniformLocation(shaderProgram.ID(), "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-        int projectionLoc = glGetUniformLocation(shaderProgram.ID(), "projection");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        shaderProgram.setUniform("view", view);
+        shaderProgram.setUniform("projection", projection);
         
         // In your rendering loop, before drawing the cube
         glm::mat4 model = glm::mat4(1.0f);
         // Add some rotation to see the 3D nature of the cube
         model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.5f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(1.0f, 1.0f, 2.0f));
 
         // Set the model, view, and projection matrices in the shader
-        int modelLoc = glGetUniformLocation(shaderProgram.ID(), "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-        
-        // Set object color and light color uniforms
-        // int objectColorLoc = glGetUniformLocation(shaderProgram.ID(), "objectColor");
-        // glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f); // Copper-like color
-
-        // int lightColorLoc = glGetUniformLocation(shaderProgram.ID(), "lightColor");
-        // glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
+        shaderProgram.setUniform("model", model);
 
         // Render the cube
-        objModel.draw(shaderProgram); // TODO: dummy shader
+        objModel.draw(shaderProgram);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
