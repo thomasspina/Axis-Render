@@ -49,15 +49,17 @@ class Camera {
 
         void updateCameraSpeed(float deltaTime);
 
-        const glm::vec3 getCameraPos();
+        const glm::mat4 getLookAtMatrix() const;
 
-        const glm::vec3 getCameraFront();
+        const glm::vec3 getCameraPos() const;
 
-        const glm::vec3 getGlobalUp();
+        const glm::vec3 getCameraFront() const;
 
-        const float getCameraSpeed();
+        const glm::vec3 getGlobalUp() const;
 
-        const float getFov();
+        const float getCameraSpeed() const;
+
+        const float getFov() const;
 
         void moveForward();
 

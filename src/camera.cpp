@@ -50,24 +50,27 @@ void Camera::updateCameraSpeed(float deltaTime) {
     cameraSpeed = DEFAULT_CAMERA_SPEED * deltaTime;
 }
 
-const glm::vec3 Camera::getCameraPos() {
+const glm::mat4 Camera::getLookAtMatrix() const {
+    return glm::lookAt(cameraPos, cameraPos + cameraFront, globalUp);
+}
+
+const glm::vec3 Camera::getCameraPos() const {
     return cameraPos;
 }
 
-const glm::vec3 Camera::getCameraFront() {
+const glm::vec3 Camera::getCameraFront() const {
     return cameraFront;
 }
 
-const glm::vec3 Camera::getGlobalUp() {
+const glm::vec3 Camera::getGlobalUp() const {
     return globalUp;
 }
 
-const float Camera::getCameraSpeed() {
+const float Camera::getCameraSpeed() const {
     return cameraSpeed;
 }
 
-
-const float Camera::getFov() {
+const float Camera::getFov() const {
     return fov;
 }
 

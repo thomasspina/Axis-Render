@@ -16,6 +16,71 @@
 #include "model.hpp"
 #include "mesh.hpp"
 
+glm::mat4 createModelMatrix() {
+    // In your rendering loop, before drawing the cube
+    // Add some rotation to see the 3D nature of the cube
+    glm::mat4 model = glm::rotate(IDENTITY_MATRIX, (float)SDL_GetTicks64() / 1000.0f, DEFAULT_ROTATION_AXIS);
+
+    return glm::translate(model,  glm::vec3(1.0f, 1.0f, 2.0f));
+}
+
+glm::mat4 createViewMatrix(Camera& camera) {
+    return camera.getLookAtMatrix();
+}
+
+glm::mat4 createProjectionMatrix(Camera& camera) {
+    return glm::perspective(glm::radians(camera.getFov()), DEFAULT_ASPECT_RATIO, DEFAULT_NEAR_CLIPPING_PLANE, DEFAULT_FAR_CLIPPING_PLANE);
+}
+
+void handleInput(Window& window, Camera& camera) {
+    SDL_Event event = window.getEvent();
+
+    while (SDL_PollEvent(&event) > 0) {
+
+        switch(event.type) {
+            case SDL_QUIT:
+                window.setQuit();
+                // quit = true;
+                break;
+
+            case SDL_MOUSEWHEEL: {
+                float yOffset = event.wheel.y;
+                
+                camera.applyZoom(yOffset);
+
+                break;
+            }
+
+            case SDL_MOUSEMOTION: {
+                if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+                    float xOffset = event.motion.xrel;
+                    float yOffset = event.motion.yrel;
+                    
+                    camera.applyRotation(xOffset, yOffset);
+                }
+                break;
+            }
+            case SDL_KEYDOWN: {
+
+                switch(event.key.keysym.scancode) {
+                    case SDL_SCANCODE_W:
+                        camera.moveForward();
+                        break;
+                    case SDL_SCANCODE_A:
+                        camera.moveLeft();
+                        break;
+                    case SDL_SCANCODE_S:
+                        camera.moveBackward();
+                        break;
+                    case SDL_SCANCODE_D:
+                        camera.moveRight();
+                        break;
+                }
+            }
+        }
+    }
+}
+
 int main(int argc, char* argv[]) {
 
     Window window = Window();
@@ -51,52 +116,8 @@ int main(int argc, char* argv[]) {
         lastFrame = currFrame;
 
         camera.updateCameraSpeed(deltaTime);
-        SDL_Event event = window.getEvent();
 
-        while (SDL_PollEvent(&event) > 0) {
-
-            switch(event.type) {
-                case SDL_QUIT:
-                    window.setQuit();
-                    // quit = true;
-                    break;
-
-                case SDL_MOUSEWHEEL: {
-                    float yOffset = event.wheel.y;
-                   
-                    camera.applyZoom(yOffset);
-
-                    break;
-                }
-
-                case SDL_MOUSEMOTION: {
-                    if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-                        float xOffset = event.motion.xrel;
-                        float yOffset = event.motion.yrel;
-                        
-                        camera.applyRotation(xOffset, yOffset);
-                    }
-                    break;
-                }
-                case SDL_KEYDOWN: {
-
-                    switch(event.key.keysym.scancode) {
-                        case SDL_SCANCODE_W:
-                            camera.moveForward();
-                            break;
-                        case SDL_SCANCODE_A:
-                            camera.moveLeft();
-                            break;
-                        case SDL_SCANCODE_S:
-                            camera.moveBackward();
-                            break;
-                        case SDL_SCANCODE_D:
-                            camera.moveRight();
-                            break;
-                    }
-                }
-            }
-        }
+        handleInput(window, camera);
 
         // Clear depth buffer from previous iteration
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -105,23 +126,14 @@ int main(int argc, char* argv[]) {
         float camX = sin((float)SDL_GetTicks() / 1000.0f) * radius;
         float camZ = cos((float)SDL_GetTicks() / 1000.0f) * radius;
 
-        glm::mat4 view = glm::lookAt(camera.getCameraPos(), camera.getCameraPos() + camera.getCameraFront(), camera.getGlobalUp());
-
-        // Projection Matrix
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(camera.getFov()), 800.0f / 600.0f, 0.1f, 100.0f);
-
-        shaderProgram.setUniform("view", view);
-        shaderProgram.setUniform("projection", projection);
-        
-        // In your rendering loop, before drawing the cube
-        glm::mat4 model = glm::mat4(1.0f);
-        // Add some rotation to see the 3D nature of the cube
-        model = glm::rotate(model, (float)SDL_GetTicks() / 1000.0f, glm::vec3(0.5f, 1.0f, 0.0f));
-        model = glm::translate(model, glm::vec3(1.0f, 1.0f, 2.0f));
+        glm::mat4 model = createModelMatrix();
+        glm::mat4 view = createViewMatrix(camera);
+        glm::mat4 projection = createProjectionMatrix(camera);
 
         // Set the model, view, and projection matrices in the shader
         shaderProgram.setUniform("model", model);
+        shaderProgram.setUniform("view", view);
+        shaderProgram.setUniform("projection", projection);
 
         // Render the cube
         objModel.draw(shaderProgram);

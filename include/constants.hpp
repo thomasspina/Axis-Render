@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/glm.hpp>
 
 #define DEFAULT_CAMERA_SPEED 0.05f
 #define DEFAULT_CAMERA_FOV 45.0f
@@ -13,3 +14,13 @@
 #define MIN_CAMERA_PITCH_ANGLE -89.0f
 
 #define SPINNING_CAMERA_RADIUS 10.0f
+
+// Define visible depth range
+#define DEFAULT_NEAR_CLIPPING_PLANE 0.1f
+#define DEFAULT_FAR_CLIPPING_PLANE 100.0f
+
+// Width / Height to prevent distortion
+constexpr float DEFAULT_ASPECT_RATIO = 800.0f / 600.0f;
+
+const glm::mat4 IDENTITY_MATRIX = glm::mat4(1.0f);
+const glm::vec3 DEFAULT_ROTATION_AXIS = glm::vec3(0.5f, 1.0f, 0.0f);
