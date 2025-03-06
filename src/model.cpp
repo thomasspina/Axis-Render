@@ -7,13 +7,30 @@
 
 
 Model::Model(const std::string &path) {
+    minBounds = glm::vec3(FLT_MAX);
+    maxBounds = glm::vec3(-FLT_MAX);
     loadModel(path);
+    calculateModelDimension();
+}
+
+void Model::calculateModelDimension() {
+    modelSize = maxBounds - minBounds;
+    modelCenter = glm::vec3((maxBounds + minBounds) * 0.5f);
+    modelRadius = glm::length(modelSize) * 0.5f;
 }
 
 void Model::draw(ShaderProgram &shader) {
     for(unsigned int i = 0; i < meshes.size(); i++) {
         meshes[i].draw(shader);
     }
+}
+
+const glm::vec3 Model::getModelCenter() const {
+    return modelCenter;
+}
+
+const float Model::getModelRadius() const {
+    return modelRadius;
 }
 
 void Model::loadModel(const std::string &path) {
@@ -60,6 +77,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         vector.y = mesh->mVertices[i].y;
         vector.z = mesh->mVertices[i].z;
         vertex.position = vector;
+
+        minBounds = glm::min(minBounds, vector);
+        maxBounds = glm::max(maxBounds, vector);
 
         // Vertex normals
         vector.x = mesh->mNormals[i].x;

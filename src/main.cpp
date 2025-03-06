@@ -21,7 +21,13 @@ glm::mat4 createModelMatrix() {
     // Add some rotation to see the 3D nature of the cube
     glm::mat4 model = glm::rotate(IDENTITY_MATRIX, (float)SDL_GetTicks64() / 1000.0f, DEFAULT_ROTATION_AXIS);
 
-    return glm::translate(model,  glm::vec3(1.0f, 1.0f, 2.0f));
+    // return model;
+
+    // glm::mat4 model = IDENTITY_MATRIX;
+
+
+    return model;
+    // return glm::translate(model,  glm::vec3(1.0f, 1.0f, 2.0f));
 }
 
 glm::mat4 createViewMatrix(Camera& camera) {
@@ -87,6 +93,7 @@ int main(int argc, char* argv[]) {
     glEnable(GL_DEPTH_TEST);
 
     // ============================ INITIALIZATION SECTION =====================================
+    // stbi_set_flip_vertically_on_load(true);
 
     // Initialize shader
     Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/model.vert");
@@ -95,6 +102,11 @@ int main(int argc, char* argv[]) {
 
     // Create a cube mesh
     Model objModel = Model(std::string(ASSETS_PATH) + "models/spaceShuttle/spaceShuttle.obj");
+    // Model objModel = Model(std::string(ASSETS_PATH) + "models/backpack/backpack.obj");
+    // Model objModel = Model(std::string(ASSETS_PATH) + "models/brickCylinder/brickCylinder.obj");
+
+    // Create a camera object
+    Camera camera = Camera(objModel.getModelRadius(), objModel.getModelCenter());
 
     // ============================ RENDERING SECTION =====================================
 
@@ -108,8 +120,6 @@ int main(int argc, char* argv[]) {
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
-    Camera camera = Camera();
-
     while (!window.isQuit()) {
         float currFrame = (float)SDL_GetTicks64();
         deltaTime = currFrame - lastFrame;
@@ -122,9 +132,10 @@ int main(int argc, char* argv[]) {
         // Clear depth buffer from previous iteration
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        const float radius = 10.0f;
-        float camX = sin((float)SDL_GetTicks() / 1000.0f) * radius;
-        float camZ = cos((float)SDL_GetTicks() / 1000.0f) * radius;
+        // TODO: Add to camera option (Orbiting camera)
+        // const float radius = 10.0f;
+        // float camX = sin((float)SDL_GetTicks() / 1000.0f) * radius;
+        // float camZ = cos((float)SDL_GetTicks() / 1000.0f) * radius;
 
         glm::mat4 model = createModelMatrix();
         glm::mat4 view = createViewMatrix(camera);

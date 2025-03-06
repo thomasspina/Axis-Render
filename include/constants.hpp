@@ -24,3 +24,4 @@ constexpr float DEFAULT_ASPECT_RATIO = 800.0f / 600.0f;
 
 const glm::mat4 IDENTITY_MATRIX = glm::mat4(1.0f);
 const glm::vec3 DEFAULT_ROTATION_AXIS = glm::vec3(0.5f, 1.0f, 0.0f);
+const glm::vec3 DEFAULT_GLOBAL_UP = glm::vec3(0.0f, 1.0f, 0.0f);
