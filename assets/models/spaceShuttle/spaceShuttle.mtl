@@ -5,8 +5,8 @@ This obj model dosent load in the textures #
 
 newmtl material_0
 map_Kd diffuse.jpg
-map_Ks specular.jpg
 map_Bump normal.jpg
+map_Ks specular.jpg
 Ka 0.200000 0.200000 0.200000
 Kd 1.000000 1.000000 1.000000
 Ks 0.200000 0.200000 0.200000

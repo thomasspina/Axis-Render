@@ -1,9 +1,15 @@
 #pragma once
 #include <glm/glm.hpp>
 
+// TODO: Make this dependend on UI selection
+// Option: 1. Input Rotation 2. Natural Rotation
+#define MODEL_ROTATION_MODE "Input Rotation"
+
 #define DEFAULT_CAMERA_SPEED 0.05f
 #define DEFAULT_CAMERA_FOV 45.0f
-#define DEFAULT_CAMERA_SENSITIVITY 0.1f
+#define DEFAULT_CAMERA_SENSITIVITY 0.05f
+
+#define DEFAULT_MODEL_ROTATION_SENSITIVITY 0.1f
 
 // A default value of -90.0f yaw angle ensures the camera initially faces forward along the negative Z-axis.
 #define DEFAULT_YAW_ANGLE -90.0f

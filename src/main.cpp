@@ -15,30 +15,10 @@
 #include "window.hpp"
 #include "model.hpp"
 #include "mesh.hpp"
-
-glm::mat4 createModelMatrix() {
-    // In your rendering loop, before drawing the cube
-    // Add some rotation to see the 3D nature of the cube
-    glm::mat4 model = glm::rotate(IDENTITY_MATRIX, (float)SDL_GetTicks64() / 1000.0f, DEFAULT_ROTATION_AXIS);
-
-    // return model;
-
-    // glm::mat4 model = IDENTITY_MATRIX;
+#include "mvp.hpp"
 
 
-    return model;
-    // return glm::translate(model,  glm::vec3(1.0f, 1.0f, 2.0f));
-}
-
-glm::mat4 createViewMatrix(Camera& camera) {
-    return camera.getLookAtMatrix();
-}
-
-glm::mat4 createProjectionMatrix(Camera& camera) {
-    return glm::perspective(glm::radians(camera.getFov()), DEFAULT_ASPECT_RATIO, DEFAULT_NEAR_CLIPPING_PLANE, DEFAULT_FAR_CLIPPING_PLANE);
-}
-
-void handleInput(Window& window, Camera& camera) {
+void handleInput(Window& window, Camera& camera, Mvp& mvp) {
     SDL_Event event = window.getEvent();
 
     while (SDL_PollEvent(&event) > 0) {
@@ -58,7 +38,14 @@ void handleInput(Window& window, Camera& camera) {
             }
 
             case SDL_MOUSEMOTION: {
-                if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+                if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
+                    float xOffset = event.motion.xrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
+                    float yOffset = event.motion.yrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
+
+                    mvp.updateModelYaw(xOffset);
+                    mvp.updateModelPitch(yOffset);
+
+                } else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
                     float xOffset = event.motion.xrel;
                     float yOffset = event.motion.yrel;
                     
@@ -103,10 +90,13 @@ int main(int argc, char* argv[]) {
     // Create a cube mesh
     Model objModel = Model(std::string(ASSETS_PATH) + "models/spaceShuttle/spaceShuttle.obj");
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/backpack/backpack.obj");
-    // Model objModel = Model(std::string(ASSETS_PATH) + "models/brickCylinder/brickCylinder.obj");
+    // Model objModel = Model(std::string(ASSETS_PATH) + "models/bedroom/bedroom.obj");
 
     // Create a camera object
     Camera camera = Camera(objModel.getModelRadius(), objModel.getModelCenter());
+
+    // Create a model-view-projection matrices object
+    Mvp mvp = Mvp();
 
     // ============================ RENDERING SECTION =====================================
 
@@ -127,24 +117,17 @@ int main(int argc, char* argv[]) {
 
         camera.updateCameraSpeed(deltaTime);
 
-        handleInput(window, camera);
+        handleInput(window, camera, mvp);
 
         // Clear depth buffer from previous iteration
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // TODO: Add to camera option (Orbiting camera)
-        // const float radius = 10.0f;
-        // float camX = sin((float)SDL_GetTicks() / 1000.0f) * radius;
-        // float camZ = cos((float)SDL_GetTicks() / 1000.0f) * radius;
-
-        glm::mat4 model = createModelMatrix();
-        glm::mat4 view = createViewMatrix(camera);
-        glm::mat4 projection = createProjectionMatrix(camera);
+        mvp.updateMatrices(camera);
 
         // Set the model, view, and projection matrices in the shader
-        shaderProgram.setUniform("model", model);
-        shaderProgram.setUniform("view", view);
-        shaderProgram.setUniform("projection", projection);
+        shaderProgram.setUniform("model", mvp.getModel());
+        shaderProgram.setUniform("view", mvp.getView());
+        shaderProgram.setUniform("projection", mvp.getProjection());
 
         // Render the cube
         objModel.draw(shaderProgram);
