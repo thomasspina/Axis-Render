@@ -1,11 +1,9 @@
 #pragma once
 
-#include "shader.hpp"
-
-#include <unordered_map>
-#include <memory>
 #include <vector>
 #include <glm/glm.hpp>
+
+#include "shader.hpp"
 
 
 /**

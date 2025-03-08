@@ -1,9 +1,11 @@
 #pragma once
+
 #include <glm/glm.hpp>
-#include "constants.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "constants.hpp"
 
 class Camera {
     private:
@@ -51,7 +53,9 @@ class Camera {
 
         void updateCameraSpeed(float deltaTime);
 
-        const glm::mat4 getLookAtMatrix() const;
+        const glm::mat4 getViewMatrix() const;
+
+        const glm::mat4 getProjectionMatrix() const;
 
         const glm::vec3 getCameraPos() const;
 

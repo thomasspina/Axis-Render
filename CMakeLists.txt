@@ -88,8 +88,8 @@ if (TARGET libglew_shared)
 endif()
 
 # Source files
-file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
-file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
+file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 configure_file(

@@ -3,7 +3,7 @@
 
 #include "mesh.hpp"
 
-Mesh createCubeMesh(float size, const std::vector<Texture>& textures = {}) {
+std::vector<Vertex> getCubeVertices(float size) {
     float halfSize = size / 2.0f;
     
     std::vector<Vertex> vertices = {
@@ -43,8 +43,12 @@ Mesh createCubeMesh(float size, const std::vector<Texture>& textures = {}) {
         {{-halfSize,  halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}, // Top-right
         {{-halfSize,  halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}  // Top-left
     };
-    
-    std::vector<GLuint> indices = {
+
+    return vertices;
+}
+
+std::vector<GLuint> getCubeIndices() {
+    return {
         // front 
         0, 1, 2,
         2, 3, 0,
@@ -69,6 +73,4 @@ Mesh createCubeMesh(float size, const std::vector<Texture>& textures = {}) {
         20, 21, 22,
         22, 23, 20
     };
-    
-    return Mesh(vertices, indices, textures);
 }

@@ -66,8 +66,12 @@ void Camera::updateCameraSpeed(float deltaTime) {
     cameraSpeed = DEFAULT_CAMERA_SPEED * deltaTime;
 }
 
-const glm::mat4 Camera::getLookAtMatrix() const {
+const glm::mat4 Camera::getViewMatrix() const {
     return glm::lookAt(cameraPos, cameraPos + cameraFront, globalUp);
+}
+
+const glm::mat4 Camera::getProjectionMatrix() const {
+    return glm::perspective(glm::radians(fov), DEFAULT_ASPECT_RATIO, DEFAULT_NEAR_CLIPPING_PLANE, DEFAULT_FAR_CLIPPING_PLANE);
 }
 
 const glm::vec3 Camera::getCameraPos() const {

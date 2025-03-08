@@ -1,6 +1,6 @@
-#include "mesh.hpp"
-
 #include <GL/glew.h>
+
+#include "mesh.hpp"
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures) {
     this->vertices = vertices;

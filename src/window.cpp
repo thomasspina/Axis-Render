@@ -1,7 +1,8 @@
-#include "window.hpp"
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/gl.h>
+
+#include "window.hpp"
 
 Window::Window() {
     window = NULL;

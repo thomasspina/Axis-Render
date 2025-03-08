@@ -1,11 +1,13 @@
 #pragma once
 
-#include "mesh.hpp"
 #include <vector>
 #include <string>
 #include <assimp/scene.h>
 
-class Model {
+#include "mesh.hpp"
+#include "object.hpp"
+
+class Model : public Object {
     private:
         glm::vec3 modelSize;
         glm::vec3 modelCenter;

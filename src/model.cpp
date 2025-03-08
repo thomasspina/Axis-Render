@@ -1,9 +1,10 @@
-#include "model.hpp"
 #include <iostream>
 #include <stb_image.h>
 #include <cstring>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+
+#include "model.hpp"
 
 
 Model::Model(const std::string &path) {
