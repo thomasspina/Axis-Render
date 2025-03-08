@@ -38,10 +38,12 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat3 normalMatrix;
 
-// ======== FUNCTIONS ========
+// ======== FUNCTION DECLARATIONS ========
 mat3 CalcDirLight(DirLight light, vec3 normal);
 mat3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 
+
+// ======== MAIN ========
 void main() 
 {
     gl_Position = projection * view * model * vec4(aPos, 1.0);

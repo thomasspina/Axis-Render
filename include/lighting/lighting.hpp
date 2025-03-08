@@ -9,13 +9,13 @@
 
 class Lighting {
 private:
+    ShaderProgram pointLightShader;
+
     glm::mat4 view;
     glm::mat4 projection;
 
     LightCaster lightCaster; // TODO: add multiple lightCasters
     std::vector<PointLight> pointLights;
-
-    void updatePointLightsNormalMatrices();
 public:
     Lighting();
     ~Lighting();
@@ -26,5 +26,7 @@ public:
     void updateView(glm::mat4 view);
     void updateProjection(glm::mat4 projection);
 
-    void draw(ShaderProgram& shaderProgram);
+    void drawPointLights();
+
+    void setLightingUniforms(ShaderProgram& shaderProgram);
 };

@@ -4,7 +4,9 @@
 
 Object::Object() = default;
 
-Object::Object(glm::vec3 position) : position(position) {}
+Object::Object(glm::vec3 position) : position(position) {
+    model = glm::translate(model, position);
+}
 
 Object::~Object() = default;
 
