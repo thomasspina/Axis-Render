@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
 
     // Create a lighting object
     Lighting lighting = Lighting();
-    //lighting.addPointLight(PointLight(glm::vec3(1.0f, 1.2f, 0.0f), 0.5f, 1.0f));
+    lighting.addPointLight(PointLight(glm::vec3(2.0f, 2.2f, 2.0f), 0.5f, 1.0f));
     lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f));
     
 
@@ -138,13 +138,12 @@ int main(int argc, char* argv[]) {
         glm::mat4 projection = camera.getProjectionMatrix();
 
         // render lights TODO: add option to toggle this off
-        // lighting.updateView(view);
-        // lighting.updateProjection(projection);
-        // lighting.drawPointLights(pointLightShader);
+        lighting.updateView(view);
+        lighting.updateProjection(projection);
+        lighting.drawPointLights(pointLightShader);
 
         // render model
         lightingShader.use();
-        lightingShader.setUniform("viewPos", camera.getCameraPos());
         lightingShader.setUniform("view", view);
         lightingShader.setUniform("projection", projection);
         lightingShader.setUniform("model", objModel.getModelMatrix());
