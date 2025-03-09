@@ -9,6 +9,13 @@ class Window {
         bool quit;
         SDL_Event event;
         SDL_GLContext mainContext;
+        
+        void initializeSDL();
+        void configureOpenGL();
+        void createWindow();
+        void createContext();
+        void initializeOpenGL();
+        void initializeImGui();
 
     public:
         Window();

@@ -188,6 +188,7 @@ int main(int argc, char* argv[]) {
         gouraudShader.setUniform("normalMatrix", objModel.getNormalMatrix());
         lighting.setLightingUniforms(gouraudShader);
         objModel.draw(gouraudShader);
+        objModel.updateModelMatrix();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();

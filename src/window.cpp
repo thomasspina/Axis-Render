@@ -3,20 +3,32 @@
 #include <GL/gl.h>
 
 #include "window.hpp"
+#include "constants.hpp"
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include "imgui_impl_opengl3.h"
 
 Window::Window() {
-    window = NULL;
-    winSurface = NULL; 
     quit = false;
 
-     if (SDL_Init(SDL_INIT_VIDEO)) {
+    initializeSDL();
+    initializeOpenGL();
+    initializeImGui();
+}
+
+void Window::initializeSDL() {
+    if (SDL_Init(SDL_INIT_VIDEO)) {
         std::cerr << "Error initializing SDL:" << SDL_GetError() << std::endl;
+        std::exit(EXIT_FAILURE);
     }
 
+    configureOpenGL();
+    createWindow();
+    createContext();
+}
+
+void Window::configureOpenGL() {
     // Access to OpenGL 4.6
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
@@ -24,22 +36,29 @@ Window::Window() {
     // Prevent screen flickering
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+}
 
+void Window::createWindow() {
     window = SDL_CreateWindow("Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (!window) {
-        std::cerr << "Failed to create a window! Error: " << SDL_GetError() << std::endl;
-        system("pause");
+        std::cerr << "Failed to creating a window! Error: " << SDL_GetError() << std::endl;
+        std::exit(EXIT_FAILURE);
     }
+}
 
-    winSurface = SDL_GetWindowSurface(window);
-    
-    if (!winSurface) {
-        std::cerr << "Error getting surface! Error: " << SDL_GetError() << std::endl;
-        system("pause");
-    }
-
+void Window::createContext() {
     mainContext = SDL_GL_CreateContext(window);
+
+    if (!mainContext) {
+        std::cerr << "Error creating context! Error: " << SDL_GetError() << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+}
+
+void Window::initializeOpenGL() {
+    // Enable V-Sync: Synchronize frame rate of application with the refresh rate of monitor
+    SDL_GL_SetSwapInterval(1);
 
     // Check current version of OpenGL
     const GLubyte* version = glGetString(GL_VERSION);  
@@ -47,27 +66,30 @@ Window::Window() {
         std::cout << "OpenGL Version: " << version << std::endl;
     } 
 
-    // Enable V-Sync
-    SDL_GL_SetSwapInterval(1);
-
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "GLEW failed to initialize! Error: " << glewGetErrorString(glewInit()) << std::endl;
+    // Init GLEW: Provide access to modern OpenGL features
+    GLenum glewStatus = glewInit();
+    if (glewStatus != GLEW_OK) {
+        std::cerr << "GLEW failed to initialize! Error: " << glewGetErrorString(glewStatus) << std::endl;
+        std::exit(EXIT_FAILURE);
     }
+}
 
+void Window::initializeImGui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-    // Setup Dear ImGui style
+    // Dark mode
     ImGui::StyleColorsDark();
+
+    // Light mode
     //ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(window, mainContext);
-    ImGui_ImplOpenGL3_Init("#version 460");
+    ImGui_ImplOpenGL3_Init(OPEN_GL_VERSION);
 }
 
 void Window::swapWindow() {
@@ -75,6 +97,10 @@ void Window::swapWindow() {
 }
 
 void Window::closeWindow() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
     SDL_GL_DeleteContext(mainContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
