@@ -7,10 +7,10 @@
 #include "lightCaster.hpp"
 #include "shaderProgram.hpp"
 
+// TODO: add max pointlight check
+
 class Lighting {
 private:
-    ShaderProgram pointLightShader;
-
     glm::mat4 view;
     glm::mat4 projection;
 
@@ -18,15 +18,14 @@ private:
     std::vector<PointLight> pointLights;
 public:
     Lighting();
-    ~Lighting();
+
+    void updateView(const glm::mat4& view);
+    void updateProjection(const glm::mat4& projection);
 
     void addLightCaster(LightCaster lightCaster);
     void addPointLight(PointLight pointLight);
 
-    void updateView(glm::mat4 view);
-    void updateProjection(glm::mat4 projection);
+    void drawPointLights(ShaderProgram& pointLightShader);
 
-    void drawPointLights();
-
-    void setLightingUniforms(ShaderProgram& shaderProgram);
+    void setLightingUniforms(ShaderProgram& lightingShader);
 };

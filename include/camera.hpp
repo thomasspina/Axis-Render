@@ -53,9 +53,9 @@ class Camera {
 
         void updateCameraSpeed(float deltaTime);
 
-        const glm::mat4 getViewMatrix() const;
+        glm::mat4 getViewMatrix() const;
 
-        const glm::mat4 getProjectionMatrix() const;
+        glm::mat4 getProjectionMatrix() const;
 
         const glm::vec3 getCameraPos() const;
 

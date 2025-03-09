@@ -28,10 +28,13 @@ struct DirLight {
     vec3 specular;
 };
 
-
+#define MAX_POINT_LIGHTS 10
 uniform int nr_point_lights;
-uniform PointLight pointLights[nr_point_lights];
-uniform DirLight dirLight;
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+
+#define MAX_DIR_LIGHTS 4
+uniform int nr_dir_lights;
+uniform DirLight dirLights[MAX_DIR_LIGHTS];
 
 uniform mat4 model;
 uniform mat4 view;
@@ -53,7 +56,11 @@ void main()
     vec3 Position = vec3(view * model * vec4(aPos, 1.0)); // position in view space
 
     // directional light
-    mat3 dirLightMatrix = CalcDirLight(dirLight, Normal);
+    mat3 dirLightMatrix = mat3(0.0);
+    for (int i = 0; i < nr_dir_lights; i++)
+    {
+        dirLightMatrix += CalcDirLight(dirLights[i], Normal);
+    }
 
     // point lights
     mat3 pointLightMatrix = mat3(0.0);
@@ -75,7 +82,7 @@ mat3 CalcDirLight(DirLight light, vec3 normal)
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(normal, reflectDir), 0.0), material_shininess);
+    float spec = pow(max(dot(normal, reflectDir), 0.0), 32.0); // TODO: find a solution for the hard-coded shininess value
     // combine results
     vec3 ambient = light.ambient;
     vec3 diffuse = light.diffuse * diff;

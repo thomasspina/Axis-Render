@@ -6,15 +6,15 @@ class Object {
 protected:
     glm::vec3 position = glm::vec3(0.0f);
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 normalMatrix;
+    glm::mat3 normalMatrix;
     
 public:
     Object();
     Object(glm::vec3 position);
     virtual ~Object();
 
-    const glm::mat4& getModel() const;
-    const glm::mat4& getNormalMatrix() const;
+    const glm::mat4& getModelMatrix() const;
+    const glm::mat3& getNormalMatrix() const;
     const glm::vec3& getPosition() const;
 
     void setPosition(const glm::vec3& newPosition);

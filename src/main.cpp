@@ -16,7 +16,8 @@
 #include "window.hpp"
 #include "model.hpp"
 #include "mesh.hpp"
-
+#include "lighting/lighting.hpp"
+#include "lighting/utils.hpp"
 
 void handleInput(Window& window, Camera& camera) {
     SDL_Event event = window.getEvent();
@@ -79,10 +80,15 @@ int main(int argc, char* argv[]) {
     // ============================ INITIALIZATION SECTION =====================================
     // stbi_set_flip_vertically_on_load(true);
 
-    // Initialize shader
-    Shader vertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/model.vert");
-    Shader fragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/model.frag");
-    ShaderProgram shaderProgram = ShaderProgram(vertexShader, fragmentShader);
+    // init lighting shader
+    Shader lightingVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/gouraudObj.vert");
+    Shader lightingFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/gouraudObj.frag");
+    ShaderProgram lightingShader = ShaderProgram(lightingVertexShader, lightingFragmentShader);
+
+    // init PointLight shader
+    Shader pointLightVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/pointLight.vert");
+    Shader pointLightFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/pointLight.frag");
+    ShaderProgram pointLightShader = ShaderProgram(pointLightVertexShader, pointLightFragmentShader);
 
     // Create a model
     Model objModel = Model(std::string(ASSETS_PATH) + "models/spaceShuttle/spaceShuttle.obj");
@@ -90,21 +96,26 @@ int main(int argc, char* argv[]) {
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/bedroom/bedroom.obj");
 
     // Create a camera object
+    // Camera camera = Camera();
     Camera camera = Camera(objModel.getModelRadius(), objModel.getModelCenter());
+
+    // Create a lighting object
+    Lighting lighting = Lighting();
+    lighting.addPointLight(PointLight(glm::vec3(1.0f, 1.2f, 0.0f), 0.5f, 1.0f));
+    
 
     // ============================ RENDERING SECTION =====================================
 
     glClearColor(0, 0, 0, 1.0f);
 
     // Activate defined shader program 
-    shaderProgram.use();
-
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
-
+    
     while (!window.isQuit()) {
+
         float currFrame = (float) SDL_GetTicks64();
         deltaTime = currFrame - lastFrame;
         lastFrame = currFrame;
@@ -113,21 +124,30 @@ int main(int argc, char* argv[]) {
 
         handleInput(window, camera);
 
-        glm::mat4 view = camera.getViewMatrix();
-        glm::mat4 projection = camera.getProjectionMatrix();
-
+        
+        
         // Clear depth buffer from previous iteration
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Set the model, view, and projection matrices in the shader
-        objModel.updateNormalMatrix(view);
-        shaderProgram.setUniform("model", objModel.getModel());
-        shaderProgram.setUniform("view", view);
-        shaderProgram.setUniform("projection", projection);
-        shaderProgram.setUniform("normalMatrix", objModel.getNormalMatrix());
+        // Handle models and lighting
 
-        // Render the model
-        objModel.draw(shaderProgram);
+        glm::mat4 view = camera.getViewMatrix();
+        glm::mat4 projection = camera.getProjectionMatrix();
+
+        // render lights TODO: add option to toggle this off
+        lighting.updateView(view);
+        lighting.updateProjection(projection);
+        lighting.drawPointLights(pointLightShader);
+
+        // render model
+        lightingShader.use();
+        objModel.updateNormalMatrix(view);
+        lightingShader.setUniform("view", view);
+        lightingShader.setUniform("projection", projection);
+        lightingShader.setUniform("model", objModel.getModelMatrix());
+        lightingShader.setUniform("normalMatrix", objModel.getNormalMatrix());
+        lighting.setLightingUniforms(lightingShader);
+        objModel.draw(lightingShader);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
