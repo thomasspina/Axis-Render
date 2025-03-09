@@ -11,11 +11,22 @@
 #include "shaderProgram.hpp"
 #include "config.h"
 
+#include <imgui.h>
+#include <imgui_impl_sdl2.h>
+#include "imgui_impl_opengl3.h"
+
 #include "constants.hpp"
 #include "camera.hpp"
 #include "window.hpp"
 #include "model.hpp"
 #include "mesh.hpp"
+
+bool relativeMouseMode = false;
+
+void toggleRelativeMouseMode() {
+    relativeMouseMode = !relativeMouseMode;
+    SDL_SetRelativeMouseMode(relativeMouseMode ? SDL_TRUE : SDL_FALSE);
+}
 
 
 void handleInput(Window& window, Camera& camera, Model& model) {
@@ -28,6 +39,41 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                 window.setQuit();
                 // quit = true;
                 break;
+                
+            case SDL_KEYDOWN: {
+
+                switch(event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        std::cout << "ESC" << std::endl;
+                        SDL_SetRelativeMouseMode(SDL_FALSE);
+                        relativeMouseMode = false;
+                        break;
+                    case SDL_SCANCODE_W:
+                        camera.moveForward();
+                        break;
+                    case SDL_SCANCODE_A:
+                        camera.moveLeft();
+                        break;
+                    case SDL_SCANCODE_S:
+                        camera.moveBackward();
+                        break;
+                    case SDL_SCANCODE_D:
+                        camera.moveRight();
+                        break;
+                }
+                break;
+            }
+
+            case SDL_MOUSEBUTTONDOWN: {
+                if (SDL_BUTTON(SDL_BUTTON_LEFT)) {
+                    if (!ImGui::GetIO().WantCaptureMouse) { 
+                        SDL_SetRelativeMouseMode(SDL_TRUE);
+                        relativeMouseMode = true;
+                    }
+                }
+
+                break;
+            }
 
             case SDL_MOUSEWHEEL: {
                 float yOffset = event.wheel.y;
@@ -51,23 +97,6 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                     camera.applyRotation(xOffset, yOffset);
                 }
                 break;
-            }
-            case SDL_KEYDOWN: {
-
-                switch(event.key.keysym.scancode) {
-                    case SDL_SCANCODE_W:
-                        camera.moveForward();
-                        break;
-                    case SDL_SCANCODE_A:
-                        camera.moveLeft();
-                        break;
-                    case SDL_SCANCODE_S:
-                        camera.moveBackward();
-                        break;
-                    case SDL_SCANCODE_D:
-                        camera.moveRight();
-                        break;
-                }
             }
         }
     }
@@ -104,7 +133,7 @@ int main(int argc, char* argv[]) {
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
 
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    // SDL_SetRelativeMouseMode(SDL_TRUE);
 
     while (!window.isQuit()) {
         float currFrame = (float) SDL_GetTicks64();
@@ -131,6 +160,16 @@ int main(int argc, char* argv[]) {
 
         // Render the model
         objModel.draw(shaderProgram);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        bool show_demo_window = true;
+        ImGui::ShowDemoWindow(&show_demo_window);
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

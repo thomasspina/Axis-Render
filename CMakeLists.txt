@@ -35,6 +35,13 @@ FetchContent_Declare(SDL2_image
     GIT_SHALLOW ON
 )
 
+FetchContent_Declare(imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG master
+    GIT_SHALLOW ON
+    SYSTEM
+)
+
 FetchContent_Declare(assimp
     GIT_REPOSITORY https://github.com/assimp/assimp.git
     GIT_TAG v5.4.3
@@ -77,7 +84,31 @@ set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Disable Assimp tools" FORCE)
 set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Disable Assimp samples" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "Disable Assimp install" FORCE)
 
-FetchContent_MakeAvailable(SDL2 SDL2_image assimp glm GLEW stb)
+FetchContent_MakeAvailable(SDL2 SDL2_image imgui assimp glm GLEW stb)
+
+add_library(ImGui STATIC
+    ${imgui_SOURCE_DIR}/imgui.cpp
+    ${imgui_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+    ${imgui_SOURCE_DIR}/imgui_demo.cpp
+)
+
+target_include_directories(ImGui PUBLIC
+    ${imgui_SOURCE_DIR}
+)
+
+# Add ImGui SDL2 and OpenGL backends
+add_library(ImGui-SDL2 STATIC
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+target_include_directories(ImGui-SDL2 PUBLIC
+    ${imgui_SOURCE_DIR}             # Ensure ImGui core headers
+    ${imgui_SOURCE_DIR}/backends    # Ensure SDL2 and OpenGL backends
+    ${SDL2_SOURCE_DIR}/include 
+)
 
 # stb library
 add_library(stb_image INTERFACE)
@@ -110,13 +141,14 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_BINARY_DIR}
 )
 
-
 # Link libraries
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         SDL2::SDL2-static
         SDL2::SDL2main
         SDL2_image
+        ImGui
+        ImGui-SDL2
         OpenGL::GL
         libglew_static
         glm

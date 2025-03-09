@@ -19,4 +19,6 @@ class Window {
         void setQuit();
         bool isQuit();
         SDL_Event getEvent();
+
+        SDL_Window* getWindow() const;
 };

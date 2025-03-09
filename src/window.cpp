@@ -4,6 +4,10 @@
 
 #include "window.hpp"
 
+#include <imgui.h>
+#include <imgui_impl_sdl2.h>
+#include "imgui_impl_opengl3.h"
+
 Window::Window() {
     window = NULL;
     winSurface = NULL; 
@@ -49,6 +53,21 @@ Window::Window() {
     if (glewInit() != GLEW_OK) {
         std::cerr << "GLEW failed to initialize! Error: " << glewGetErrorString(glewInit()) << std::endl;
     }
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL2_InitForOpenGL(window, mainContext);
+    ImGui_ImplOpenGL3_Init("#version 460");
 }
 
 void Window::swapWindow() {
@@ -73,4 +92,7 @@ SDL_Event Window::getEvent() {
     return event;
 }
 
+SDL_Window* Window::getWindow() const {
+    return window;
+}
 
