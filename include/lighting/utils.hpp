@@ -1,9 +1,11 @@
+#pragma once
+
 #include <vector>
 #include <glm/glm.hpp>
 
 #include "mesh.hpp"
 
-std::vector<Vertex> getCubeVertices(float size) {
+inline std::vector<Vertex> getCubeVertices(float size) {
     float halfSize = size / 2.0f;
     
     std::vector<Vertex> vertices = {
@@ -38,6 +40,17 @@ std::vector<Vertex> getCubeVertices(float size) {
         {{ halfSize, -halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}, // Bottom-right
         
         // Left face
+        {{-halfSize, -halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}, // Bottom-left
+        {{-halfSize, -halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}, // Bottom-right
+        {{-halfSize,  halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}, // Top-right
+        {{-halfSize,  halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}  // Top-left
+    };
+
+    return vertices;
+}
+
+inline std::vector<GLuint> getCubeIndices() {
+    return {
         // front 
         0, 1, 2,
         2, 3, 0,

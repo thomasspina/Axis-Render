@@ -11,11 +11,11 @@ Object::Object(glm::vec3 position) : position(position) {
 
 Object::~Object() = default;
 
-const glm::mat4& Object::getModel() const {
+const glm::mat4& Object::getModelMatrix() const {
     return model;
 }
 
-const glm::mat4& Object::getNormalMatrix() const {
+const glm::mat3& Object::getNormalMatrix() const {
     return normalMatrix;
 }
 

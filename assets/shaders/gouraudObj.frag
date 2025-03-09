@@ -28,7 +28,7 @@ void main()
     
     // blend specular textures
     for (int i = 0; i < material.specular_count; i++) {
-        specular += vec3(texture(material.texture_specular[i], TexCoords));
+        specular += vec3(texture(material.texture_specular[i], TexCoords).r); // .r is necessary because specular maps are grayscale and only red is set
     }
     specular *= Specular; // apply specular lighting
     
