@@ -6,8 +6,8 @@
 
 // TODO: Make this dependend on UI selection
 // Option: 1. Input Rotation 2. Natural Rotation
-// #define MODEL_ROTATION_MODE "Input Rotation"
-#define MODEL_ROTATION_MODE "Natural Rotation"
+#define MODEL_ROTATION_MODE "Input Rotation"
+// #define MODEL_ROTATION_MODE "Natural Rotation"
 
 
 #define DEFAULT_CAMERA_SPEED 0.05f

@@ -21,18 +21,12 @@
 #include "model.hpp"
 #include "mesh.hpp"
 
-bool relativeMouseMode = false;
-
 #include "lighting/lighting.hpp"
 #include "lighting/pointLight.hpp"
 #include "lighting/lightCaster.hpp"
 #include "lighting/utils.hpp"
 
-void toggleRelativeMouseMode() {
-    relativeMouseMode = !relativeMouseMode;
-    SDL_SetRelativeMouseMode(relativeMouseMode ? SDL_TRUE : SDL_FALSE);
-}
-
+bool relativeMouseMode = false;
 
 void handleInput(Window& window, Camera& camera, Model& model) {
     SDL_Event event = window.getEvent();
@@ -53,16 +47,16 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                         SDL_SetRelativeMouseMode(SDL_FALSE);
                         relativeMouseMode = false;
                         break;
-                    case SDL_SCANCODE_W:
+                    case SDLK_w:
                         camera.moveForward();
                         break;
-                    case SDL_SCANCODE_A:
+                    case SDLK_a:
                         camera.moveLeft();
                         break;
-                    case SDL_SCANCODE_S:
+                    case SDLK_s:
                         camera.moveBackward();
                         break;
-                    case SDL_SCANCODE_D:
+                    case SDLK_d:
                         camera.moveRight();
                         break;
                 }
@@ -147,8 +141,6 @@ int main(int argc, char* argv[]) {
 
     // ============================ RENDERING SECTION =====================================
 
-    glClearColor(0, 0, 0, 1.0f);
-
     // Activate defined shader program 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
@@ -156,6 +148,9 @@ int main(int argc, char* argv[]) {
     // SDL_SetRelativeMouseMode(SDL_TRUE);
 
     while (!window.isQuit()) {
+
+       // Clear depth buffer from previous iteration
+       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float currFrame = (float) SDL_GetTicks64();
         deltaTime = currFrame - lastFrame;
@@ -165,13 +160,7 @@ int main(int argc, char* argv[]) {
 
         handleInput(window, camera, objModel);
 
-        
-        
-        // Clear depth buffer from previous iteration
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         // Handle models and lighting
-
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = camera.getProjectionMatrix();
 
@@ -190,15 +179,8 @@ int main(int argc, char* argv[]) {
         objModel.draw(gouraudShader);
         objModel.updateModelMatrix();
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
-        ImGui::NewFrame();
-
-        bool show_demo_window = true;
-        ImGui::ShowDemoWindow(&show_demo_window);
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // Render UI
+        window.renderImGui();
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

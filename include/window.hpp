@@ -17,8 +17,13 @@ class Window {
         void initializeOpenGL();
         void initializeImGui();
 
+        void drawUI();
+
+
     public:
         Window();
+
+        void renderImGui();
 
         void swapWindow();
         void closeWindow();
