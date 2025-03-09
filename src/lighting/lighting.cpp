@@ -32,6 +32,12 @@ void Lighting::drawPointLights(ShaderProgram& pointLightShader) {
 void Lighting::setLightingUniforms(ShaderProgram& shaderProgram) {
     shaderProgram.setUniform("nr_point_lights", (int) this->pointLights.size());
     for (int i = 0; i < this->pointLights.size(); i++) {
+
+        // Transform the light position to view space
+        glm::vec3 viewSpacePosition = glm::vec3(this->view * glm::vec4(this->pointLights[i].getPosition(), 1.0f));
+        shaderProgram.setUniform("pointLights[" + std::to_string(i) + "].position", viewSpacePosition);
+
+
         pointLights[i].setLightingUniforms(shaderProgram, std::to_string(i));
     }
 

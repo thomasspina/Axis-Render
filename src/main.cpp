@@ -82,10 +82,15 @@ int main(int argc, char* argv[]) {
     // ============================ INITIALIZATION SECTION =====================================
     // stbi_set_flip_vertically_on_load(true);
 
-    // init lighting shader
-    Shader lightingVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/gouraudObj.vert");
-    Shader lightingFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/gouraudObj.frag");
-    ShaderProgram lightingShader = ShaderProgram(lightingVertexShader, lightingFragmentShader);
+    // gouraud lighting shader
+    Shader gouraudVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/gouraudObj.vert");
+    Shader gouraudFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/gouraudObj.frag");
+    ShaderProgram gouraudShader = ShaderProgram(gouraudVertexShader, gouraudFragmentShader);
+
+    // phong lighting shader
+    Shader phongVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/phongObj.vert");
+    Shader phongFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/phongObj.frag");
+    ShaderProgram phongShader = ShaderProgram(phongVertexShader, phongFragmentShader);
 
     // init PointLight shader
     Shader pointLightVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/pointLight.vert");
@@ -143,13 +148,13 @@ int main(int argc, char* argv[]) {
         lighting.drawPointLights(pointLightShader);
 
         // render model
-        lightingShader.use();
-        lightingShader.setUniform("view", view);
-        lightingShader.setUniform("projection", projection);
-        lightingShader.setUniform("model", objModel.getModelMatrix());
-        lightingShader.setUniform("normalMatrix", objModel.getNormalMatrix());
-        lighting.setLightingUniforms(lightingShader);
-        objModel.draw(lightingShader);
+        gouraudShader.use();
+        gouraudShader.setUniform("view", view);
+        gouraudShader.setUniform("projection", projection);
+        gouraudShader.setUniform("model", objModel.getModelMatrix());
+        gouraudShader.setUniform("normalMatrix", objModel.getNormalMatrix());
+        lighting.setLightingUniforms(gouraudShader);
+        objModel.draw(gouraudShader);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

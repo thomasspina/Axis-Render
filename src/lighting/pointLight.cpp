@@ -18,8 +18,6 @@ const glm::vec3& PointLight::getColour() const {
 }
 
 void PointLight::setLightingUniforms(ShaderProgram& shaderProgram, const std::string& i) {
-    shaderProgram.setUniform("pointLights[" + i + "].position", this->position);
-
     glm::vec3 ambient = this->colour * DEFAULT_LIGHT_AMBIENT * this->intensity; 
     
     glm::vec3 diffuse = this->colour * this->intensity * DEFAULT_LIGHT_DIFFUSE; 
