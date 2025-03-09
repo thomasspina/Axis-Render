@@ -1,11 +1,16 @@
 #pragma once
 
+#include "constants.hpp"
 #include <glm/glm.hpp>
 
 class Object {
+private:
+    float objectYaw;
+    float objectPitch;
+    
 protected:
     glm::vec3 position = glm::vec3(0.0f);
-    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 model = IDENTITY_MATRIX;
     glm::mat4 normalMatrix;
     
 public:
@@ -30,4 +35,11 @@ public:
     void resetModel();
 
     void updateNormalMatrix(const glm::mat4& view);
+
+    void updateObjectYaw(float yoffset);
+    void updateObjectPitch(float xoffset);
+
+    void updateModelMatrix();
+    void naturalRotation();
+    void inputRotation();
 };

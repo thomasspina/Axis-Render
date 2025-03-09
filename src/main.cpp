@@ -18,7 +18,7 @@
 #include "mesh.hpp"
 
 
-void handleInput(Window& window, Camera& camera) {
+void handleInput(Window& window, Camera& camera, Model& model) {
     SDL_Event event = window.getEvent();
 
     while (SDL_PollEvent(&event) > 0) {
@@ -42,6 +42,8 @@ void handleInput(Window& window, Camera& camera) {
                     float xOffset = event.motion.xrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
                     float yOffset = event.motion.yrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
 
+                    model.updateObjectYaw(xOffset);
+                    model.updateObjectPitch(yOffset);
                 } else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
                     float xOffset = event.motion.xrel;
                     float yOffset = event.motion.yrel;
@@ -111,7 +113,7 @@ int main(int argc, char* argv[]) {
 
         camera.updateCameraSpeed(deltaTime);
 
-        handleInput(window, camera);
+        handleInput(window, camera, objModel);
 
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = camera.getProjectionMatrix();
@@ -121,6 +123,7 @@ int main(int argc, char* argv[]) {
 
         // Set the model, view, and projection matrices in the shader
         objModel.updateNormalMatrix(view);
+        objModel.updateModelMatrix();
         shaderProgram.setUniform("model", objModel.getModel());
         shaderProgram.setUniform("view", view);
         shaderProgram.setUniform("projection", projection);

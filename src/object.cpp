@@ -1,4 +1,5 @@
 #include <glm/gtc/matrix_transform.hpp>
+#include <SDL2/SDL_timer.h>
 
 #include "object.hpp"
 
@@ -61,9 +62,36 @@ void Object::scale(float scale) {
 }
 
 void Object::resetModel() {
-    model = glm::mat4(1.0f);
+    model = IDENTITY_MATRIX;
 }
 
 void Object::updateNormalMatrix(const glm::mat4& view) {
     normalMatrix = glm::transpose(glm::inverse(view * model));
+}
+
+void Object::updateObjectYaw(float xoffset) {
+    objectYaw += xoffset;
+}
+
+void Object::updateObjectPitch(float yoffset) {
+    objectPitch += yoffset;
+}
+
+void Object::updateModelMatrix() {
+
+    // TODO: Make this controlled by UI
+    if (MODEL_ROTATION_MODE == "Natural Rotation") {
+        naturalRotation();
+    } else {
+        inputRotation();
+    }
+}
+
+void Object::naturalRotation() {
+    model = glm::rotate(IDENTITY_MATRIX, (float)SDL_GetTicks64() / 1000.0f, DEFAULT_ROTATION_AXIS);
+}
+
+void Object::inputRotation() {
+    model = glm::rotate(IDENTITY_MATRIX, glm::radians(objectPitch), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(objectYaw), glm::vec3(0.0f, 1.0f, 0.0f));
 }
