@@ -2,14 +2,15 @@
 
 #include "lighting/pointLight.hpp"
 #include "lighting/utils.hpp"
+#include "constants.hpp"
 
 
 PointLight::PointLight(glm::vec3 position, float size, float intensity) : Mesh(getCubeVertices(size), getCubeIndices(), {}), Object(position) {
-    this->colour = glm::vec3(1.0f);
+    this->colour = DEFAULT_LIGHT_COLOUR;
     this->intensity = intensity;
-    this->constant = 1.0f;
-    this->linear = 0.09f;
-    this->quadratic = 0.032f;
+    this->constant = DEFAULT_LIGHT_CONSTANT;
+    this->linear = DEFAULT_LIGHT_LINEAR;
+    this->quadratic = DEFAULT_LIGHT_QUADRATIC;
 }
 
 const glm::vec3& PointLight::getColour() const {
@@ -19,12 +20,12 @@ const glm::vec3& PointLight::getColour() const {
 void PointLight::setLightingUniforms(ShaderProgram& shaderProgram, const std::string& i) {
     shaderProgram.setUniform("pointLights[" + i + "].position", this->position);
 
-    glm::vec3 ambient = this->colour * 0.1f * this->intensity; 
+    glm::vec3 ambient = this->colour * DEFAULT_LIGHT_AMBIENT * this->intensity; 
     
-    glm::vec3 diffuse = this->colour * this->intensity; 
+    glm::vec3 diffuse = this->colour * this->intensity * DEFAULT_LIGHT_DIFFUSE; 
     
     // white-tinted version of the light color
-    glm::vec3 specular = glm::mix(this->colour, glm::vec3(1.0f), 0.5f) * this->intensity;
+    glm::vec3 specular = glm::mix(this->colour, glm::vec3(1.0f), 0.5f) * this->intensity * DEFAULT_LIGHT_SPECULAR;
     
     // Set the uniforms
     shaderProgram.setUniform("pointLights[" + i + "].ambient", ambient);

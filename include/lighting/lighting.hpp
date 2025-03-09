@@ -3,26 +3,26 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "pointLight.hpp"
-#include "lightCaster.hpp"
+#include "lighting/pointLight.hpp"
+#include "lighting/lightCaster.hpp"
 #include "shaderProgram.hpp"
-
-// TODO: add max pointlight check
 
 class Lighting {
 private:
     glm::mat4 view;
     glm::mat4 projection;
 
-    LightCaster lightCaster; // TODO: add multiple lightCasters
+    LightCaster lightCaster;
     std::vector<PointLight> pointLights;
 public:
-    Lighting();
+    Lighting() = default;
 
     void updateView(const glm::mat4& view);
     void updateProjection(const glm::mat4& projection);
 
     void addLightCaster(LightCaster lightCaster);
+
+    /// @brief Add a point light to the scene, removes first one if the limit is reached
     void addPointLight(PointLight pointLight);
 
     void drawPointLights(ShaderProgram& pointLightShader);

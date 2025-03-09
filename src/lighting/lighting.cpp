@@ -1,11 +1,5 @@
-#include <iostream>
-#include <iomanip>
-
 #include "lighting/lighting.hpp"
-#include "config.h"
-
-Lighting::Lighting() {
-}
+#include "constants.hpp"
 
 void Lighting::addLightCaster(LightCaster lightCaster) {
     this->lightCaster = lightCaster;
@@ -27,7 +21,7 @@ void Lighting::drawPointLights(ShaderProgram& pointLightShader) {
     pointLightShader.use();
     pointLightShader.setUniform("view", this->view);
     pointLightShader.setUniform("projection", this->projection);
-    
+
     for (PointLight& pointLight : this->pointLights) {
         pointLightShader.setUniform("model", pointLight.getModelMatrix());
         pointLightShader.setUniform("lightColour", pointLight.getColour());
@@ -36,10 +30,10 @@ void Lighting::drawPointLights(ShaderProgram& pointLightShader) {
 }
 
 void Lighting::setLightingUniforms(ShaderProgram& shaderProgram) {
-    // this->lightCaster.setUniforms(shaderProgram);
-
     shaderProgram.setUniform("nr_point_lights", (int) this->pointLights.size());
     for (int i = 0; i < this->pointLights.size(); i++) {
         pointLights[i].setLightingUniforms(shaderProgram, std::to_string(i));
     }
+
+    lightCaster.setUniforms(shaderProgram);
 }

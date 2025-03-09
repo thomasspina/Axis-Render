@@ -65,5 +65,5 @@ void Object::resetModel() {
 }
 
 void Object::updateNormalMatrix(const glm::mat4& view) {
-    normalMatrix = glm::transpose(glm::inverse(view * model));
+    normalMatrix = glm::transpose(glm::inverse(glm::mat3(view * model)));
 }

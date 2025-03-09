@@ -32,9 +32,7 @@ struct DirLight {
 uniform int nr_point_lights;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
-#define MAX_DIR_LIGHTS 4
-uniform int nr_dir_lights;
-uniform DirLight dirLights[MAX_DIR_LIGHTS];
+uniform DirLight dirLight;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -56,11 +54,7 @@ void main()
     vec3 Position = vec3(view * model * vec4(aPos, 1.0)); // position in view space
 
     // directional light
-    mat3 dirLightMatrix = mat3(0.0);
-    for (int i = 0; i < nr_dir_lights; i++)
-    {
-        dirLightMatrix += CalcDirLight(dirLights[i], Normal);
-    }
+    mat3 dirLightMatrix = CalcDirLight(dirLight, Normal);
 
     // point lights
     mat3 pointLightMatrix = mat3(0.0);

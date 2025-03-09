@@ -26,6 +26,24 @@
 #define DEFAULT_NEAR_CLIPPING_PLANE 0.1f
 #define DEFAULT_FAR_CLIPPING_PLANE 100.0f
 
+
+// Define light constants
+#define DEFAULT_LIGHT_AMBIENT 0.1f
+#define DEFAULT_LIGHT_DIFFUSE 0.5f
+#define DEFAULT_LIGHT_SPECULAR 1.0f
+
+// Define light attenuation constants
+#define DEFAULT_LIGHT_CONSTANT 1.0f
+#define DEFAULT_LIGHT_LINEAR 0.09f
+#define DEFAULT_LIGHT_QUADRATIC 0.032f
+
+// Define light colour
+#define DEFAULT_LIGHT_COLOUR glm::vec3(1.0f)
+
+// Define light numbers
+#define MAX_POINT_LIGHTS 10
+#define MAX_DIRECTIONAL_LIGHTS 3
+
 // Width / Height to prevent distortion
 constexpr float DEFAULT_ASPECT_RATIO = 800.0f / 600.0f;
 
