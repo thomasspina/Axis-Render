@@ -2,13 +2,20 @@
 
 #include <glm/glm.hpp>
 
+namespace Rotation {
+    constexpr int noRotationMode = 0;
+    constexpr int inputRotationMode = 1;
+    constexpr int naturalRotationMode = 2;
+}
+
+#define AVG_MEMORY_USAGE 50.0f
+#define SCREEN_FPS 60u
 #define OPEN_GL_VERSION "#version 460"
 
 // TODO: Make this dependend on UI selection
 // Option: 1. Input Rotation 2. Natural Rotation
 #define MODEL_ROTATION_MODE "Input Rotation"
 // #define MODEL_ROTATION_MODE "Natural Rotation"
-
 
 #define DEFAULT_CAMERA_SPEED 0.05f
 #define DEFAULT_CAMERA_FOV 45.0f
@@ -29,7 +36,6 @@
 // Define visible depth range
 #define DEFAULT_NEAR_CLIPPING_PLANE 0.1f
 #define DEFAULT_FAR_CLIPPING_PLANE 100.0f
-
 
 // Define light constants
 #define DEFAULT_LIGHT_AMBIENT 0.1f

@@ -27,12 +27,15 @@
 #include "lighting/utils.hpp"
 
 bool relativeMouseMode = false;
+bool isInputRotationSelected = false;
+bool isNaturalRotationSelected = false;
 
 void handleInput(Window& window, Camera& camera, Model& model) {
     SDL_Event event = window.getEvent();
 
     while (SDL_PollEvent(&event) > 0) {
 
+        ImGui_ImplSDL2_ProcessEvent(&event);
         switch(event.type) {
             case SDL_QUIT:
                 window.setQuit();
@@ -180,7 +183,7 @@ int main(int argc, char* argv[]) {
         objModel.updateModelMatrix();
 
         // Render UI
-        window.renderImGui();
+        window.renderImGui(objModel);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

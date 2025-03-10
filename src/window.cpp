@@ -9,6 +9,13 @@
 #include <imgui_impl_sdl2.h>
 #include "imgui_impl_opengl3.h"
 
+#ifdef _WIN32
+    #include <windows.h>
+    #include <psapi.h>
+#elif __APPLE__
+    #include <mach/mach.h>
+#endif
+
 Window::Window() {
     quit = false;
 
@@ -94,65 +101,65 @@ void Window::initializeImGui() {
     ImGui_ImplOpenGL3_Init(OPEN_GL_VERSION);
 }
 
-// double App::getMemoryUsage() const {
-//     #if defined(_WIN32)
-//         PROCESS_MEMORY_COUNTERS_EX pmc;
-//         GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+double Window::getMemoryUsage() const {
+    #if defined(_WIN32)
+        PROCESS_MEMORY_COUNTERS_EX pmc;
+        GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
         
-//         return static_cast<float>(pmc.WorkingSetSize) / (1024.0f * 1024.0f); // convert to megabytes
-//     #elif defined(__APPLE__)
-//         struct task_basic_info t_info;
-//         mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
+        return static_cast<float>(pmc.WorkingSetSize) / (1024.0f * 1024.0f); // convert to megabytes
+    #elif defined(__APPLE__)
+        struct task_basic_info t_info;
+        mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
 
-//         // return 0 if process info returns error kernel return value
-//         if (KERN_SUCCESS != task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&t_info, &t_info_count))
-//             return 0.0;
+        // return 0 if process info returns error kernel return value
+        if (KERN_SUCCESS != task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&t_info, &t_info_count))
+            return 0.0;
 
-//         // return process memory usage in MB
-//         return static_cast<float>(t_info.resident_size) / (1024.0f * 1024.0f); // convert to megabytes
-//     #endif
-// }
+        // return process memory usage in MB
+        return static_cast<float>(t_info.resident_size) / (1024.0f * 1024.0f); // convert to megabytes
+    #endif
+}
 
-// void App::drawPerformanceUI() {
-//     float currentFPS = ImGui::GetIO().Framerate;
+void Window::drawPerformanceUI() {
+    float currentFPS = ImGui::GetIO().Framerate;
         
-//     // update FPS history
-//     fpsHistory[fpsOffset] = currentFPS;
-//     fpsOffset = (fpsOffset + 1) % FPS_HISTORY_SIZE;
+    // update FPS history
+    fpsHistory[fpsOffset] = currentFPS;
+    fpsOffset = (fpsOffset + 1) % FPS_HISTORY_SIZE;
     
-//     // draw fps info
-//     ImGui::Text("Frames Per Second (FPS) : %.1f", currentFPS);
-//     ImGui::Text("Application average %.3f ms/frame", 1000.0f / currentFPS);
-//     ImGui::PlotLines("FPS", 
-//         fpsHistory, 
-//         FPS_HISTORY_SIZE, 
-//         fpsOffset,
-//         "", 
-//         0.0f,           
-//         SCREEN_FPS + 10.0f,         
-//         ImVec2(0, 30)
-//     );
+    // draw fps info
+    ImGui::Text("Frames Per Second (FPS) : %.1f", currentFPS);
+    ImGui::Text("Application average %.3f ms/frame", 1000.0f / currentFPS);
+    ImGui::PlotLines("FPS", 
+        fpsHistory, 
+        FPS_HISTORY_SIZE, 
+        fpsOffset,
+        "", 
+        0.0f,           
+        SCREEN_FPS + 10.0f,         
+        ImVec2(0, 30)
+    );
 
-//     ImGui::Separator();
+    ImGui::Separator();
 
-//     float currentMemory = getMemoryUsage();
+    float currentMemory = getMemoryUsage();
 
-//     // update memory history
-//     memoryHistory[memoryOffset] = currentMemory;
-//     memoryOffset = (memoryOffset + 1) % MEMORY_HISTORY_SIZE;
+    // update memory history
+    memoryHistory[memoryOffset] = currentMemory;
+    memoryOffset = (memoryOffset + 1) % MEMORY_HISTORY_SIZE;
 
-//     // draw memory info
-//     ImGui::Text("Memory Usage: %.2f MB", currentMemory);
-//     ImGui::PlotLines("RAM", 
-//         memoryHistory, 
-//         MEMORY_HISTORY_SIZE, 
-//         memoryOffset,
-//         "", 
-//         0.0f,           
-//         AVG_MEMORY_USAGE + 20.0f,         
-//         ImVec2(0, 30)
-//     );
-// }
+    // draw memory info
+    ImGui::Text("Memory Usage: %.2f MB", currentMemory);
+    ImGui::PlotLines("RAM", 
+        memoryHistory, 
+        MEMORY_HISTORY_SIZE, 
+        memoryOffset,
+        "", 
+        0.0f,           
+        AVG_MEMORY_USAGE + 20.0f,         
+        ImVec2(0, 30)
+    );
+}
 
 // void App::drawConfigUI(BoidScreen& boidScreen) {
 //     FlockingBehavior& flocking = FlockingBehavior::getInstance();
@@ -181,25 +188,52 @@ void Window::initializeImGui() {
 //     ImGui::Checkbox("Enable Mouse Avoidance (Hold L-click)", flocking.getIsMouseAvoidanceEnabledPointer());
 // }
 
-// void App::drawRulesUI() {
-//     FlockingBehavior& flocking = FlockingBehavior::getInstance();
-//     ImGui::Text("Flocking Rules");
+void Window::drawCameraUI() {
+    // FlockingBehavior& flocking = FlockingBehavior::getInstance();
+    ImGui::Text("Camera Mode");
     
-//     ImGui::SliderFloat("Separation Radius", flocking.getSeparationRadiusPointer(), BOID_DEFAULT_RADIUS, FLOCK_MAXIMUM_SEPARATION_RADIUS);
-//     ImGui::SliderFloat("Avoid Factor", flocking.getSeparationAvoidFactorPointer(), 0.f, FLOCK_MAXIMUM_AVOID_FACTOR);
-//     ImGui::Checkbox("Separation Enabled", flocking.getIsSeparationEnabledPointer());
-//     ImGui::Separator();
+    // ImGui::SliderFloat("Separation Radius", flocking.getSeparationRadiusPointer(), BOID_DEFAULT_RADIUS, FLOCK_MAXIMUM_SEPARATION_RADIUS);
+    // ImGui::SliderFloat("Avoid Factor", flocking.getSeparationAvoidFactorPointer(), 0.f, FLOCK_MAXIMUM_AVOID_FACTOR);
+    bool status = true;
+    ImGui::Checkbox("Moveable Camera", &status);
+    ImGui::Separator();
 
-//     ImGui::SliderFloat("Matching Factor", flocking.getMatchingFactorPointer(), 0.f, FLOCK_MAXIMUM_MATCHING_FACTOR);
-//     ImGui::Checkbox("Alignment Enabled", flocking.getIsAlignmentEnabledPointer());
-//     ImGui::Separator();
+    // ImGui::SliderFloat("Matching Factor", flocking.getMatchingFactorPointer(), 0.f, FLOCK_MAXIMUM_MATCHING_FACTOR);
+    ImGui::Checkbox("Orbit", &status);
+    ImGui::Separator();
+}
 
-//     ImGui::SliderFloat("Centering Factor", flocking.getCenteringFactorPointer(), 0.f, FLOCK_MAXIMUM_CENTERING_FACTOR);
-//     ImGui::Checkbox("Cohesion Enabled", flocking.getIsCohesionEnabledPointer());
-//     ImGui::Separator();
-// }
+enum RotationMode {
+    InputRotationMode,
+    NaturalRotationMode
+};
 
-void Window::drawUI() {
+int rotationMode = InputRotationMode;
+
+void Window::drawModelUI(Object& obj) {
+    // FlockingBehavior& flocking = FlockingBehavior::getInstance();
+    ImGui::Text("Model Mode");
+    
+    // ImGui::SliderFloat("Separation Radius", flocking.getSeparationRadiusPointer(), BOID_DEFAULT_RADIUS, FLOCK_MAXIMUM_SEPARATION_RADIUS);
+    // ImGui::SliderFloat("Avoid Factor", flocking.getSeparationAvoidFactorPointer(), 0.f, FLOCK_MAXIMUM_AVOID_FACTOR);
+    // enum RotationMode {
+    //     InputRotationMode,
+    //     NaturalRotationMode
+    // };
+
+    
+    if (ImGui::RadioButton("No Rotation", obj.getRotationalMode() == Rotation::noRotationMode)) {
+        obj.setRotationMode(Rotation::noRotationMode);
+    }
+    if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == Rotation::inputRotationMode)) {
+        obj.setRotationMode(Rotation::inputRotationMode);
+    }
+    if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == Rotation::naturalRotationMode)) {
+        obj.setRotationMode(Rotation::naturalRotationMode);
+    }
+}
+
+void Window::drawUI(Object& obj) {
     ImGui::Begin("Engine Menu");
 
     ImGui::SetWindowPos(ImVec2(1000, 20), ImGuiCond_Once);
@@ -207,25 +241,30 @@ void Window::drawUI() {
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
     if (ImGui::CollapsingHeader("Performance")) {
-        // drawPerformanceUI();
+        drawPerformanceUI();
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
-    if (ImGui::CollapsingHeader("Rules")) {
-        // drawRulesUI();
+    if (ImGui::CollapsingHeader("Camera")) {
+        drawCameraUI();
+    }
+
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
+    if (ImGui::CollapsingHeader("Model")) {
+        drawModelUI(obj);
     }
 
     ImGui::End();
 }
 
-void Window::renderImGui() {
+void Window::renderImGui(Object& obj) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
     // bool show_demo_window = true;
     // ImGui::ShowDemoWindow(&show_demo_window);
-    drawUI();
+    drawUI(obj);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

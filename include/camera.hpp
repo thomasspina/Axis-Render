@@ -9,6 +9,9 @@
 
 class Camera {
     private:
+        bool freeCameraEnabled = true;
+        bool isOrbitCamera = false;
+
         // Global Y axis
         glm::vec3 globalUp;
 
