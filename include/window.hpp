@@ -1,8 +1,9 @@
 #pragma once
 
-#include <SDL2/SDL.h>
 #include "object.hpp"
 #include "camera.hpp"
+
+#include <SDL2/SDL.h>
 
 class Window {
     private:  

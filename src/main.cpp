@@ -136,7 +136,6 @@ int main(int argc, char* argv[]) {
 
     // Create a lighting object
     Lighting lighting = Lighting();
-    lighting.addPointLight(PointLight(glm::vec3(2.0f, 2.2f, 2.0f), 0.5f, 1.0f));
     lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f));
     
 
@@ -172,13 +171,15 @@ int main(int argc, char* argv[]) {
 
         // render model
         gouraudShader.use();
+        objModel.updateModelMatrix();
+        objModel.updateNormalMatrix(view);
         gouraudShader.setUniform("view", view);
         gouraudShader.setUniform("projection", projection);
         gouraudShader.setUniform("model", objModel.getModelMatrix());
         gouraudShader.setUniform("normalMatrix", objModel.getNormalMatrix());
         lighting.setLightingUniforms(gouraudShader);
         objModel.draw(gouraudShader);
-        objModel.updateModelMatrix();
+
 
         // Render UI
         window.renderImGui(camera, objModel);

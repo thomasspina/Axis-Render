@@ -1,8 +1,6 @@
 #include "lighting/lightCaster.hpp"
 #include "constants.hpp"
 
-#include <iostream>
-
 LightCaster::LightCaster(const glm::vec3& direction, float intensity) {
     this->direction = direction;
     this->colour = glm::vec3(1.0f, 1.0f, 1.0f);

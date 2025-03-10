@@ -14,6 +14,9 @@
     #include <psapi.h>
 #elif __APPLE__
     #include <mach/mach.h>
+#elif __linux__
+    #include <unistd.h>
+    #include <stdio.h>
 #endif
 
 Window::Window() {
@@ -103,22 +106,36 @@ void Window::initializeImGui() {
 
 double Window::getMemoryUsage() const {
     #if defined(_WIN32)
-        PROCESS_MEMORY_COUNTERS_EX pmc;
-        GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
-        
-        return static_cast<float>(pmc.WorkingSetSize) / (1024.0f * 1024.0f); // convert to megabytes
+       PROCESS_MEMORY_COUNTERS_EX pmc;
+       GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+       return static_cast<float>(pmc.WorkingSetSize) / (1024.0f * 1024.0f); // convert to megabytes
     #elif defined(__APPLE__)
-        struct task_basic_info t_info;
-        mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
-
-        // return 0 if process info returns error kernel return value
-        if (KERN_SUCCESS != task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&t_info, &t_info_count))
-            return 0.0;
-
-        // return process memory usage in MB
-        return static_cast<float>(t_info.resident_size) / (1024.0f * 1024.0f); // convert to megabytes
+       struct task_basic_info t_info;
+       mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
+       // return 0 if process info returns error kernel return value
+       if (KERN_SUCCESS != task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&t_info, &t_info_count))
+           return 0.0;
+       // return process memory usage in MB
+       return static_cast<float>(t_info.resident_size) / (1024.0f * 1024.0f); // convert to megabytes
+    #elif defined(__linux__)
+       FILE* file = fopen("/proc/self/statm", "r");
+       if (file == NULL)
+           return 0.0;
+       
+       long rss = 0;
+       if (fscanf(file, "%*s %ld", &rss) != 1) {
+           fclose(file);
+           return 0.0;
+       }
+       fclose(file);
+       
+       // rss is in pages, convert to bytes and then to MB
+       long page_size = sysconf(_SC_PAGESIZE);
+       return static_cast<float>(rss * page_size) / (1024.0f * 1024.0f);
+    #else
+       return 0.0; // Unsupported platform
     #endif
-}
+   }
 
 void Window::drawPerformanceUI() {
     float currentFPS = ImGui::GetIO().Framerate;
