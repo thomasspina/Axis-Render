@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include <SDL2/SDL_timer.h>
 
 Camera::Camera() {
     globalUp = DEFAULT_GLOBAL_UP;
@@ -15,8 +16,12 @@ Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     globalUp = DEFAULT_GLOBAL_UP;
     cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 
+
     // Calculates camera distance required so the model sphere fits within the camera's vertical fov
     float requiredDistance = modelRadius / sin(glm::radians(fov) / 2.0f);
+
+    this->modelRadius = requiredDistance;
+    this->modelCenter = modelCenter;
 
     cameraPos = modelCenter + glm::vec3(0.0f, 0.0f, requiredDistance);
     cameraTarget = modelCenter;
@@ -39,23 +44,25 @@ void Camera::applyZoom(float yOffset) {
 }
 
 void Camera::applyRotation(float xOffset, float yOffset) {
-    xOffset *= DEFAULT_CAMERA_SENSITIVITY;
-    yOffset *= DEFAULT_CAMERA_SENSITIVITY;
+    if (cameraRotationEnabled) {
+        xOffset *= DEFAULT_CAMERA_SENSITIVITY;
+        yOffset *= DEFAULT_CAMERA_SENSITIVITY;
 
-    yaw += xOffset;
-    pitch += yOffset;
+        yaw += xOffset;
+        pitch += yOffset;
 
-    // Clamp pitch to avoid lookat flipping
-    if (pitch > MAX_CAMERA_PITCH_ANGLE)
-        pitch = MAX_CAMERA_PITCH_ANGLE;
-    if (pitch < MIN_CAMERA_PITCH_ANGLE)
-        pitch = MIN_CAMERA_PITCH_ANGLE;
+        // Clamp pitch to avoid lookat flipping
+        if (pitch > MAX_CAMERA_PITCH_ANGLE)
+            pitch = MAX_CAMERA_PITCH_ANGLE;
+        if (pitch < MIN_CAMERA_PITCH_ANGLE)
+            pitch = MIN_CAMERA_PITCH_ANGLE;
 
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        cameraFront = glm::normalize(direction);
+    }
 }
 
 void Camera::setCameraPos(glm::vec3 newCameraPos) {
@@ -93,6 +100,21 @@ const float Camera::getCameraSpeed() const {
 const float Camera::getFov() const {
     return fov;
 }
+
+void Camera::move(const std::string& dir) {
+    if (freeCameraEnabled) {
+        if (dir == "w") {
+            moveForward();
+        } else if (dir == "s") {
+            moveBackward();
+        } else if (dir == "a") {
+            moveLeft();
+        } else if (dir == "d") {
+            moveRight();
+        }
+    }
+}
+
 
 void Camera::moveForward() {
     cameraPos += cameraSpeed * cameraFront;

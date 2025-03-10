@@ -7,7 +7,7 @@ class Object {
 private:
     float objectYaw;
     float objectPitch;
-    int rotationMode = Rotation::naturalRotationMode;
+    int rotationMode = RotationMode::naturalRotation;
     
 protected:
     glm::vec3 position = glm::vec3(0.0f);

@@ -161,79 +161,32 @@ void Window::drawPerformanceUI() {
     );
 }
 
-// void App::drawConfigUI(BoidScreen& boidScreen) {
-//     FlockingBehavior& flocking = FlockingBehavior::getInstance();
-//     int numBoids = boidScreen.getNumBoids();
-//     if (ImGui::SliderInt("Number of Boids", &numBoids, 1, MAX_NUM_BOIDS)) {
-//         boidScreen.setNumBoids(numBoids);
-//     }
-
-//     float neighbourhoodRadius = boidScreen.getBoidNeighbourhoodRadius();
-//     if (ImGui::SliderFloat("Neighbourhood", &neighbourhoodRadius, BOID_DEFAULT_NEIGHBOURHOOD_RADIUS, BOID_MAXIMUM_NEIGHBOURHOOD_RADIUS)) {
-//         boidScreen.setBoidNeighbourhoodRadius(neighbourhoodRadius);
-//     }
-
-//     float maxSpeed = boidScreen.getMaxBoidSpeed();
-//     if (ImGui::SliderFloat("Max Speed", &maxSpeed, BOID_DEFAULT_MIN_SPEED, BOID_MAXIMUM_MAX_SPEED)) {
-//         boidScreen.setMaxBoidSpeed(maxSpeed);
-//     }
-
-//     ImGui::SliderFloat("Wander Factor", flocking.getWanderFactorPointer(), 0.f, BOID_WANDER_FORCE_FACTOR_MAX);
-//     ImGui::Checkbox("Enable Boid Wandering", flocking.getIsWanderEnabledPointer());
-
-//     ImGui::Separator();
-//     ImGui::Checkbox("Show Boid Neighbourhood", &drawBoundary);
-//     ImGui::Checkbox("Avoid Screen Boundary", boidScreen.getIsAvoidingScreenEdgesPointer());
-//     ImGui::Checkbox("Show Grid", &drawGrid);
-//     ImGui::Checkbox("Enable Mouse Avoidance (Hold L-click)", flocking.getIsMouseAvoidanceEnabledPointer());
-// }
-
-void Window::drawCameraUI() {
-    // FlockingBehavior& flocking = FlockingBehavior::getInstance();
+void Window::drawCameraUI(Camera& camera) {
     ImGui::Text("Camera Mode");
-    
-    // ImGui::SliderFloat("Separation Radius", flocking.getSeparationRadiusPointer(), BOID_DEFAULT_RADIUS, FLOCK_MAXIMUM_SEPARATION_RADIUS);
-    // ImGui::SliderFloat("Avoid Factor", flocking.getSeparationAvoidFactorPointer(), 0.f, FLOCK_MAXIMUM_AVOID_FACTOR);
+
     bool status = true;
-    ImGui::Checkbox("Moveable Camera", &status);
+    ImGui::Checkbox("Camera Rotation", camera.getIsCameraRotationEnabled());
     ImGui::Separator();
 
     // ImGui::SliderFloat("Matching Factor", flocking.getMatchingFactorPointer(), 0.f, FLOCK_MAXIMUM_MATCHING_FACTOR);
-    ImGui::Checkbox("Orbit", &status);
+    ImGui::Checkbox("Free Camera", camera.getIsFreeCameraEnabled());
     ImGui::Separator();
 }
 
-enum RotationMode {
-    InputRotationMode,
-    NaturalRotationMode
-};
-
-int rotationMode = InputRotationMode;
-
 void Window::drawModelUI(Object& obj) {
-    // FlockingBehavior& flocking = FlockingBehavior::getInstance();
     ImGui::Text("Model Mode");
-    
-    // ImGui::SliderFloat("Separation Radius", flocking.getSeparationRadiusPointer(), BOID_DEFAULT_RADIUS, FLOCK_MAXIMUM_SEPARATION_RADIUS);
-    // ImGui::SliderFloat("Avoid Factor", flocking.getSeparationAvoidFactorPointer(), 0.f, FLOCK_MAXIMUM_AVOID_FACTOR);
-    // enum RotationMode {
-    //     InputRotationMode,
-    //     NaturalRotationMode
-    // };
 
-    
-    if (ImGui::RadioButton("No Rotation", obj.getRotationalMode() == Rotation::noRotationMode)) {
-        obj.setRotationMode(Rotation::noRotationMode);
+    ImGui::TextDisabled("This is a small hint.");
+
+    if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == RotationMode::inputRotation)) {
+        obj.setRotationMode(RotationMode::inputRotation);
     }
-    if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == Rotation::inputRotationMode)) {
-        obj.setRotationMode(Rotation::inputRotationMode);
-    }
-    if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == Rotation::naturalRotationMode)) {
-        obj.setRotationMode(Rotation::naturalRotationMode);
+    if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == RotationMode::naturalRotation)) {
+        obj.setRotationMode(RotationMode::naturalRotation);
     }
 }
 
-void Window::drawUI(Object& obj) {
+void Window::drawUI(Camera& camera, Object& obj) {
     ImGui::Begin("Engine Menu");
 
     ImGui::SetWindowPos(ImVec2(1000, 20), ImGuiCond_Once);
@@ -246,7 +199,7 @@ void Window::drawUI(Object& obj) {
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
     if (ImGui::CollapsingHeader("Camera")) {
-        drawCameraUI();
+        drawCameraUI(camera);
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
@@ -257,14 +210,12 @@ void Window::drawUI(Object& obj) {
     ImGui::End();
 }
 
-void Window::renderImGui(Object& obj) {
+void Window::renderImGui(Camera& camera, Object& obj) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    // bool show_demo_window = true;
-    // ImGui::ShowDemoWindow(&show_demo_window);
-    drawUI(obj);
+    drawUI(camera, obj);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

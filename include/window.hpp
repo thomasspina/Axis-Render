@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include "object.hpp"
+#include "camera.hpp"
 
 class Window {
     private:  
@@ -28,17 +29,17 @@ class Window {
         void initializeOpenGL();
         void initializeImGui();
 
-        void drawUI(Object& obj);
+        void drawUI(Camera& camera, Object& obj);
 
         double getMemoryUsage() const;
         void drawPerformanceUI();
-        void drawCameraUI();
+        void drawCameraUI(Camera& camera);
         void drawModelUI(Object& obj);
 
     public:
         Window();
 
-        void renderImGui(Object& obj);
+        void renderImGui(Camera& camera, Object& obj);
 
         void swapWindow();
         void closeWindow();

@@ -70,17 +70,21 @@ void Object::updateNormalMatrix(const glm::mat4& view) {
 }
 
 void Object::updateObjectYaw(float xoffset) {
-    objectYaw += xoffset;
+    if (rotationMode == RotationMode::inputRotation) {
+        objectYaw += xoffset;
+    }
 }
 
 void Object::updateObjectPitch(float yoffset) {
-    objectPitch += yoffset;
+    if (rotationMode == RotationMode::inputRotation) {
+        objectPitch += yoffset;
+    }
 }
 
 void Object::updateModelMatrix() {
-    if (rotationMode == Rotation::naturalRotationMode) {
+    if (rotationMode == RotationMode::naturalRotation) {
         naturalRotation();
-    } else if (rotationMode == Rotation::inputRotationMode) {
+    } else if (rotationMode == RotationMode::inputRotation) {
         inputRotation();
     }
 }

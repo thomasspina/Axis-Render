@@ -4,13 +4,19 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
+
 
 #include "constants.hpp"
 
 class Camera {
     private:
-        bool freeCameraEnabled = true;
-        bool isOrbitCamera = false;
+        glm::vec3 modelCenter;
+
+        float modelRadius;
+
+        bool cameraRotationEnabled = true;
+        bool freeCameraEnabled = false;
 
         // Global Y axis
         glm::vec3 globalUp;
@@ -43,6 +49,14 @@ class Camera {
         // Standard FOV
         float fov = DEFAULT_CAMERA_FOV;
 
+        void moveForward();
+
+        void moveBackward();
+
+        void moveRight();
+
+        void moveLeft();
+
     public:
         Camera();
 
@@ -70,11 +84,9 @@ class Camera {
 
         const float getFov() const;
 
-        void moveForward();
+        void move(const std::string& dir);
 
-        void moveBackward();
+        bool* getIsCameraRotationEnabled() { return &this->cameraRotationEnabled; }
 
-        void moveRight();
-
-        void moveLeft();
+        bool* getIsFreeCameraEnabled() { return &this->freeCameraEnabled; }
 };

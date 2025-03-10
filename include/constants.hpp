@@ -2,10 +2,14 @@
 
 #include <glm/glm.hpp>
 
-namespace Rotation {
-    constexpr int noRotationMode = 0;
-    constexpr int inputRotationMode = 1;
-    constexpr int naturalRotationMode = 2;
+namespace CameraMode {
+    constexpr int freeCamera = 0;
+    constexpr int orbitCamera = 1;
+}
+
+namespace RotationMode {
+    constexpr int inputRotation = 0;
+    constexpr int naturalRotation = 1;
 }
 
 #define AVG_MEMORY_USAGE 50.0f

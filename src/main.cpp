@@ -39,28 +39,26 @@ void handleInput(Window& window, Camera& camera, Model& model) {
         switch(event.type) {
             case SDL_QUIT:
                 window.setQuit();
-                // quit = true;
                 break;
                 
             case SDL_KEYDOWN: {
 
                 switch(event.key.keysym.sym) {
                     case SDLK_ESCAPE:
-                        std::cout << "ESC" << std::endl;
                         SDL_SetRelativeMouseMode(SDL_FALSE);
                         relativeMouseMode = false;
                         break;
                     case SDLK_w:
-                        camera.moveForward();
+                        camera.move("w");
                         break;
                     case SDLK_a:
-                        camera.moveLeft();
+                        camera.move("a");
                         break;
                     case SDLK_s:
-                        camera.moveBackward();
+                        camera.move("s");
                         break;
                     case SDLK_d:
-                        camera.moveRight();
+                        camera.move("d");
                         break;
                 }
                 break;
@@ -183,7 +181,7 @@ int main(int argc, char* argv[]) {
         objModel.updateModelMatrix();
 
         // Render UI
-        window.renderImGui(objModel);
+        window.renderImGui(camera, objModel);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
