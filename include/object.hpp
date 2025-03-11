@@ -8,6 +8,7 @@ private:
     float objectYaw;
     float objectPitch;
     int rotationMode = RotationMode::naturalRotation;
+    int modelName;
     
 protected:
     glm::vec3 position = glm::vec3(0.0f);
@@ -17,7 +18,7 @@ protected:
 public:
     Object();
     Object(glm::vec3 position);
-    virtual ~Object();
+    virtual ~Object() = default;
 
     const glm::mat4& getModelMatrix() const;
     const glm::mat3& getNormalMatrix() const;
@@ -44,6 +45,8 @@ public:
     void naturalRotation();
     void inputRotation();
     
+    void setModelName(int modelName) { this->modelName = modelName; }
+    int getModelName() { return this->modelName; }
     void setRotationMode(int newRotationMode) { rotationMode = newRotationMode; }
     int getRotationalMode() { return this->rotationMode; }
 };

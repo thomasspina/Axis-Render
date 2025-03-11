@@ -27,8 +27,8 @@
 #include "lighting/utils.hpp"
 
 bool relativeMouseMode = false;
-bool isInputRotationSelected = false;
-bool isNaturalRotationSelected = false;
+int modelSelect = 3;
+
 
 void handleInput(Window& window, Camera& camera, Model& model) {
     SDL_Event event = window.getEvent();
@@ -126,13 +126,14 @@ int main(int argc, char* argv[]) {
     ShaderProgram pointLightShader = ShaderProgram(pointLightVertexShader, pointLightFragmentShader);
 
     // Create a model
-    Model objModel = Model(std::string(ASSETS_PATH) + "models/spaceShuttle/spaceShuttle.obj");
+    std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/Space Shuttle/Space Shuttle.obj");
+    objModel->setModelName(3);
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/backpack/backpack.obj");
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/brickCylinder/brickCylinder.obj");
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/cube/cube.obj");
 
     // Create a camera object
-    Camera camera = Camera(objModel.getModelRadius(), objModel.getModelCenter());
+    Camera camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
 
     // Create a lighting object
     Lighting lighting = Lighting();
@@ -149,8 +150,16 @@ int main(int argc, char* argv[]) {
 
     while (!window.isQuit()) {
 
-       // Clear depth buffer from previous iteration
-       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Clear depth buffer from previous iteration
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        if (objModel->getModelName() != modelSelect) {
+            std::string modelName = ModelSelection::models[modelSelect];
+
+            objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/" + modelName + "/" + modelName + ".obj");
+            objModel->setModelName(modelSelect);
+            camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
+        }
 
         float currFrame = (float) SDL_GetTicks64();
         deltaTime = currFrame - lastFrame;
@@ -158,7 +167,7 @@ int main(int argc, char* argv[]) {
 
         camera.updateCameraSpeed(deltaTime);
 
-        handleInput(window, camera, objModel);
+        handleInput(window, camera, *objModel);
 
         // Handle models and lighting
         glm::mat4 view = camera.getViewMatrix();
@@ -170,19 +179,20 @@ int main(int argc, char* argv[]) {
         lighting.drawPointLights(pointLightShader);
 
         // render model
+
         gouraudShader.use();
-        objModel.updateModelMatrix();
-        objModel.updateNormalMatrix(view);
+        objModel->updateModelMatrix();
+        objModel->updateNormalMatrix(view);
         gouraudShader.setUniform("view", view);
         gouraudShader.setUniform("projection", projection);
-        gouraudShader.setUniform("model", objModel.getModelMatrix());
-        gouraudShader.setUniform("normalMatrix", objModel.getNormalMatrix());
+        gouraudShader.setUniform("model", objModel->getModelMatrix());
+        gouraudShader.setUniform("normalMatrix", objModel->getNormalMatrix());
         lighting.setLightingUniforms(gouraudShader);
-        objModel.draw(gouraudShader);
+        objModel->draw(gouraudShader);
 
 
         // Render UI
-        window.renderImGui(camera, objModel);
+        window.renderImGui(camera, *objModel, modelSelect);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

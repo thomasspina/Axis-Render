@@ -14,6 +14,21 @@ Model::Model(const std::string &path) {
     calculateModelDimension();
 }
 
+Model::~Model() {
+    cleanup();
+}
+
+void Model::cleanup() {
+
+    for (const auto& texture: textures_loaded) {
+        glDeleteTextures(1, &texture.id);
+    }
+
+    textures_loaded.clear();
+    
+    meshes.clear();
+}
+
 void Model::calculateModelDimension() {
     modelSize = maxBounds - minBounds;
     modelCenter = glm::vec3((maxBounds + minBounds) * 0.5f);
@@ -21,8 +36,8 @@ void Model::calculateModelDimension() {
 }
 
 void Model::draw(ShaderProgram &shader) {
-    for(unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i].draw(shader);
+    for (const auto& meshPtr : meshes) {
+        meshPtr->draw(shader);
     }
 }
 
@@ -64,7 +79,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
     }
 }
 
-Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
@@ -120,7 +135,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
-    return Mesh(vertices, indices, textures);
+    return std::make_unique<Mesh>(vertices, indices, textures);
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {

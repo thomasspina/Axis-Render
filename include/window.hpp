@@ -30,17 +30,17 @@ class Window {
         void initializeOpenGL();
         void initializeImGui();
 
-        void drawUI(Camera& camera, Object& obj);
+        void drawUI(Camera& camera, Object& obj, int& modelSelect);
 
         double getMemoryUsage() const;
         void drawPerformanceUI();
         void drawCameraUI(Camera& camera);
-        void drawModelUI(Object& obj);
+        void drawModelUI(Object& obj, int& modelSelect);
 
     public:
         Window();
 
-        void renderImGui(Camera& camera, Object& obj);
+        void renderImGui(Camera& camera, Object& obj, int& modelSelect);
 
         void swapWindow();
         void closeWindow();

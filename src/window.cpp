@@ -8,6 +8,7 @@
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include "imgui_impl_opengl3.h"
+#include <string>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -190,20 +191,26 @@ void Window::drawCameraUI(Camera& camera) {
     ImGui::Separator();
 }
 
-void Window::drawModelUI(Object& obj) {
+void Window::drawModelUI(Object& obj, int& modelSelect) {
     ImGui::Text("Model Mode");
 
     ImGui::TextDisabled("This is a small hint.");
 
-    if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == RotationMode::inputRotation)) {
-        obj.setRotationMode(RotationMode::inputRotation);
-    }
-    if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == RotationMode::naturalRotation)) {
-        obj.setRotationMode(RotationMode::naturalRotation);
-    }
+    // if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == RotationMode::inputRotation)) {
+    //     obj.setRotationMode(RotationMode::inputRotation);
+    // }
+    // if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == RotationMode::naturalRotation)) {
+    //     obj.setRotationMode(RotationMode::naturalRotation);
+    // }
+
+    ImGui::Separator();
+
+    ImGui::Text("Change Model");
+
+    ImGui::Combo("Select Model", &modelSelect, ModelSelection::models, IM_ARRAYSIZE(ModelSelection::models));
 }
 
-void Window::drawUI(Camera& camera, Object& obj) {
+void Window::drawUI(Camera& camera, Object& obj, int& modelSelect) {
     ImGui::Begin("Engine Menu");
 
     ImGui::SetWindowPos(ImVec2(1000, 20), ImGuiCond_Once);
@@ -221,18 +228,18 @@ void Window::drawUI(Camera& camera, Object& obj) {
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
     if (ImGui::CollapsingHeader("Model")) {
-        drawModelUI(obj);
+        drawModelUI(obj, modelSelect);
     }
 
     ImGui::End();
 }
 
-void Window::renderImGui(Camera& camera, Object& obj) {
+void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    drawUI(camera, obj);
+    drawUI(camera, obj, modelSelect);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

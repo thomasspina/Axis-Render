@@ -9,8 +9,6 @@ Object::Object(glm::vec3 position) : position(position) {
     model = glm::translate(model, position);
 }
 
-Object::~Object() = default;
-
 const glm::mat4& Object::getModelMatrix() const {
     return model;
 }

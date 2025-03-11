@@ -12,6 +12,17 @@ namespace RotationMode {
     constexpr int naturalRotation = 1;
 }
 
+namespace ModelSelection {
+    enum class Model {
+        Cube,
+        Triangle,
+        Sphere,
+        SpaceShuttle
+    };
+
+    constexpr const char* models[] = { "Cube", "Triangle", "Sphere", "Space Shuttle" };
+}
+
 #define AVG_MEMORY_USAGE 50.0f
 #define SCREEN_FPS 60u
 #define OPEN_GL_VERSION "#version 460"

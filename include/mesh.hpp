@@ -39,7 +39,7 @@ class Mesh {
 
     public:
         Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures);
-        virtual ~Mesh() = default;
+        virtual ~Mesh();
 
         virtual void draw(ShaderProgram& shader);
 };
