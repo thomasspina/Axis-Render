@@ -196,12 +196,12 @@ void Window::drawModelUI(Object& obj, int& modelSelect) {
 
     ImGui::TextDisabled("This is a small hint.");
 
-    // if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == RotationMode::inputRotation)) {
-    //     obj.setRotationMode(RotationMode::inputRotation);
-    // }
-    // if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == RotationMode::naturalRotation)) {
-    //     obj.setRotationMode(RotationMode::naturalRotation);
-    // }
+    if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == RotationMode::inputRotation)) {
+        obj.setRotationMode(RotationMode::inputRotation);
+    }
+    if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == RotationMode::naturalRotation)) {
+        obj.setRotationMode(RotationMode::naturalRotation);
+    }
 
     ImGui::Separator();
 

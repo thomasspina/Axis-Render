@@ -76,6 +76,9 @@ void Object::updateObjectYaw(float xoffset) {
 void Object::updateObjectPitch(float yoffset) {
     if (rotationMode == RotationMode::inputRotation) {
         objectPitch += yoffset;
+
+        // Prevent gimbal lock
+        objectPitch = glm::clamp(objectPitch, -89.0f, 89.0f);
     }
 }
 

@@ -20,7 +20,7 @@ namespace ModelSelection {
         SpaceShuttle
     };
 
-    constexpr const char* models[] = { "Cube", "Triangle", "Sphere", "Space Shuttle" };
+    constexpr const char* models[] = { "Cube", "Brick Cylinder", "Space Shuttle" };
 }
 
 #define AVG_MEMORY_USAGE 50.0f

@@ -27,7 +27,7 @@
 #include "lighting/utils.hpp"
 
 bool relativeMouseMode = false;
-int modelSelect = 3;
+int modelSelect = 2;
 
 
 void handleInput(Window& window, Camera& camera, Model& model) {
@@ -189,7 +189,6 @@ int main(int argc, char* argv[]) {
         gouraudShader.setUniform("normalMatrix", objModel->getNormalMatrix());
         lighting.setLightingUniforms(gouraudShader);
         objModel->draw(gouraudShader);
-
 
         // Render UI
         window.renderImGui(camera, *objModel, modelSelect);
