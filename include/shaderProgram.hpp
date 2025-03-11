@@ -16,8 +16,11 @@ private:
 public:
     ShaderProgram();
 
-    /// @brief  Construct a new Shader Program object with a vertex and fragment shader and link them
+    /// @brief  Construct a new Shader Program object with a vertex and fragment shader and link them. Doesn't delete the shaders after
     ShaderProgram(const Shader& vertShader, const Shader& fragShader);
+
+    /// @brief Construct a new Shader Program object with a vertex and fragment shader source file path and link them. Deletes the shaders after
+    ShaderProgram(const std::string& vertShaderPath, const std::string& fragShaderPath);
 
     void addShader(const Shader& shader);
     void removeShader(GLuint shaderID);
