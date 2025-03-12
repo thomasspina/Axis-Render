@@ -59,6 +59,7 @@ class Camera {
 
     public:
         Camera();
+        ~Camera() = default;
 
         Camera(float modelRadius, glm::vec3 modelCenter);
 

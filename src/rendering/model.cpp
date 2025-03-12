@@ -50,22 +50,67 @@ const float Model::getModelRadius() const {
 }
 
 void Model::loadModel(const std::string &path) {
-    Assimp::Importer import;
+    // Initially load without aiProcess_FlipUVs
+    scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
 
-    // aiProcess_Triangulate: If model is not entirely triangle, transform all primitives to triangles
-    // aiProcess_FlipUVs: Flip texture coordinate on y-axis since OpenGL images are reversed
-    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-
-    if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         return;
     }
 
-    // Extract the model directory path
+    bool globalFlip = shouldFlipModel(scene);
+
+    // Check whether model does not require UV flip
+    if (!globalFlip) {
+
+        std::cout << "Flip" << std::endl;
+
+        scene = importWithoutFlip.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
+
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+            std::cout << "ERROR::ASSIMP::" << importWithoutFlip.GetErrorString() << std::endl;
+            return;
+        }
+    }
+    
     directory = path.substr(0, path.find_last_of('/'));
     processNode(scene->mRootNode, scene);
 }
 
+bool Model::shouldFlipModel(const aiScene* scene) {
+    int flipCount = 0;
+    int totalCount = 0;
+    
+    for (unsigned int m = 0; m < scene->mNumMeshes; m++) {
+        aiMesh* mesh = scene->mMeshes[m];
+
+        if (!mesh->HasTextureCoords(0)) continue;
+
+        totalCount++;
+        if (meshRequireFlip(mesh)) {
+            flipCount++;
+        }
+    }
+    
+    if (totalCount == 0) return false; // no UVs in any mesh
+
+    // If more than half requires flipping, whole model likely requires flipping
+    return (flipCount > totalCount / 2);
+}
+
+bool Model::meshRequireFlip(const aiMesh* mesh) {
+    float minV = 1.0f;
+    float maxV = 0.0f;
+
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+        float v = mesh->mTextureCoords[0][i].y; // Access the y coordinate
+        minV = std::min(minV, v);
+        maxV = std::max(maxV, v);
+    }
+
+    // Indicate full height UV map used therefore needs flipping
+    return (maxV > 0.9f && minV < 0.1f);
+}
 
 void Model::processNode(aiNode *node, const aiScene *scene) {
     // process all the node’s meshes (if any)

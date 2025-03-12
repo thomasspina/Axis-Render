@@ -106,7 +106,6 @@ int main(int argc, char* argv[]) {
     glEnable(GL_DEPTH_TEST);
 
     // ============================ INITIALIZATION SECTION =====================================
-    // stbi_set_flip_vertically_on_load(true);
 
     // gouraud lighting shader
     ShaderProgram gouraudShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/gouraudObj.frag");
@@ -119,10 +118,7 @@ int main(int argc, char* argv[]) {
 
     // Create a model
     std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/Space Shuttle/Space Shuttle.obj");
-    objModel->setModelName(3);
-    // Model objModel = Model(std::string(ASSETS_PATH) + "models/backpack/backpack.obj");
-    // Model objModel = Model(std::string(ASSETS_PATH) + "models/brickCylinder/brickCylinder.obj");
-    // Model objModel = Model(std::string(ASSETS_PATH) + "models/cube/cube.obj");
+    objModel->setModelName(2);
 
     // Create a camera object
     Camera camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
@@ -134,11 +130,8 @@ int main(int argc, char* argv[]) {
 
     // ============================ RENDERING SECTION =====================================
 
-    // Activate defined shader program 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
-
-    // SDL_SetRelativeMouseMode(SDL_TRUE);
 
     while (!window.isQuit()) {
 
@@ -171,7 +164,6 @@ int main(int argc, char* argv[]) {
         lighting.drawPointLights(pointLightShader);
 
         // render model
-
         gouraudShader.use();
         objModel->updateModelMatrix();
         objModel->updateNormalMatrix(view);
