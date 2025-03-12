@@ -4,7 +4,7 @@
 #include <string>
 #include <assimp/scene.h>
 
-#include "mesh.hpp"
+#include "rendering/mesh.hpp"
 #include "object.hpp"
 #include <memory>
 

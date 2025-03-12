@@ -4,7 +4,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include "model.hpp"
+#include "rendering/model.hpp"
 
 
 Model::Model(const std::string &path) {

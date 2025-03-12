@@ -17,8 +17,7 @@
 #include "constants.hpp"
 #include "camera.hpp"
 #include "window.hpp"
-#include "model.hpp"
-#include "mesh.hpp"
+#include "rendering/model.hpp"
 
 #include "lighting/lighting.hpp"
 #include "lighting/pointLight.hpp"

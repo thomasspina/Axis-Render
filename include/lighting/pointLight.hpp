@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "mesh.hpp"
+#include "rendering/mesh.hpp"
 #include "object.hpp"
 #include "shader/shaderProgram.hpp"
 

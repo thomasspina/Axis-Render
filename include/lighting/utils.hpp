@@ -3,7 +3,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "mesh.hpp"
+#include "rendering/mesh.hpp"
 
 inline std::vector<Vertex> getCubeVertices(float size) {
     float halfSize = size / 2.0f;
