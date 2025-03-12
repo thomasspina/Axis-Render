@@ -98,4 +98,3 @@ void Object::inputRotation() {
     model = glm::rotate(IDENTITY_MATRIX, glm::radians(objectPitch), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(objectYaw), glm::vec3(0.0f, 1.0f, 0.0f));
 }
-

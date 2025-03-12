@@ -16,11 +16,11 @@ namespace ModelSelection {
     enum class Model {
         Cube,
         Triangle,
-        Sphere,
+        Backpack,
         SpaceShuttle
     };
 
-    constexpr const char* models[] = { "Cube", "Brick Cylinder", "Space Shuttle" };
+    constexpr const char* models[] = { "Cube", "Brick Cylinder", "Space Shuttle", "Backpack", "Planet", "Cyborg", "Nanosuit", "Vase" };
 }
 
 #define AVG_MEMORY_USAGE 50.0f

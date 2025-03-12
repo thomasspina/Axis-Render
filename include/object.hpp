@@ -5,8 +5,8 @@
 
 class Object {
 private:
-    float objectYaw;
-    float objectPitch;
+    float objectYaw = 0.0f;
+    float objectPitch = 0.0f;
     int rotationMode = RotationMode::naturalRotation;
     int modelName;
     

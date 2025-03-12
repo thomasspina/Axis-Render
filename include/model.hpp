@@ -7,9 +7,16 @@
 #include "mesh.hpp"
 #include "object.hpp"
 #include <memory>
+#include <assimp/Importer.hpp>
+
 
 class Model : public Object {
     private:
+        Assimp::Importer import;
+        Assimp::Importer importWithoutFlip; 
+        const aiScene* scene;
+        
+        bool needFlip = false;
         glm::vec3 modelSize;
         glm::vec3 modelCenter;
         float modelRadius;
@@ -20,12 +27,17 @@ class Model : public Object {
         std::vector<Texture> textures_loaded;
         std::vector<std::unique_ptr<Mesh>> meshes;
         std::string directory;
+
         void loadModel(const std::string &path);
+
+        bool shouldFlipModel(const aiScene* scene);
+        bool meshRequireFlip(const aiMesh* mesh);
+
         void processNode(aiNode *node, const aiScene *scene);
         std::unique_ptr<Mesh> processMesh(aiMesh *mesh, const aiScene *scene);
+
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
         unsigned int textureFromFile(const std::string &path, const std::string &directory, bool gamma = false);
-
 
     public:
         Model(const std::string &path);
