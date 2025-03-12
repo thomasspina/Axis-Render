@@ -2,9 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "mesh.hpp"
+#include "rendering/mesh.hpp"
 #include "object.hpp"
-#include "shaderProgram.hpp"
+#include "shader/shaderProgram.hpp"
 
 class PointLight : public Mesh, public Object {
 private:

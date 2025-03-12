@@ -1,4 +1,3 @@
-#include <stb_include/stb_image.h>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
@@ -8,7 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "shaderProgram.hpp"
+#include "shader/shaderProgram.hpp"
 #include "config.h"
 
 #include <imgui.h>
@@ -18,8 +17,7 @@
 #include "constants.hpp"
 #include "camera.hpp"
 #include "window.hpp"
-#include "model.hpp"
-#include "mesh.hpp"
+#include "rendering/model.hpp"
 
 #include "lighting/lighting.hpp"
 #include "lighting/pointLight.hpp"
@@ -111,19 +109,13 @@ int main(int argc, char* argv[]) {
     // stbi_set_flip_vertically_on_load(true);
 
     // gouraud lighting shader
-    Shader gouraudVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/gouraudObj.vert");
-    Shader gouraudFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/gouraudObj.frag");
-    ShaderProgram gouraudShader = ShaderProgram(gouraudVertexShader, gouraudFragmentShader);
+    ShaderProgram gouraudShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/gouraudObj.frag");
 
     // phong lighting shader
-    Shader phongVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/phongObj.vert");
-    Shader phongFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/phongObj.frag");
-    ShaderProgram phongShader = ShaderProgram(phongVertexShader, phongFragmentShader);
+    ShaderProgram phongShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/phongObj.vert", std::string(ASSETS_PATH) + "shaders/phongObj.frag");
 
     // init PointLight shader
-    Shader pointLightVertexShader = Shader(vertex, std::string(ASSETS_PATH) + "shaders/pointLight.vert");
-    Shader pointLightFragmentShader = Shader(fragment, std::string(ASSETS_PATH) + "shaders/pointLight.frag");
-    ShaderProgram pointLightShader = ShaderProgram(pointLightVertexShader, pointLightFragmentShader);
+    ShaderProgram pointLightShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/pointLight.vert", std::string(ASSETS_PATH) + "shaders/pointLight.frag");
 
     // Create a model
     std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/Space Shuttle/Space Shuttle.obj");

@@ -4,7 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "shaderProgram.hpp"
+#include "shader/shaderProgram.hpp"
 
 /// @brief Vertex data structure for the Mesh class
 struct Vertex {

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "shaderProgram.hpp"
+#include "shader/shaderProgram.hpp"
 
 ShaderProgram::ShaderProgram() {
     programID = glCreateProgram();
@@ -11,6 +11,19 @@ ShaderProgram::ShaderProgram(const Shader& vertShader, const Shader& fragShader)
     addShader(vertShader);
     addShader(fragShader);
     link();
+}
+
+ShaderProgram::ShaderProgram(const std::string& vertShaderPath, const std::string& fragShaderPath) {
+    // create shaders
+    Shader vertShader = Shader(vertex, vertShaderPath);
+    Shader fragShader = Shader(fragment, fragShaderPath);
+
+    programID = glCreateProgram();
+    addShader(vertShader);
+    addShader(fragShader);
+    link();
+
+    // shaders are deleted since Shader class destructor deletes them
 }
 
 void ShaderProgram::addShader(const Shader& shader) {
