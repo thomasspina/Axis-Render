@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "shaderProgram.hpp"
+#include "shader/shaderProgram.hpp"
 
 class LightCaster {
 private:

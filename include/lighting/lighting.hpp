@@ -5,7 +5,7 @@
 
 #include "lighting/pointLight.hpp"
 #include "lighting/lightCaster.hpp"
-#include "shaderProgram.hpp"
+#include "shader/shaderProgram.hpp"
 
 class Lighting {
 private:

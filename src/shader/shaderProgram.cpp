@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "shaderProgram.hpp"
+#include "shader/shaderProgram.hpp"
 
 ShaderProgram::ShaderProgram() {
     programID = glCreateProgram();

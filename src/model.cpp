@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stb_image.h>
+#include <stb_include/stb_image.h>
 #include <cstring>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

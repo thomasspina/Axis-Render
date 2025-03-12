@@ -3,7 +3,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "shader.hpp"
+#include "shader/shader.hpp"
 
 
 /**
