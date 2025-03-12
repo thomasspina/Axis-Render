@@ -38,14 +38,13 @@ endif()
 
 
 
-#####################
+######################
 # External libraries #
-#####################
-
-# Find required packages
-find_package(OpenGL REQUIRED)
-
+######################
 include(FetchContent)
+
+#### OpenGL ####
+find_package(OpenGL REQUIRED)
 
 #### SDL2 ####
 # Try to find SDL2 first
@@ -289,5 +288,5 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
 # Platform-specific settings
 if(WIN32)
- target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
 endif()
