@@ -1,4 +1,4 @@
-#include <stb_image.h>
+#include <stb_include/stb_image.h>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
