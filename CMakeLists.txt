@@ -162,19 +162,18 @@ add_library(ImGui STATIC
     ${imgui_SOURCE_DIR}/imgui_draw.cpp
     ${imgui_SOURCE_DIR}/imgui_tables.cpp
     ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
 target_include_directories(ImGui PUBLIC
     ${imgui_SOURCE_DIR}
-    ${imgui_SOURCE_DIR}/backends
-    ${SDL2_SOURCE_DIR}/include
 )
-target_compile_definitions(ImGui PRIVATE
-    IMGUI_DISABLE_OBSOLETE_FUNCTIONS
-    IMGUI_DISABLE_DEMO_WINDOWS
-    IMGUI_DISABLE_DEBUG_TOOLS
-    IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS
+add_library(ImGui-SDL2 STATIC
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+)
+target_include_directories(ImGui-SDL2 PUBLIC
+    ${imgui_SOURCE_DIR}             # Ensure ImGui core headers
+    ${imgui_SOURCE_DIR}/backends    # Ensure SDL2 and OpenGL backends
+    ${SDL2_SOURCE_DIR}/include 
 )
 
 
@@ -226,6 +225,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         SDL2::SDL2-static
         SDL2::SDL2main
+        ImGui-SDL2
         ImGui
         OpenGL::GL
         libglew_static
