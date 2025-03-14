@@ -1,0 +1,4 @@
+newmtl m1 
+map_Kd Medal-diffuse.jpg 
+map_Bump Medal-normals.jpg 
+map_AO Medal-occlusion.jpg 

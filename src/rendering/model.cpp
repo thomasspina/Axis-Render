@@ -112,6 +112,8 @@ bool Model::meshRequireFlip(const aiMesh* mesh) {
     return (maxV > 0.9f && minV < 0.1f);
 }
 
+// aiScene is the top level object containing all the model info eg: meshes, textures
+// aiNode is a single node within the scene, does not store mesh directly but holds indice to mesh within aiScene
 void Model::processNode(aiNode *node, const aiScene *scene) {
     // process all the node’s meshes (if any)
     for(unsigned int i = 0; i < node->mNumMeshes; i++) {
@@ -124,6 +126,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
     }
 }
 
+// MMesh: Positions, Normals and texture coordinate
 std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -139,6 +142,7 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         vector.z = mesh->mVertices[i].z;
         vertex.position = vector;
 
+        // Get model's largest and smallest vector position values
         minBounds = glm::min(minBounds, vector);
         maxBounds = glm::max(maxBounds, vector);
 
@@ -149,6 +153,7 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         vertex.normal = vector;
 
         // Vertex texture coordinates
+        // Check if primary coordinate map exist
         if(mesh->mTextureCoords[0]) {
             glm::vec2 vec;
             vec.x = mesh->mTextureCoords[0][i].x;
@@ -161,7 +166,7 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         vertices.push_back(vertex);
     }
 
-    // process indices
+    // Process indices on each (in our case) triangle face of the model
     for(unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
         for(unsigned int j = 0; j < face.mNumIndices; j++) {
@@ -169,18 +174,62 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         }
     }
 
-    // process material
+    // mMaterial: Textures, colors and shading settings
+    // If mMaterialIndex is -1, then mesh contains no material
     if(mesh->mMaterialIndex >= 0) {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
+        // Read map_Kd value
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
+        // Read map_Ks value
         std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+        // Read map_Bump
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+
+        // Read map_AO
+        std::vector<Texture> aoMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ao");
+        textures.insert(textures.end(), aoMaps.begin(), aoMaps.end());
+
+        // Read map_Pr
+        std::vector<Texture> roughnessMaps = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_roughness");
+        textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
+
+        // Read map_Pm
+        std::vector<Texture> metallicMaps = loadMaterialTextures(material, aiTextureType_REFLECTION, "texture_metallic");
+        textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
+    }
+
+    // If mesh contains no texture, render a default null texture
+    if (textures.empty()) {
+        Texture defaultTexture;
+        defaultTexture.id = applyNullTexture(); 
+        defaultTexture.type = "texture_diffuse";
+        textures.push_back(defaultTexture);
     }
 
     return std::make_unique<Mesh>(vertices, indices, textures);
+}
+
+unsigned int Model::applyNullTexture() {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // White color
+    unsigned char whitePixel[3] = { 255, 255, 255 };
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, whitePixel);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    return textureID;
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
