@@ -73,6 +73,7 @@ void Model::loadModel(const std::string &path) {
         }
     }
     
+    // Save model directory
     directory = path.substr(0, path.find_last_of('/'));
     processNode(scene->mRootNode, scene);
 }
@@ -188,11 +189,11 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
         // Read map_Bump
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
         // Read map_AO
-        std::vector<Texture> aoMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ao");
+        std::vector<Texture> aoMaps = loadMaterialTextures(material, aiTextureType_LIGHTMAP, "texture_ao");
         textures.insert(textures.end(), aoMaps.begin(), aoMaps.end());
 
         // Read map_Pr
@@ -232,14 +233,21 @@ unsigned int Model::applyNullTexture() {
     return textureID;
 }
 
+// Load all textures found within the given material
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
     std::vector<Texture> textures;
 
+    std::cout << typeName << std::endl;
+
+    // Iterate over all textures of given type
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
+        
+        // Store texture path within str
         mat->GetTexture(type, i, &str);
         bool skip = false;
 
+        // Iterate over already loaded textures to prevent duplicate loading
         for(unsigned int j = 0; j < textures_loaded.size(); j++) {
 
             // Texture has already been processed
@@ -264,12 +272,16 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     return textures;
 }
 
-unsigned int Model::textureFromFile(const std::string &path, const std::string &directory, bool gamma){
+unsigned int Model::textureFromFile(const std::string &path, const std::string &directory){
+    // texture file name
     std::string filename = directory + '/' + path;
+
+    std::cout << filename << std::endl;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
+    // nrComponents inform us of the number of color components within the given image
     int width, height, nrComponents;
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 

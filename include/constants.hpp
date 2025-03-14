@@ -20,7 +20,7 @@ namespace ModelSelection {
         SpaceShuttle
     };
 
-    constexpr const char* models[] = { "Cube", "Brick Cylinder", "Space Shuttle", "Backpack", "Planet", "Cyborg", "Nanosuit", "Bunny", "Vase", "BellX1", "Medal" };
+    constexpr const char* models[] = { "Cube", "Brick Cylinder", "Space Shuttle", "Backpack", "Planet", "Cyborg", "Nanosuit", "Bunny", "Vase", "BellX1", "andrew-jackson-silver-medal-150k" };
 }
 
 #define AVG_MEMORY_USAGE 50.0f
@@ -53,9 +53,12 @@ namespace ModelSelection {
 #define DEFAULT_FAR_CLIPPING_PLANE 100.0f
 
 // Define light constants
-#define DEFAULT_LIGHT_AMBIENT 0.1f
-#define DEFAULT_LIGHT_DIFFUSE 0.5f
-#define DEFAULT_LIGHT_SPECULAR 1.0f
+// #define DEFAULT_LIGHT_AMBIENT 0.1f
+#define DEFAULT_LIGHT_AMBIENT 0.3f
+// #define DEFAULT_LIGHT_DIFFUSE 0.5f
+#define DEFAULT_LIGHT_DIFFUSE 0.7f
+// #define DEFAULT_LIGHT_SPECULAR 1.0f
+#define DEFAULT_LIGHT_SPECULAR 0.5f
 
 // Define light attenuation constants
 #define DEFAULT_LIGHT_CONSTANT 1.0f

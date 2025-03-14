@@ -1,4 +1,4 @@
 newmtl material_0
 map_Kd diffuse.jpg
 map_Bump normal.jpg
-map_AO occlusion.png
+map_AO occlusion.jpg
