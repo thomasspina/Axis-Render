@@ -3,8 +3,8 @@
 
 Camera::Camera() {
     globalUp = DEFAULT_GLOBAL_UP;
-    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
+    cameraFront = glm::vec3(0.0f, -0.8f, -0.2f);
+    cameraPos = glm::vec3(0.0f, 2.0f, 0.0f);
     cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 
     cameraDirection = glm::normalize(cameraPos - cameraTarget);

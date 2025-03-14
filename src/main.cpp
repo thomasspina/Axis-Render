@@ -28,12 +28,12 @@ bool relativeMouseMode = false;
 int modelSelect = 2;
 
 
-void handleInput(Window& window, Camera& camera, Model& model) {
+void handleInput(Window& window, Camera& camera/*, Model& model*/) {
     SDL_Event event = window.getEvent();
 
     while (SDL_PollEvent(&event) > 0) {
 
-        ImGui_ImplSDL2_ProcessEvent(&event);
+        // ImGui_ImplSDL2_ProcessEvent(&event);
         switch(event.type) {
             case SDL_QUIT:
                 window.setQuit();
@@ -62,16 +62,16 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                 break;
             }
 
-            case SDL_MOUSEBUTTONDOWN: {
-                if (SDL_BUTTON(SDL_BUTTON_LEFT)) {
-                    if (!ImGui::GetIO().WantCaptureMouse) { 
-                        SDL_SetRelativeMouseMode(SDL_TRUE);
-                        relativeMouseMode = true;
-                    }
-                }
+            // case SDL_MOUSEBUTTONDOWN: {
+            //     if (SDL_BUTTON(SDL_BUTTON_LEFT)) {
+            //         if (!ImGui::GetIO().WantCaptureMouse) { 
+            //             SDL_SetRelativeMouseMode(SDL_TRUE);
+            //             relativeMouseMode = true;
+            //         }
+            //     }
 
-                break;
-            }
+            //     break;
+            // }
 
             case SDL_MOUSEWHEEL: {
                 float yOffset = event.wheel.y;
@@ -83,11 +83,11 @@ void handleInput(Window& window, Camera& camera, Model& model) {
 
             case SDL_MOUSEMOTION: {
                 if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
-                    float xOffset = event.motion.xrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
-                    float yOffset = event.motion.yrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
+                    // float xOffset = event.motion.xrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
+                    // float yOffset = event.motion.yrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
 
-                    model.updateObjectYaw(xOffset);
-                    model.updateObjectPitch(yOffset);
+                    // model.updateObjectYaw(xOffset);
+                    // model.updateObjectPitch(yOffset);
                 } else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
                     float xOffset = event.motion.xrel;
                     float yOffset = event.motion.yrel;
@@ -117,20 +117,32 @@ int main(int argc, char* argv[]) {
     // init PointLight shader
     ShaderProgram pointLightShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/pointLight.vert", std::string(ASSETS_PATH) + "shaders/pointLight.frag");
 
+    // world grid shader
+    ShaderProgram worldGridShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/worldGrid.vert", std::string(ASSETS_PATH) + "shaders/worldGrid.frag");
+
+
     // Create a model
-    std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/Space Shuttle/Space Shuttle.obj");
-    objModel->setModelName(3);
+    // std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/Space Shuttle/Space Shuttle.obj");
+    // objModel->setModelName(3);
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/backpack/backpack.obj");
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/brickCylinder/brickCylinder.obj");
     // Model objModel = Model(std::string(ASSETS_PATH) + "models/cube/cube.obj");
 
     // Create a camera object
-    Camera camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
+    // Camera camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
+    Camera camera = Camera();
 
     // Create a lighting object
-    Lighting lighting = Lighting();
-    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f));
-    
+    // Lighting lighting = Lighting();
+    // lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.5f));
+
+    // World grid setup
+    GLuint worldGridVao;
+    glGenVertexArrays(1, &worldGridVao);
+    glBindVertexArray(worldGridVao);
+    glBindVertexArray(0);
+
+
 
     // ============================ RENDERING SECTION =====================================
 
@@ -141,17 +153,19 @@ int main(int argc, char* argv[]) {
     // SDL_SetRelativeMouseMode(SDL_TRUE);
 
     while (!window.isQuit()) {
+        glDisable(GL_CULL_FACE);
 
         // Clear depth buffer from previous iteration
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (objModel->getModelName() != modelSelect) {
-            std::string modelName = ModelSelection::models[modelSelect];
+        // if (objModel->getModelName() != modelSelect) {
+        //     std::string modelName = ModelSelection::models[modelSelect];
 
-            objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/" + modelName + "/" + modelName + ".obj");
-            objModel->setModelName(modelSelect);
-            camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
-        }
+        //     objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/" + modelName + "/" + modelName + ".obj");
+        //     objModel->setModelName(modelSelect);
+        //     camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
+        // }
 
         float currFrame = (float) SDL_GetTicks64();
         deltaTime = currFrame - lastFrame;
@@ -159,31 +173,40 @@ int main(int argc, char* argv[]) {
 
         camera.updateCameraSpeed(deltaTime);
 
-        handleInput(window, camera, *objModel);
+        handleInput(window, camera/*, *objModel*/);
 
         // Handle models and lighting
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = camera.getProjectionMatrix();
 
+        // render world grid
+        worldGridShader.use();
+        worldGridShader.setUniform("view", view);
+        worldGridShader.setUniform("projection", projection);
+        worldGridShader.setUniform("cameraPos", camera.getCameraPos());
+        glBindVertexArray(worldGridVao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
         // render lights TODO: add option to toggle this off
-        lighting.updateView(view);
-        lighting.updateProjection(projection);
-        lighting.drawPointLights(pointLightShader);
+        // lighting.updateView(view);
+        // lighting.updateProjection(projection);
+        // lighting.drawPointLights(pointLightShader);
 
         // render model
 
-        gouraudShader.use();
-        objModel->updateModelMatrix();
-        objModel->updateNormalMatrix(view);
-        gouraudShader.setUniform("view", view);
-        gouraudShader.setUniform("projection", projection);
-        gouraudShader.setUniform("model", objModel->getModelMatrix());
-        gouraudShader.setUniform("normalMatrix", objModel->getNormalMatrix());
-        lighting.setLightingUniforms(gouraudShader);
-        objModel->draw(gouraudShader);
+        // gouraudShader.use();
+        // objModel->updateModelMatrix();
+        // objModel->updateNormalMatrix(view);
+        // gouraudShader.setUniform("view", view);
+        // gouraudShader.setUniform("projection", projection);
+        // gouraudShader.setUniform("model", objModel->getModelMatrix());
+        // gouraudShader.setUniform("normalMatrix", objModel->getNormalMatrix());
+        // lighting.setLightingUniforms(gouraudShader);
+        // objModel->draw(gouraudShader);
 
         // Render UI
-        window.renderImGui(camera, *objModel, modelSelect);
+        // window.renderImGui(camera, *objModel, modelSelect);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
