@@ -1,17 +1,16 @@
-#version 460 core
-
-out vec4 FragColour;
+#version 460
 
 in vec3 WorldPos;
 
+out vec4 FragColour;
+
 uniform vec3 cameraPos;
-
-
 uniform float gridSize = 100.0;
 uniform float minPixelsBetweenCells = 2.0;
 uniform float gridCellSize = 0.025;
-uniform vec4 colourThinLine = vec4(0.5, 0.5, 0.5, 1.0);
-uniform vec4 colourThickLine = vec4(0.0, 0.0, 0.0, 1.0);
+uniform vec4 gridColourThin = vec4(0.4, 0.4, 0.4, 1.0);
+uniform vec4 gridColourThick = vec4(0.75, 0.75, 0.75, 1.0);
+
 
 float log10(float x)
 {
@@ -19,17 +18,20 @@ float log10(float x)
     return f;
 }
 
+
 float satf(float x)
 {
     float f = clamp(x, 0.0, 1.0);
     return f;
 }
 
+
 vec2 satv(vec2 x)
 {
     vec2 v = clamp(x, vec2(0.0), vec2(1.0));
     return v;
 }
+
 
 float max2(vec2 v)
 {
@@ -71,14 +73,14 @@ void main()
     vec4 Colour;
 
     if (Lod2a > 0.0) {
-        Colour = colourThickLine;
+        Colour = gridColourThick;
         Colour.a *= Lod2a;
     } else {
         if (Lod1a > 0.0) {
-            Colour = mix(colourThickLine, colourThinLine, LOD_fade);
+            Colour = mix(gridColourThick, gridColourThin, LOD_fade);
 	        Colour.a *= Lod1a;
         } else {
-            Colour = colourThinLine;
+            Colour = gridColourThin;
 	        Colour.a *= (Lod0a * (1.0 - LOD_fade));
         }
     }
@@ -87,8 +89,5 @@ void main()
 
     Colour.a *= OpacityFalloff;
 
-
     FragColour = Colour;
-
 }
-
