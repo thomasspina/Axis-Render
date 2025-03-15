@@ -183,7 +183,8 @@ void Window::drawPerformanceUI() {
 }
 
 void Window::drawCameraUI(Camera& camera) {
-    ImGui::TextDisabled("Note: Scroll to zoom");
+    ImGui::TextDisabled("[Scroll] to zoom ");
+    ImGui::TextDisabled("[ESC] to release mouse cursor");
 
     bool status = true;
     ImGui::Checkbox("Camera Rotation", camera.getIsCameraRotationEnabled());
@@ -209,25 +210,22 @@ void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
         obj.setRotationMode(RotationMode::naturalRotation);
     }
 
+    ImGui::SliderFloat("Model Scale", obj.getModelScale(), 0.1, 2.0);
+
     if (ImGui::Button("Reset Model [Enter]")) {
         obj.resetModel();
     }
 
-    ImGui::SliderFloat("Model Scale", obj.getModelScale(), 0.0, 2.0);
-
     ImGui::Separator();
-
-    ImGui::Text("Change Model");
 
     ImGui::Combo("Select Model", &modelSelect, ModelSelection::models, IM_ARRAYSIZE(ModelSelection::models));
 
     ImGui::Separator();
 
-    ImGui::Text("Change Model Shader");
-
     ImGui::Combo("Select Shader", &shaderSelect, ShaderSelection::shaders, IM_ARRAYSIZE(ShaderSelection::shaders));
 }
 
+// TODO: create lighting UI
 void Window::drawLightingUI() {
     ImGui::Separator();
 }

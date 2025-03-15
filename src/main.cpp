@@ -33,6 +33,8 @@ int selectedShader = shaderSelect;
 float scaleValue = 1.0;
 float selectedScaleValue = scaleValue;
 
+bool isUiCollapsed = false;
+
 void handleInput(Window& window, Camera& camera, Model& model) {
     SDL_Event event = window.getEvent();
 
@@ -63,6 +65,9 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                         SDL_SetRelativeMouseMode(SDL_FALSE);
                         relativeMouseMode = false;
                         break;
+                    case SDLK_RETURN:
+                        model.resetModel();
+                        break;
                     case SDLK_w:
                         camera.move("w");
                         break;
@@ -74,6 +79,13 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                         break;
                     case SDLK_d:
                         camera.move("d");
+                        break;
+                    case SDLK_r:
+                        camera.reset();
+                        break;
+                    case SDLK_TAB:
+                        isUiCollapsed = !isUiCollapsed;
+                        ImGui::SetWindowCollapsed("Engine Menu", isUiCollapsed);
                         break;
                 }
                 break;
@@ -125,7 +137,6 @@ std::unique_ptr<Model> loadNewModel() {
 int main(int argc, char* argv[]) {
 
     Window window = Window();
-    // glEnable(GL_DEPTH_TEST);
 
     // ============================ INITIALIZATION SECTION =====================================
 
@@ -156,7 +167,6 @@ int main(int argc, char* argv[]) {
     Lighting lighting = Lighting();
     lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f));
     
-
     // ============================ RENDERING SECTION =====================================
 
     float deltaTime = 0.0f;

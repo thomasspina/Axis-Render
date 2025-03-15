@@ -29,9 +29,7 @@ namespace ModelSelection {
         "Cyborg", 
         "Nanosuit", 
         "Bunny", 
-        "Vase", 
-        "BellX1", 
-        "andrew-jackson-silver-medal-150k"
+        "Vase"
     };
 
 }
