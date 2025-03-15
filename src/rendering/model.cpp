@@ -237,8 +237,6 @@ unsigned int Model::applyNullTexture() {
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
     std::vector<Texture> textures;
 
-    std::cout << typeName << std::endl;
-
     // Iterate over all textures of given type
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
@@ -275,8 +273,6 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
 unsigned int Model::textureFromFile(const std::string &path, const std::string &directory){
     // texture file name
     std::string filename = directory + '/' + path;
-
-    std::cout << filename << std::endl;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);

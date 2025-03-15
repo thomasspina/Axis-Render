@@ -1,10 +1,7 @@
 #version 460 core
-// Must be the very first line, no spaces or blank lines before
 
-// Output final fragment color
 out vec4 FragColour;
 
-// Inputs from the vertex shader
 in vec3 Diffuse;    // Diffuse lighting factor
 in vec3 Specular;   // Specular lighting factor
 in vec2 TexCoords;  // Texture coordinates

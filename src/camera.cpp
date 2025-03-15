@@ -1,7 +1,7 @@
 #include "camera.hpp"
 #include <SDL2/SDL_timer.h>
 
-Camera::Camera() {
+void Camera::init() {
     globalUp = DEFAULT_GLOBAL_UP;
     cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -10,6 +10,10 @@ Camera::Camera() {
     cameraDirection = glm::normalize(cameraPos - cameraTarget);
     cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
+}
+
+Camera::Camera() {
+    init();
 }
 
 Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
@@ -130,5 +134,9 @@ void Camera::moveRight() {
 
 void Camera::moveLeft() {
     cameraPos -= glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+}
+
+void Camera::reset() {
+    init();
 }
 

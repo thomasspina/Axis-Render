@@ -34,6 +34,7 @@ public:
     void scale(const glm::vec3& scale);
     void scale(float scale);
 
+    // Reset model matrix to identity matrix
     void resetModel();
 
     void updateNormalMatrix(const glm::mat4& view);

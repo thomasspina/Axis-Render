@@ -20,7 +20,29 @@ namespace ModelSelection {
         SpaceShuttle
     };
 
-    constexpr const char* models[] = { "Cube", "Brick Cylinder", "Space Shuttle", "Backpack", "Planet", "Cyborg", "Nanosuit", "Bunny", "Vase", "BellX1", "andrew-jackson-silver-medal-150k" };
+    constexpr const char* models[] = { 
+        "Cube",
+        "Brick Cylinder", 
+        "Space Shuttle", 
+        "Backpack", 
+        "Planet", 
+        "Cyborg", 
+        "Nanosuit", 
+        "Bunny", 
+        "Vase", 
+        "BellX1", 
+        "andrew-jackson-silver-medal-150k"
+    };
+
+}
+
+namespace ShaderSelection {
+    constexpr const char* shaders[] = { 
+        "Phong",
+        "Gouraud",
+        "Sketch",
+        "ASCII", 
+    };
 }
 
 #define AVG_MEMORY_USAGE 50.0f

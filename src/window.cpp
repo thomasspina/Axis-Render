@@ -50,7 +50,7 @@ void Window::configureOpenGL() {
 }
 
 void Window::createWindow() {
-    window = SDL_CreateWindow("Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     if (!window) {
         std::cerr << "Failed to creating a window! Error: " << SDL_GetError() << std::endl;
@@ -85,6 +85,9 @@ void Window::initializeOpenGL() {
     }
 
     glClearColor(0, 0, 0, 1.0f);
+
+    // Enables depth comparison, only rendering closes fragments
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Window::initializeImGui() {
@@ -180,7 +183,7 @@ void Window::drawPerformanceUI() {
 }
 
 void Window::drawCameraUI(Camera& camera) {
-    ImGui::Text("Camera Mode");
+    ImGui::TextDisabled("Note: Scroll to zoom");
 
     bool status = true;
     ImGui::Checkbox("Camera Rotation", camera.getIsCameraRotationEnabled());
@@ -189,57 +192,79 @@ void Window::drawCameraUI(Camera& camera) {
     // ImGui::SliderFloat("Matching Factor", flocking.getMatchingFactorPointer(), 0.f, FLOCK_MAXIMUM_MATCHING_FACTOR);
     ImGui::Checkbox("Free Camera", camera.getIsFreeCameraEnabled());
     ImGui::Separator();
+
+    if (ImGui::Button("Reset Camera [R]")) {
+        camera.reset();
+    }
+
+    ImGui::Separator();
 }
 
-void Window::drawModelUI(Object& obj, int& modelSelect) {
-    ImGui::Text("Model Mode");
-
-    ImGui::TextDisabled("This is a small hint.");
-
-    if (ImGui::RadioButton("Input Rotation", obj.getRotationalMode() == RotationMode::inputRotation)) {
+void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect, float* scaleValue) {
+    if (ImGui::RadioButton("Input Rotation [Hold Mouse 3]", obj.getRotationalMode() == RotationMode::inputRotation)) {
         obj.setRotationMode(RotationMode::inputRotation);
     }
+
     if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == RotationMode::naturalRotation)) {
         obj.setRotationMode(RotationMode::naturalRotation);
     }
+
+    ImGui::Button("Reset Model [Enter]");
+
+    ImGui::SliderFloat("Model Scale", scaleValue, 0.0, 2.0);
 
     ImGui::Separator();
 
     ImGui::Text("Change Model");
 
     ImGui::Combo("Select Model", &modelSelect, ModelSelection::models, IM_ARRAYSIZE(ModelSelection::models));
+
+    ImGui::Separator();
+
+    ImGui::Text("Change Model Shader");
+
+    ImGui::Combo("Select Shader", &shaderSelect, ShaderSelection::shaders, IM_ARRAYSIZE(ShaderSelection::shaders));
 }
 
-void Window::drawUI(Camera& camera, Object& obj, int& modelSelect) {
+void Window::drawLightingUI() {
+    ImGui::Separator();
+}
+
+void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, float* scaleValue) {
     ImGui::Begin("Engine Menu");
 
     ImGui::SetWindowPos(ImVec2(1000, 20), ImGuiCond_Once);
     ImGui::SetWindowSize(ImVec2(400, 700), ImGuiCond_Once);
 
-    ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Performance")) {
         drawPerformanceUI();
     }
 
-    ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Camera")) {
         drawCameraUI(camera);
     }
 
-    ImGui::SetNextItemOpen(true, ImGuiCond_Once); // open menu by default
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Model")) {
-        drawModelUI(obj, modelSelect);
+        drawModelUI(obj, modelSelect, shaderSelect, scaleValue);
+    }
+
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
+    if (ImGui::CollapsingHeader("Lighting")) {
+        drawLightingUI();
     }
 
     ImGui::End();
 }
 
-void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect) {
+void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, float* scaleValue) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    drawUI(camera, obj, modelSelect);
+    drawUI(camera, obj, modelSelect, shaderSelect, scaleValue);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -274,4 +299,14 @@ SDL_Event Window::getEvent() {
 SDL_Window* Window::getWindow() const {
     return window;
 }
+
+void Window::setWindowFullscreen() {
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+void Window::setWindowRestore() {
+    SDL_SetWindowFullscreen(window, 0);
+}
+
+
 

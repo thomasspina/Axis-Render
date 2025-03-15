@@ -57,6 +57,8 @@ class Camera {
 
         void moveLeft();
 
+        void init();
+
     public:
         Camera();
         ~Camera() = default;
@@ -90,4 +92,6 @@ class Camera {
         bool* getIsCameraRotationEnabled() { return &this->cameraRotationEnabled; }
 
         bool* getIsFreeCameraEnabled() { return &this->freeCameraEnabled; }
+
+        void reset();
 };

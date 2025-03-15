@@ -26,7 +26,12 @@
 
 bool relativeMouseMode = false;
 int modelSelect = 2;
+int shaderSelect = 1;
+int selectedModel = modelSelect;
+int selectedShader = shaderSelect;
 
+float scaleValue = 1.0;
+float selectedScaleValue = scaleValue;
 
 void handleInput(Window& window, Camera& camera, Model& model) {
     SDL_Event event = window.getEvent();
@@ -34,11 +39,23 @@ void handleInput(Window& window, Camera& camera, Model& model) {
     while (SDL_PollEvent(&event) > 0) {
 
         ImGui_ImplSDL2_ProcessEvent(&event);
+
         switch(event.type) {
             case SDL_QUIT:
                 window.setQuit();
                 break;
+
+            case SDL_WINDOWEVENT:
                 
+                if (event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
+                    window.setWindowFullscreen();
+                } 
+                else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
+                    window.setWindowRestore();
+                }
+            
+                break;
+
             case SDL_KEYDOWN: {
 
                 switch(event.key.keysym.sym) {
@@ -103,7 +120,7 @@ void handleInput(Window& window, Camera& camera, Model& model) {
 int main(int argc, char* argv[]) {
 
     Window window = Window();
-    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
 
     // ============================ INITIALIZATION SECTION =====================================
 
@@ -112,6 +129,13 @@ int main(int argc, char* argv[]) {
 
     // phong lighting shader
     ShaderProgram phongShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/phongObj.vert", std::string(ASSETS_PATH) + "shaders/phongObj.frag");
+
+    ShaderProgram sketchShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/sketch.frag");
+
+    ShaderProgram asciiShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/ascii.frag");
+
+    // Selectable shaders
+    ShaderProgram shaders[] = { phongShader, gouraudShader, sketchShader, asciiShader };
 
     // init PointLight shader
     ShaderProgram pointLightShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/pointLight.vert", std::string(ASSETS_PATH) + "shaders/pointLight.frag");
@@ -132,18 +156,24 @@ int main(int argc, char* argv[]) {
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+    ShaderProgram currShader = gouraudShader;
 
     while (!window.isQuit()) {
 
         // Clear depth buffer from previous iteration
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (objModel->getModelName() != modelSelect) {
+        if (selectedModel != modelSelect) {
             std::string modelName = ModelSelection::models[modelSelect];
 
             objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/" + modelName + "/" + modelName + ".obj");
-            objModel->setModelName(modelSelect);
             camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
+            selectedModel = modelSelect;
+        }
+
+        if (selectedShader != shaderSelect) {
+            currShader = shaders[shaderSelect];
+            selectedShader = shaderSelect;
         }
 
         float currFrame = (float) SDL_GetTicks64();
@@ -164,18 +194,25 @@ int main(int argc, char* argv[]) {
         lighting.drawPointLights(pointLightShader);
 
         // render model
-        gouraudShader.use();
+        currShader.use();
+
         objModel->updateModelMatrix();
         objModel->updateNormalMatrix(view);
-        gouraudShader.setUniform("view", view);
-        gouraudShader.setUniform("projection", projection);
-        gouraudShader.setUniform("model", objModel->getModelMatrix());
-        gouraudShader.setUniform("normalMatrix", objModel->getNormalMatrix());
-        lighting.setLightingUniforms(gouraudShader);
-        objModel->draw(gouraudShader);
+
+        if (scaleValue != selectedScaleValue) {
+            objModel->scale(scaleValue);
+            selectedScaleValue = scaleValue;
+        }
+
+        currShader.setUniform("view", view);
+        currShader.setUniform("projection", projection);
+        currShader.setUniform("model", objModel->getModelMatrix());
+        currShader.setUniform("normalMatrix", objModel->getNormalMatrix());
+        lighting.setLightingUniforms(currShader);
+        objModel->draw(currShader);
 
         // Render UI
-        window.renderImGui(camera, *objModel, modelSelect);
+        window.renderImGui(camera, *objModel, modelSelect, shaderSelect, &scaleValue);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
