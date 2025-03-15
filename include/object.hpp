@@ -2,6 +2,7 @@
 
 #include "constants.hpp"
 #include <glm/glm.hpp>
+#include <SDL2/SDL_timer.h>
 
 class Object {
 private:
@@ -9,6 +10,8 @@ private:
     float objectPitch = 0.0f;
     int rotationMode = RotationMode::naturalRotation;
     int modelName;
+    float objectScale = 1.0f;
+    uint64_t initialTime = SDL_GetTicks64();
     
 protected:
     glm::vec3 position = glm::vec3(0.0f);
@@ -50,4 +53,6 @@ public:
     int getModelName() { return this->modelName; }
     void setRotationMode(int newRotationMode) { rotationMode = newRotationMode; }
     int getRotationalMode() { return this->rotationMode; }
+
+    float* getModelScale() { return &this->objectScale; }
 };

@@ -1,6 +1,4 @@
 #include <glm/gtc/matrix_transform.hpp>
-#include <SDL2/SDL_timer.h>
-
 #include "object.hpp"
 
 Object::Object() = default;
@@ -60,7 +58,12 @@ void Object::scale(float scale) {
 }
 
 void Object::resetModel() {
+    objectYaw = 0.0f;
+    objectPitch = 0.0f;
     model = IDENTITY_MATRIX;
+    objectScale = 1.0f;
+
+    initialTime = SDL_GetTicks64();
 }
 
 void Object::updateNormalMatrix(const glm::mat4& view) {
@@ -83,6 +86,10 @@ void Object::updateObjectPitch(float yoffset) {
 }
 
 void Object::updateModelMatrix() {
+    model = IDENTITY_MATRIX;
+
+    scale(objectScale);
+
     if (rotationMode == RotationMode::naturalRotation) {
         naturalRotation();
     } else if (rotationMode == RotationMode::inputRotation) {
@@ -91,10 +98,11 @@ void Object::updateModelMatrix() {
 }
 
 void Object::naturalRotation() {
-    model = glm::rotate(IDENTITY_MATRIX, (float)SDL_GetTicks64() / 1000.0f, DEFAULT_ROTATION_AXIS);
+    float elapsedTime = (float)((SDL_GetTicks64() - initialTime) / 1000.0f);
+    model = glm::rotate(model, elapsedTime, DEFAULT_ROTATION_AXIS);
 }
 
 void Object::inputRotation() {
-    model = glm::rotate(IDENTITY_MATRIX, glm::radians(objectPitch), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(objectPitch), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(objectYaw), glm::vec3(0.0f, 1.0f, 0.0f));
 }

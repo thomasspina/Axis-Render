@@ -1,7 +1,7 @@
 #include "camera.hpp"
 #include <SDL2/SDL_timer.h>
 
-void Camera::init() {
+Camera::Camera() {
     globalUp = DEFAULT_GLOBAL_UP;
     cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -12,14 +12,9 @@ void Camera::init() {
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 }
 
-Camera::Camera() {
-    init();
-}
-
 Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     globalUp = DEFAULT_GLOBAL_UP;
     cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-
 
     // Calculates camera distance required so the model sphere fits within the camera's vertical fov
     float requiredDistance = modelRadius / sin(glm::radians(fov) / 2.0f);
@@ -27,7 +22,7 @@ Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     this->modelRadius = requiredDistance;
     this->modelCenter = modelCenter;
 
-    cameraPos = modelCenter + glm::vec3(0.0f, 0.0f, requiredDistance);
+    cameraPos = modelCenter + glm::vec3(0.0f, 0.0f, this->modelRadius);
     cameraTarget = modelCenter;
 
     cameraDirection = glm::normalize(cameraPos - cameraTarget);
@@ -137,6 +132,15 @@ void Camera::moveLeft() {
 }
 
 void Camera::reset() {
-    init();
+    yaw = DEFAULT_YAW_ANGLE;
+    pitch = DEFAULT_PITCH_ANGLE;
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+
+    cameraPos = modelCenter + glm::vec3(0.0f, 0.0f, modelRadius);
+    cameraTarget = modelCenter;
+
+    cameraDirection = glm::normalize(cameraPos - cameraTarget);
+    cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
+    cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 }
 

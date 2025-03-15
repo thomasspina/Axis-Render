@@ -50,7 +50,7 @@ void Window::configureOpenGL() {
 }
 
 void Window::createWindow() {
-    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (!window) {
         std::cerr << "Failed to creating a window! Error: " << SDL_GetError() << std::endl;
@@ -200,7 +200,7 @@ void Window::drawCameraUI(Camera& camera) {
     ImGui::Separator();
 }
 
-void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect, float* scaleValue) {
+void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
     if (ImGui::RadioButton("Input Rotation [Hold Mouse 3]", obj.getRotationalMode() == RotationMode::inputRotation)) {
         obj.setRotationMode(RotationMode::inputRotation);
     }
@@ -209,9 +209,11 @@ void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect, float
         obj.setRotationMode(RotationMode::naturalRotation);
     }
 
-    ImGui::Button("Reset Model [Enter]");
+    if (ImGui::Button("Reset Model [Enter]")) {
+        obj.resetModel();
+    }
 
-    ImGui::SliderFloat("Model Scale", scaleValue, 0.0, 2.0);
+    ImGui::SliderFloat("Model Scale", obj.getModelScale(), 0.0, 2.0);
 
     ImGui::Separator();
 
@@ -230,7 +232,7 @@ void Window::drawLightingUI() {
     ImGui::Separator();
 }
 
-void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, float* scaleValue) {
+void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect) {
     ImGui::Begin("Engine Menu");
 
     ImGui::SetWindowPos(ImVec2(1000, 20), ImGuiCond_Once);
@@ -248,7 +250,7 @@ void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSe
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Model")) {
-        drawModelUI(obj, modelSelect, shaderSelect, scaleValue);
+        drawModelUI(obj, modelSelect, shaderSelect);
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
@@ -259,12 +261,12 @@ void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSe
     ImGui::End();
 }
 
-void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, float* scaleValue) {
+void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    drawUI(camera, obj, modelSelect, shaderSelect, scaleValue);
+    drawUI(camera, obj, modelSelect, shaderSelect);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -300,13 +302,16 @@ SDL_Window* Window::getWindow() const {
     return window;
 }
 
-void Window::setWindowFullscreen() {
-    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-}
+// void Window::setWindowFullscreen() {
+//     SDL_GL_DeleteContext(mainContext);  // Destroy OpenGL context
+//     SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+//     mainContext = SDL_GL_CreateContext(window);  // Recreate context
+//     SDL_GL_MakeCurrent(window, mainContext);  // Bind context again
+// }
 
-void Window::setWindowRestore() {
-    SDL_SetWindowFullscreen(window, 0);
-}
+// void Window::setWindowRestore() {
+//     SDL_SetWindowFullscreen(window, 0);
+// }
 
 
 

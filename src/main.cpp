@@ -45,16 +45,16 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                 window.setQuit();
                 break;
 
-            case SDL_WINDOWEVENT:
+            // case SDL_WINDOWEVENT:
                 
-                if (event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
-                    window.setWindowFullscreen();
-                } 
-                else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
-                    window.setWindowRestore();
-                }
+            //     if (event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
+            //         window.setWindowFullscreen();
+            //     } 
+            //     else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
+            //         window.setWindowRestore();
+            //     }
             
-                break;
+            //     break;
 
             case SDL_KEYDOWN: {
 
@@ -117,6 +117,11 @@ void handleInput(Window& window, Camera& camera, Model& model) {
     }
 }
 
+std::unique_ptr<Model> loadNewModel() {
+    std::string modelName = ModelSelection::models[modelSelect];
+    return std::make_unique<Model>(std::string(ASSETS_PATH) + "models/" + modelName + "/" + modelName + ".obj");
+}
+
 int main(int argc, char* argv[]) {
 
     Window window = Window();
@@ -164,9 +169,7 @@ int main(int argc, char* argv[]) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (selectedModel != modelSelect) {
-            std::string modelName = ModelSelection::models[modelSelect];
-
-            objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/" + modelName + "/" + modelName + ".obj");
+            objModel = loadNewModel();
             camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
             selectedModel = modelSelect;
         }
@@ -199,11 +202,6 @@ int main(int argc, char* argv[]) {
         objModel->updateModelMatrix();
         objModel->updateNormalMatrix(view);
 
-        if (scaleValue != selectedScaleValue) {
-            objModel->scale(scaleValue);
-            selectedScaleValue = scaleValue;
-        }
-
         currShader.setUniform("view", view);
         currShader.setUniform("projection", projection);
         currShader.setUniform("model", objModel->getModelMatrix());
@@ -212,7 +210,7 @@ int main(int argc, char* argv[]) {
         objModel->draw(currShader);
 
         // Render UI
-        window.renderImGui(camera, *objModel, modelSelect, shaderSelect, &scaleValue);
+        window.renderImGui(camera, *objModel, modelSelect, shaderSelect);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();
