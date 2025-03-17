@@ -182,12 +182,14 @@ int main(int argc, char* argv[]) {
         glm::mat4 projection = camera.getProjectionMatrix();
 
         // render world grid
-        // worldGridShader.use();
-        // worldGridShader.setUniform("view", view);
-        // worldGridShader.setUniform("projection", projection);
-        // worldGridShader.setUniform("cameraPos", camera.getCameraPos());
-        // glBindVertexArray(worldGridVao);
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDepthMask(GL_FALSE);
+        worldGridShader.use();
+        worldGridShader.setUniform("view", view);
+        worldGridShader.setUniform("projection", projection);
+        worldGridShader.setUniform("cameraPos", camera.getCameraPos());
+        glBindVertexArray(worldGridVao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDepthMask(GL_TRUE);
 
 
         // render lights TODO: add option to toggle this off
@@ -196,7 +198,6 @@ int main(int argc, char* argv[]) {
         lighting.drawPointLights(pointLightShader);
 
         // render model
-
         gouraudShader.use();
         objModel->updateModelMatrix();
         objModel->updateNormalMatrix(view);
@@ -206,6 +207,8 @@ int main(int argc, char* argv[]) {
         gouraudShader.setUniform("normalMatrix", objModel->getNormalMatrix());
         lighting.setLightingUniforms(gouraudShader);
         objModel->draw(gouraudShader);
+
+        
 
         // Render UI
         window.renderImGui(camera, *objModel, modelSelect);
