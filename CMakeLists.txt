@@ -35,8 +35,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unknown-pragmas")
 endif()
 
-
-
+string(REPLACE "-flto" "" _temp_flags "${CMAKE_CXX_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_RELEASE "${_temp_flags}")
 
 ######################
 # External libraries #
@@ -121,6 +121,8 @@ find_package(assimp QUIET)
 # Only fetch Assimp if not found on the system
 if(NOT assimp_FOUND)
     message(STATUS "Assimp not found on system, fetching from GitHub...")
+    set(ASSIMP_BUILD_STATIC_LIB ON CACHE BOOL "Build static Assimp" FORCE)
+
     FetchContent_Declare(assimp
         GIT_REPOSITORY https://github.com/assimp/assimp.git
         GIT_TAG v5.4.3
@@ -258,12 +260,16 @@ add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 # Include directories
 target_include_directories(${PROJECT_NAME}
     PRIVATE 
-        ${GLEW_INCLUDE_DIR}
+        # ${GLEW_INCLUDE_DIR}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_BINARY_DIR}
 )
+
+# if (NOT assimp_FOUND)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ASSIMP_STATIC)
+# endif()
 
 if(NOT GLEW_FOUND)
     # GLEW_STATIC preprocessing macro is needed for static linking
@@ -282,6 +288,8 @@ target_link_libraries(${PROJECT_NAME}
         $<IF:$<BOOL:${glm_FOUND}>,glm::glm,glm>
         $<IF:$<BOOL:${assimp_FOUND}>,assimp::assimp,assimp>
 )
+
+# target_link_libraries(${PROJECT_NAME} PRIVATE assimp::assimp)
 
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
