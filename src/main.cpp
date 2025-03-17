@@ -137,6 +137,12 @@ std::unique_ptr<Model> loadNewModel() {
 int main(int argc, char* argv[]) {
 
     Window window = Window();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+
+    // Enable blending for grid shader TODO: does it disturb other shaders?
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // ============================ INITIALIZATION SECTION =====================================
 
@@ -156,6 +162,10 @@ int main(int argc, char* argv[]) {
     // init PointLight shader
     ShaderProgram pointLightShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/pointLight.vert", std::string(ASSETS_PATH) + "shaders/pointLight.frag");
 
+    // world grid shader
+    ShaderProgram worldGridShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/worldGrid.vert", std::string(ASSETS_PATH) + "shaders/worldGrid.frag");
+
+
     // Create a model
     std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/Space Shuttle/Space Shuttle.obj");
     objModel->setModelName(2);
@@ -165,8 +175,16 @@ int main(int argc, char* argv[]) {
 
     // Create a lighting object
     Lighting lighting = Lighting();
-    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f));
-    
+    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.5f));
+
+    // World grid setup
+    GLuint worldGridVao;
+    glGenVertexArrays(1, &worldGridVao);
+    glBindVertexArray(worldGridVao);
+    glBindVertexArray(0);
+
+
+
     // ============================ RENDERING SECTION =====================================
 
     float deltaTime = 0.0f;
@@ -201,6 +219,9 @@ int main(int argc, char* argv[]) {
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = camera.getProjectionMatrix();
 
+
+
+
         // render lights TODO: add option to toggle this off
         lighting.updateView(view);
         lighting.updateProjection(projection);
@@ -218,6 +239,14 @@ int main(int argc, char* argv[]) {
         currShader.setUniform("normalMatrix", objModel->getNormalMatrix());
         lighting.setLightingUniforms(currShader);
         objModel->draw(currShader);
+
+        // render world grid
+        worldGridShader.use();
+        worldGridShader.setUniform("view", view);
+        worldGridShader.setUniform("projection", projection);
+        worldGridShader.setUniform("cameraPos", camera.getCameraPos());
+        glBindVertexArray(worldGridVao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Render UI
         window.renderImGui(camera, *objModel, modelSelect, shaderSelect);

@@ -26,6 +26,7 @@ WorldGrid::WorldGrid() {
 }
 
 void WorldGrid::draw(const glm::mat4& view, const glm::mat4& projection) {
+    gridShader.link();
     gridShader.use();
     gridShader.setUniform("view", view);
     gridShader.setUniform("projection", projection);
