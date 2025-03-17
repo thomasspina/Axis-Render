@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
     // gouraud lighting shader
     ShaderProgram gouraudShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/gouraudObj.frag");
 
-    // phong lighting shader
+    // phong lighting shaders
     ShaderProgram phongShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/phongObj.vert", std::string(ASSETS_PATH) + "shaders/phongObj.frag");
 
     ShaderProgram sketchShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/sketch.frag");

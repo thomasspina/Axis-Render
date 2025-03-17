@@ -3,7 +3,7 @@
 
 Camera::Camera() {
     globalUp = DEFAULT_GLOBAL_UP;
-    cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
     cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -14,7 +14,6 @@ Camera::Camera() {
 
 Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     globalUp = DEFAULT_GLOBAL_UP;
-    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 
     // Calculates camera distance required so the model sphere fits within the camera's vertical fov
     float requiredDistance = modelRadius / sin(glm::radians(fov) / 2.0f);
@@ -22,13 +21,33 @@ Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     this->modelRadius = requiredDistance;
     this->modelCenter = modelCenter;
 
-    cameraPos = modelCenter + glm::vec3(0.0f, 0.0f, this->modelRadius);
+    cameraPos = modelCenter + glm::vec3(10.0f, 5.0f, this->modelRadius);
     cameraTarget = modelCenter;
+
+    cameraFront = glm::normalize(cameraTarget - cameraPos);
 
     cameraDirection = glm::normalize(cameraPos - cameraTarget);
     cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
+
+    calculateYawPitchFromVector(cameraFront);
 }
+
+void Camera::calculateYawPitchFromVector(const glm::vec3& direction) {
+    pitch = glm::degrees(asin(direction.y));
+    
+    float cosP = cos(glm::radians(pitch));
+    if (fabs(cosP) > 0.0001f) {  // avoid division by zero
+        yaw = glm::degrees(atan2(direction.z, direction.x));
+    }
+    
+    if (pitch > MAX_CAMERA_PITCH_ANGLE)
+        pitch = MAX_CAMERA_PITCH_ANGLE;
+    if (pitch < MIN_CAMERA_PITCH_ANGLE)
+        pitch = MIN_CAMERA_PITCH_ANGLE;
+}
+
+
 
 void Camera::applyZoom(float yOffset) {
     fov -= yOffset;
@@ -142,5 +161,7 @@ void Camera::reset() {
     cameraDirection = glm::normalize(cameraPos - cameraTarget);
     cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
+
+    calculateYawPitchFromVector(cameraFront);
 }
 
