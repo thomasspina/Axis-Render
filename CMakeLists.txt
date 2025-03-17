@@ -257,10 +257,13 @@ configure_file(
 # Create executable
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
+if (NOT GLEW_FOUND)
+    # Glew needs to be included only if downloaded for the project 
+    target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIR})
+endif()
+
 # Include directories
 target_include_directories(${PROJECT_NAME}
-    PRIVATE 
-        # ${GLEW_INCLUDE_DIR}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src

@@ -63,8 +63,6 @@ void Model::loadModel(const std::string &path) {
     // Check whether model does not require UV flip
     if (!globalFlip) {
 
-        std::cout << "Flip" << std::endl;
-
         scene = importWithoutFlip.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {

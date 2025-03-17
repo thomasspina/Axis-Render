@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 
-    // Enable blending for grid shader TODO: does it disturb other shaders?
+    // Enable blending for grid shader
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
 
     // Create a lighting object
     Lighting lighting = Lighting();
-    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.5f));
+    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f));
 
     // World grid setup
     GLuint worldGridVao;
