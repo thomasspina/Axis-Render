@@ -70,7 +70,7 @@ namespace ShaderSelection {
 
 // Define visible depth range
 #define DEFAULT_NEAR_CLIPPING_PLANE 0.1f
-#define DEFAULT_FAR_CLIPPING_PLANE 100.0f
+#define DEFAULT_FAR_CLIPPING_PLANE 1000.0f
 
 // Define light constants
 // #define DEFAULT_LIGHT_AMBIENT 0.1f

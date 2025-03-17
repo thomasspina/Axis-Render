@@ -1,29 +1,17 @@
 #version 460
 
+flat in int isYAxis;
 in vec3 WorldPos;
 
 out vec4 FragColour;
 
 uniform vec3 cameraPos;
-uniform float gridSize = 100.0;
-uniform float minPixelsBetweenCells = 2.0;
-uniform float gridCellSize = 0.025;
-uniform vec4 gridColourThin = vec4(0.4, 0.4, 0.4, 1.0);
-uniform vec4 gridColourThick = vec4(0.75, 0.75, 0.75, 1.0);
-
-
-float log10(float x)
-{
-    float f = log(x) / log(10.0);
-    return f;
-}
-
-
-float satf(float x)
-{
-    float f = clamp(x, 0.0, 1.0);
-    return f;
-}
+uniform float gridSize = 1000.0;
+uniform float gridCellSize = 10.0;
+uniform vec4 gridColour = vec4(0.35, 0.35, 0.35, 1.0);
+uniform vec4 xAxisColour = vec4(1.0, 0.0, 0.0, 1.0);
+uniform vec4 yAxisColour = vec4(0.0, 1.0, 0.0, 1.0);
+uniform vec4 zAxisColour = vec4(0.0, 0.0, 1.0, 1.0);
 
 
 vec2 satv(vec2 x)
@@ -42,6 +30,12 @@ float max2(vec2 v)
 
 void main()
 {
+
+    if (isYAxis == 1) { // draw vertical axis
+        FragColour = yAxisColour;
+        return;
+    }
+
     vec2 dvx = vec2(dFdx(WorldPos.x), dFdy(WorldPos.x));
     vec2 dvy = vec2(dFdx(WorldPos.z), dFdy(WorldPos.z));
 
@@ -50,44 +44,24 @@ void main()
 
     vec2 dudv = vec2(lx, ly);
 
-    float l = length(dudv);
-
-    float LOD = max(0.0, log10(l * minPixelsBetweenCells / gridCellSize) + 1.0);
-
-    float GridCellSizeLod0 = gridCellSize * pow(10.0, floor(LOD));
-    float GridCellSizeLod1 = GridCellSizeLod0 * 10.0;
-    float GridCellSizeLod2 = GridCellSizeLod1 * 10.0;
-
     dudv *= 4.0;
 
-    vec2 mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod0) / dudv;
+    vec2 mod_div_dudv = mod(WorldPos.xz, gridCellSize) / dudv;
     float Lod0a = max2(vec2(1.0) - abs(satv(mod_div_dudv) * 2.0 - vec2(1.0)) );
 
-    mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod1) / dudv;
-    float Lod1a = max2(vec2(1.0) - abs(satv(mod_div_dudv) * 2.0 - vec2(1.0)) );
-    
-    mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod2) / dudv;
-    float Lod2a = max2(vec2(1.0) - abs(satv(mod_div_dudv) * 2.0 - vec2(1.0)) );
+    vec4 Colour = gridColour;
 
-    float LOD_fade = fract(LOD);
-    vec4 Colour;
+    float xAxisProximity = abs(WorldPos.z) / dudv.y;
+    float zAxisProximity = abs(WorldPos.x) / dudv.x;
 
-    if (Lod2a > 0.0) {
-        Colour = gridColourThick;
-        Colour.a *= Lod2a;
-    } else {
-        if (Lod1a > 0.0) {
-            Colour = mix(gridColourThick, gridColourThin, LOD_fade);
-	        Colour.a *= Lod1a;
-        } else {
-            Colour = gridColourThin;
-	        Colour.a *= (Lod0a * (1.0 - LOD_fade));
-        }
+    if (xAxisProximity < 0.5) {
+        Colour = xAxisColour;
+    } 
+
+    if (zAxisProximity < 0.5) {
+        Colour = zAxisColour;
     }
-    
-    float OpacityFalloff = (1.0 - satf(length(WorldPos.xz - cameraPos.xz) / gridSize));
 
-    Colour.a *= OpacityFalloff;
-
+    Colour.a *= Lod0a;
     FragColour = Colour;
 }

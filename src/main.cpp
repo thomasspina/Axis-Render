@@ -183,8 +183,6 @@ int main(int argc, char* argv[]) {
     glBindVertexArray(worldGridVao);
     glBindVertexArray(0);
 
-
-
     // ============================ RENDERING SECTION =====================================
 
     float deltaTime = 0.0f;
@@ -219,9 +217,6 @@ int main(int argc, char* argv[]) {
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = camera.getProjectionMatrix();
 
-
-
-
         // render lights TODO: add option to toggle this off
         lighting.updateView(view);
         lighting.updateProjection(projection);
@@ -247,6 +242,7 @@ int main(int argc, char* argv[]) {
         worldGridShader.setUniform("cameraPos", camera.getCameraPos());
         glBindVertexArray(worldGridVao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_LINES, 6, 2);
 
         // Render UI
         window.renderImGui(camera, *objModel, modelSelect, shaderSelect);
