@@ -1,6 +1,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <memory>
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -216,7 +217,23 @@ void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
 }
 
 // TODO: create lighting UI
-void Window::drawLightingUI() {
+void Window::drawLightingUI(Lighting& lighting) {
+    ImGui::Separator();
+    
+    float* azimuth = lighting.getCasterAzimuth();
+    if (ImGui::SliderFloat("Azimuth", azimuth, 0.0f, 360.0f, "%.1f°")) {
+        lighting.updateCasterDirection();
+    }
+
+    float* elevation = lighting.getCasterElevation();
+    if (ImGui::SliderFloat("Elevation", elevation, -90.0f, 90.0f, "%.1f°")) {
+        // Clamp elevation to -90 to 90
+        if (*elevation > 90.0f) *elevation = 90.0f;
+        if (*elevation < -90.0f) *elevation = -90.0f;
+
+        lighting.updateCasterDirection();
+    }
+
     ImGui::Separator();
 }
 
@@ -228,10 +245,10 @@ void Window::drawMiscUI(bool& showGrid) {
 }
 
 
-void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid) {
+void Window::drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid) {
     ImGui::Begin("Engine Menu");
 
-    ImGui::SetWindowPos(ImVec2(1000, 20), ImGuiCond_Once);
+    ImGui::SetWindowPos(ImVec2(875, 20), ImGuiCond_Once);
     ImGui::SetWindowSize(ImVec2(400, 700), ImGuiCond_Once);
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
@@ -251,7 +268,7 @@ void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSe
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Lighting")) {
-        drawLightingUI();
+        drawLightingUI(lighting);
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
@@ -262,12 +279,12 @@ void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSe
     ImGui::End();
 }
 
-void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid) {
+void Window::renderImGui(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    drawUI(camera, obj, modelSelect, shaderSelect, showGrid);
+    drawUI(camera, obj, lighting, modelSelect, shaderSelect, showGrid);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -1,9 +1,10 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+
+#include "lighting/lighting.hpp"
 #include "object.hpp"
 #include "camera.hpp"
-
-#include <SDL2/SDL.h>
 
 class Window {
     private:  
@@ -30,19 +31,19 @@ class Window {
         void initializeOpenGL();
         void initializeImGui();
 
-        void drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid);
+        void drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid);
 
         double getMemoryUsage() const;
         void drawPerformanceUI();
         void drawCameraUI(Camera& camera);
         void drawModelUI(Object& obj, int& modelSelect, int& shaderSelect);
-        void drawLightingUI();
+        void drawLightingUI(Lighting& lighting);
         void drawMiscUI(bool& showGrid);
 
     public:
         Window();
 
-        void renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid);
+        void renderImGui(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid);
 
         void setWindowFullscreen();
         void setWindowRestore();

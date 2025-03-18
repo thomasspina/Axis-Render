@@ -3,6 +3,18 @@
 
 void Lighting::addLightCaster(LightCaster lightCaster) {
     this->lightCaster = lightCaster;
+
+    glm::vec3 direction = glm::normalize(lightCaster.getDirection());
+
+    float elevationRad = glm::asin(direction.y);
+    float azimuthRad = glm::atan(direction.x, direction.z);
+    
+    this->elevation = glm::degrees(elevationRad);
+    this->azimuth = glm::degrees(azimuthRad);
+    
+    if (this->azimuth < 0.0f) {
+        this->azimuth += 360.0f;
+    }
 }
 
 void Lighting::addPointLight(PointLight pointLight) {
@@ -15,6 +27,22 @@ void Lighting::updateView(const glm::mat4& view) {
 
 void Lighting::updateProjection(const glm::mat4& projection) {
     this->projection = projection;
+}
+
+glm::vec3 Lighting::anglestoDirection(float azimuth, float elevation) {
+    float azimuthRad = glm::radians(azimuth);
+    float elevationRad = glm::radians(elevation);
+    
+    float x = glm::cos(elevationRad) * glm::sin(azimuthRad);
+    float y = glm::sin(elevationRad);
+    float z = glm::cos(elevationRad) * glm::cos(azimuthRad);
+    
+    return glm::normalize(glm::vec3(x, y, z));
+}
+
+void Lighting::updateCasterDirection() {
+    glm::vec3 direction = anglestoDirection(azimuth, elevation);
+    this->lightCaster.setDirection(direction);
 }
 
 void Lighting::drawPointLights(ShaderProgram& pointLightShader) {

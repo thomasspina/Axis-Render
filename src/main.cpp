@@ -249,7 +249,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Render UI
-        window.renderImGui(camera, *objModel, modelSelect, shaderSelect, showGrid);
+        window.renderImGui(camera, *objModel, lighting, modelSelect, shaderSelect, showGrid);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

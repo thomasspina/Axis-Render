@@ -14,6 +14,11 @@ private:
 
     LightCaster lightCaster;
     std::vector<PointLight> pointLights;
+
+    glm::vec3 anglestoDirection(float azimuth, float elevation);
+    float azimuth;
+    float elevation;
+
 public:
     Lighting() = default;
 
@@ -21,6 +26,9 @@ public:
     void updateProjection(const glm::mat4& projection);
 
     void addLightCaster(LightCaster lightCaster);
+    float* getCasterAzimuth() { return &azimuth; } // getter for the UI azimuth slider
+    float* getCasterElevation() { return &elevation; } // getter for the UI elevation slider
+    void updateCasterDirection(); // updates the light caster direction based on the azimuth and elevation
 
     /// @brief Add a point light to the scene, removes first one if the limit is reached
     void addPointLight(PointLight pointLight);
