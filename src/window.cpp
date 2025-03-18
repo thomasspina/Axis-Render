@@ -2,9 +2,6 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-#include "window.hpp"
-#include "constants.hpp"
-
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include "imgui_impl_opengl3.h"
@@ -17,6 +14,9 @@
     #include <unistd.h>
     #include <stdio.h>
 #endif
+
+#include "window.hpp"
+#include "constants.hpp"
 
 Window::Window() {
     quit = false;

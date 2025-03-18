@@ -6,7 +6,7 @@ in vec3 WorldPos;
 out vec4 FragColour;
 
 uniform vec3 cameraPos;
-uniform float gridCellSize = 9.0;
+uniform float modelRadius;
 uniform vec4 gridColour = vec4(0.35, 0.35, 0.35, 1.0);
 uniform vec4 xAxisColour = vec4(1.0, 0.0, 0.0, 1.0);
 uniform vec4 yAxisColour = vec4(0.0, 1.0, 0.0, 1.0);
@@ -45,7 +45,7 @@ void main()
 
     dudv *= 4.0;
 
-    vec2 mod_div_dudv = mod(WorldPos.xz, gridCellSize) / dudv;
+    vec2 mod_div_dudv = mod(WorldPos.xz, modelRadius) / dudv;
     float Lod0a = max2(vec2(1.0) - abs(satv(mod_div_dudv) * 2.0 - vec2(1.0)) );
 
     vec4 Colour = gridColour;
