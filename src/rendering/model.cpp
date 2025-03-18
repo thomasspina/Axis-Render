@@ -178,12 +178,6 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     // If mMaterialIndex is -1, then mesh contains no material
     if(mesh->mMaterialIndex >= 0) {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-        
-        // Read Ns value
-        float shininess_value;
-        if(AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess_value)) {
-            shininess = shininess_value;
-        }
 
         // Read map_Kd value
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -208,6 +202,16 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         // Read map_Pm
         std::vector<Texture> metallicMaps = loadMaterialTextures(material, aiTextureType_REFLECTION, "texture_metallic");
         textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
+
+        // Apply shine if specular material is present
+        if (!specularMaps.empty()) {
+            float shininess_value;
+
+            if (AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess_value)) {
+                shininess = shininess_value;
+                std::cout << "Applying shine" << std::endl;
+            }
+        }
     }
 
     // If mesh contains no texture, render a default null texture
