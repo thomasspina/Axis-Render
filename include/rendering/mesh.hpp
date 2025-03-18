@@ -35,10 +35,13 @@ class Mesh {
         std::vector<GLuint> indices;
         std::vector<Texture> textures;
 
+        float shininess = 32.0f;
+
         void setupMesh();
 
     public:
-        Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures);
+        Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures); 
+        Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures, float shininess);
         virtual ~Mesh();
 
         virtual void draw(ShaderProgram& shader);

@@ -3,6 +3,12 @@
 
 #include "rendering/mesh.hpp"
 
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures, float shininess) 
+    : Mesh(vertices, indices, textures) 
+{
+    this->shininess = shininess;
+}
+
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures) {
     this->vertices = vertices;
     this->indices = indices;
@@ -76,6 +82,7 @@ void Mesh::draw(ShaderProgram& shaderProgram) {
 
     shaderProgram.setUniform("material.diffuse_count", diffuseNr);
     shaderProgram.setUniform("material.specular_count", specularNr);
+    shaderProgram.setUniform("shininess", shininess);
     
     // draw mesh
     glBindVertexArray(VAO);

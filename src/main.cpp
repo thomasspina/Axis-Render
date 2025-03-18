@@ -240,6 +240,7 @@ int main(int argc, char* argv[]) {
         worldGridShader.setUniform("view", view);
         worldGridShader.setUniform("projection", projection);
         worldGridShader.setUniform("cameraPos", camera.getCameraPos());
+        worldGridShader.setUniform("modelRadius", objModel->getModelRadius());
         glBindVertexArray(worldGridVao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawArrays(GL_LINES, 6, 2);

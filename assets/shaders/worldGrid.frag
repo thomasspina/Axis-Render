@@ -6,8 +6,7 @@ in vec3 WorldPos;
 out vec4 FragColour;
 
 uniform vec3 cameraPos;
-uniform float gridSize = 1000.0;
-uniform float gridCellSize = 10.0;
+uniform float gridCellSize = 9.0;
 uniform vec4 gridColour = vec4(0.35, 0.35, 0.35, 1.0);
 uniform vec4 xAxisColour = vec4(1.0, 0.0, 0.0, 1.0);
 uniform vec4 yAxisColour = vec4(0.0, 1.0, 0.0, 1.0);

@@ -127,6 +127,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
 
 // MMesh: Positions, Normals and texture coordinate
 std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+    float shininess = 32.0f;
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
@@ -177,6 +178,12 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     // If mMaterialIndex is -1, then mesh contains no material
     if(mesh->mMaterialIndex >= 0) {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+        
+        // Read Ns value
+        float shininess_value;
+        if(AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess_value)) {
+            shininess = shininess_value;
+        }
 
         // Read map_Kd value
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -211,7 +218,7 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         textures.push_back(defaultTexture);
     }
 
-    return std::make_unique<Mesh>(vertices, indices, textures);
+    return std::make_unique<Mesh>(vertices, indices, textures, shininess);
 }
 
 unsigned int Model::applyNullTexture() {

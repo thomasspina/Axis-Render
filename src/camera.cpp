@@ -21,7 +21,7 @@ Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     this->modelRadius = requiredDistance;
     this->modelCenter = modelCenter;
 
-    cameraPos = modelCenter + glm::vec3(10.0f, 5.0f, this->modelRadius);
+    cameraPos = modelCenter + glm::vec3(modelRadius * 2, modelRadius / 2, this->modelRadius);
     cameraTarget = modelCenter;
 
     cameraFront = glm::normalize(cameraTarget - cameraPos);

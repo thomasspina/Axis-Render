@@ -61,6 +61,7 @@ class Model : public Object {
         std::unique_ptr<Mesh> processMesh(aiMesh *mesh, const aiScene *scene);
 
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+        std::vector<float> loadMaterialShininess(aiMaterial *mat);
         unsigned int textureFromFile(const std::string &path, const std::string &directory);
 
         unsigned int applyNullTexture();
