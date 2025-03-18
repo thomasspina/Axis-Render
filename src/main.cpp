@@ -54,7 +54,7 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                     SDL_GetWindowSize(window.getWindow(), &width, &height);
 
                     glViewport(0, 0, width, height);
-                    camera.setCameraConfiguration();
+                    // camera.setCameraConfiguration();
                 }
             
                 break;

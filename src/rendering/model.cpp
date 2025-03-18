@@ -209,7 +209,6 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
 
             if (AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess_value)) {
                 shininess = shininess_value;
-                std::cout << "Applying shine" << std::endl;
             }
         }
     }

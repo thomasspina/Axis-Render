@@ -13,7 +13,7 @@ Camera::Camera() {
 }
 
 void Camera::setCameraConfiguration() {
-    cameraPos = modelCenter + glm::vec3(modelRadius * 2, modelRadius / 2, this->modelRadius);
+    cameraPos = modelCenter + glm::vec3(modelRadius / 2.0f, modelRadius / 2.0f, this->modelRadius);
     cameraTarget = modelCenter;
 
     cameraFront = glm::normalize(cameraTarget - cameraPos);
