@@ -65,7 +65,7 @@ void Camera::applyRotation(float xOffset, float yOffset) {
     if (cameraRotationEnabled) {
         xOffset *= DEFAULT_CAMERA_SENSITIVITY;
         yOffset *= DEFAULT_CAMERA_SENSITIVITY;
-        
+
         yaw += xOffset;
         pitch += yOffset;
 
