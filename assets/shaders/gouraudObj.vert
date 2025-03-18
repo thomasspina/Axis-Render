@@ -39,7 +39,7 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat3 normalMatrix;
 
-uniform float shininess; // shininess must remain outside of material for phong and gouraud to be interchangeable
+uniform highp float shininess; // shininess must remain outside of material for phong and gouraud to be interchangeable
 
 // ======== FUNCTION DECLARATIONS ========
 mat3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);

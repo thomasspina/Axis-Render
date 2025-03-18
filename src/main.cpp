@@ -47,16 +47,17 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                 window.setQuit();
                 break;
 
-            // case SDL_WINDOWEVENT:
-                
-            //     if (event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
-            //         window.setWindowFullscreen();
-            //     } 
-            //     else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
-            //         window.setWindowRestore();
-            //     }
+            case SDL_WINDOWEVENT:
+
+                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                    int width, height;
+                    SDL_GetWindowSize(window.getWindow(), &width, &height);
+
+                    glViewport(0, 0, width, height);
+                    // camera.setCameraConfiguration();
+                }
             
-            //     break;
+                break;
 
             case SDL_KEYDOWN: {
 

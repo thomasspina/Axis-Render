@@ -52,7 +52,7 @@ namespace ShaderSelection {
 #define MODEL_ROTATION_MODE "Input Rotation"
 // #define MODEL_ROTATION_MODE "Natural Rotation"
 
-#define DEFAULT_CAMERA_SPEED 0.05f
+#define DEFAULT_CAMERA_SPEED_SCALING_FACTOR 200
 #define DEFAULT_CAMERA_FOV 45.0f
 #define DEFAULT_CAMERA_SENSITIVITY 0.05f
 

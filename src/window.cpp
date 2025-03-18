@@ -49,7 +49,7 @@ void Window::configureOpenGL() {
 }
 
 void Window::createWindow() {
-    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     if (!window) {
         std::cerr << "Failed to creating a window! Error: " << SDL_GetError() << std::endl;
@@ -176,13 +176,14 @@ void Window::drawPerformanceUI() {
 void Window::drawCameraUI(Camera& camera) {
     ImGui::TextDisabled("[Scroll] to zoom ");
     ImGui::TextDisabled("[ESC] to release mouse cursor");
+    ImGui::TextDisabled("[TAB] to close/open UI");
 
     bool status = true;
-    ImGui::Checkbox("Camera Rotation", camera.getIsCameraRotationEnabled());
+    ImGui::Checkbox("Camera Rotation, [Hold Mouse 2]", camera.getIsCameraRotationEnabled());
     ImGui::Separator();
 
     // ImGui::SliderFloat("Matching Factor", flocking.getMatchingFactorPointer(), 0.f, FLOCK_MAXIMUM_MATCHING_FACTOR);
-    ImGui::Checkbox("Free Camera", camera.getIsFreeCameraEnabled());
+    ImGui::Checkbox("Free Camera, [WASD] to move", camera.getIsFreeCameraEnabled());
     ImGui::Separator();
 
     if (ImGui::Button("Reset Camera [R]")) {
@@ -320,16 +321,16 @@ SDL_Window* Window::getWindow() const {
     return window;
 }
 
-// void Window::setWindowFullscreen() {
-//     SDL_GL_DeleteContext(mainContext);  // Destroy OpenGL context
-//     SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-//     mainContext = SDL_GL_CreateContext(window);  // Recreate context
-//     SDL_GL_MakeCurrent(window, mainContext);  // Bind context again
-// }
+void Window::setWindowFullscreen() {
+    SDL_GL_DeleteContext(mainContext);  // Destroy OpenGL context
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    mainContext = SDL_GL_CreateContext(window);  // Recreate context
+    SDL_GL_MakeCurrent(window, mainContext);  // Bind context again
+}
 
-// void Window::setWindowRestore() {
-//     SDL_SetWindowFullscreen(window, 0);
-// }
+void Window::setWindowRestore() {
+    SDL_SetWindowFullscreen(window, 0);
+}
 
 
 

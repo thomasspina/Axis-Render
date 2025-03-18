@@ -12,16 +12,8 @@ Camera::Camera() {
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 }
 
-Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
-    globalUp = DEFAULT_GLOBAL_UP;
-
-    // Calculates camera distance required so the model sphere fits within the camera's vertical fov
-    float requiredDistance = modelRadius / sin(glm::radians(fov) / 2.0f);
-
-    this->modelRadius = requiredDistance;
-    this->modelCenter = modelCenter;
-
-    cameraPos = modelCenter + glm::vec3(modelRadius * 2, modelRadius / 2, this->modelRadius);
+void Camera::setCameraConfiguration() {
+    cameraPos = modelCenter + glm::vec3(modelRadius / 2.0f, modelRadius / 2.0f, this->modelRadius);
     cameraTarget = modelCenter;
 
     cameraFront = glm::normalize(cameraTarget - cameraPos);
@@ -31,6 +23,18 @@ Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 
     calculateYawPitchFromVector(cameraFront);
+}
+
+Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
+    globalUp = DEFAULT_GLOBAL_UP;
+
+    // Calculates camera distance required so the model sphere fits within the camera's vertical fov
+    float requiredDistance = modelRadius / sin(glm::radians(fov) / 2.0f);
+
+    this->modelRadius = requiredDistance;
+    this->modelCenter = modelCenter;
+
+    setCameraConfiguration();
 }
 
 void Camera::calculateYawPitchFromVector(const glm::vec3& direction) {
@@ -88,7 +92,8 @@ void Camera::setCameraPos(glm::vec3 newCameraPos) {
 }
 
 void Camera::updateCameraSpeed(float deltaTime) {
-    cameraSpeed = DEFAULT_CAMERA_SPEED * deltaTime;
+    float scaleFactor = (modelRadius / DEFAULT_CAMERA_SPEED_SCALING_FACTOR);
+    cameraSpeed =  deltaTime * scaleFactor;
 }
 
 glm::mat4 Camera::getViewMatrix() const {
@@ -133,35 +138,34 @@ void Camera::move(const std::string& dir) {
     }
 }
 
+void Camera::applyMovementSmoothing(glm::vec3 targetPos) {
+    cameraPos = cameraPos + (targetPos - cameraPos) * 0.5f; 
+}
 
 void Camera::moveForward() {
-    cameraPos += cameraSpeed * cameraFront;
+    glm::vec3 targetPos = cameraPos + cameraSpeed * cameraFront;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::moveBackward() {
-    cameraPos -= cameraSpeed * cameraFront;
+    glm::vec3 targetPos = cameraPos - cameraSpeed * cameraFront;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::moveRight() {
-    cameraPos += glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    glm::vec3 targetPos = cameraPos + glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::moveLeft() {
-    cameraPos -= glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    glm::vec3 targetPos = cameraPos - glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::reset() {
     yaw = DEFAULT_YAW_ANGLE;
     pitch = DEFAULT_PITCH_ANGLE;
-    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 
-    cameraPos = modelCenter + glm::vec3(0.0f, 0.0f, modelRadius);
-    cameraTarget = modelCenter;
-
-    cameraDirection = glm::normalize(cameraPos - cameraTarget);
-    cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
-    cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
-
-    calculateYawPitchFromVector(cameraFront);
+    setCameraConfiguration();
 }
 
