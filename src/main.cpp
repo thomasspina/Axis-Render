@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
 
     // Create a lighting object
     Lighting lighting = Lighting();
-    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f));
+    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f)); // add a default light caster for the scene not to be dark
 
     // World grid setup
     GLuint worldGridVao;
@@ -226,10 +226,8 @@ int main(int argc, char* argv[]) {
 
         // render model
         currShader.use();
-
         objModel->updateModelMatrix();
         objModel->updateNormalMatrix(view);
-
         currShader.setUniform("view", view);
         currShader.setUniform("projection", projection);
         currShader.setUniform("model", objModel->getModelMatrix());

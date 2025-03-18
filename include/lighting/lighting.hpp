@@ -30,6 +30,8 @@ public:
     float* getCasterElevation() { return &elevation; } // getter for the UI elevation slider
     void updateCasterDirection(); // updates the light caster direction based on the azimuth and elevation
 
+    LightCaster* getLightCaster() { return &lightCaster; } // light caster getter for the UI intensity sliders and colour pickers
+
     /// @brief Add a point light to the scene, removes first one if the limit is reached
     void addPointLight(PointLight pointLight);
 

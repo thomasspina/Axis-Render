@@ -11,14 +11,6 @@ void LightCaster::setDirection(const glm::vec3& direction) {
     this->direction = direction;
 }
 
-void LightCaster::setIntensity(float intensity) {
-    this->intensity = intensity;
-}
-
-void LightCaster::setColour(const glm::vec3& colour) {
-    this->colour = colour;
-}
-
 void LightCaster::setUniforms(ShaderProgram& shaderProgram) {
     shaderProgram.setUniform("dirLight.direction", this->direction);
 

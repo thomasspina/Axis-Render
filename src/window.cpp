@@ -220,7 +220,8 @@ void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
 // TODO: create lighting UI
 void Window::drawLightingUI(Lighting& lighting) {
     ImGui::Separator();
-    
+    ImGui::Text("Light Caster");
+
     float* azimuth = lighting.getCasterAzimuth();
     if (ImGui::SliderFloat("Azimuth", azimuth, 0.0f, 360.0f, "%.1f°")) {
         lighting.updateCasterDirection();
@@ -235,7 +236,14 @@ void Window::drawLightingUI(Lighting& lighting) {
         lighting.updateCasterDirection();
     }
 
+    float* intensity = lighting.getLightCaster()->getIntensity();
+    ImGui::SliderFloat("Intensity", intensity, 0.0f, 2.0f);
+
+    glm::vec3* colour = lighting.getLightCaster()->getColour();
+    ImGui::ColorEdit3("Colour", &(*colour)[0]);
+
     ImGui::Separator();
+    ImGui::Text("Point Lights");
 }
 
 

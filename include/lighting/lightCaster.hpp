@@ -16,11 +16,11 @@ public:
 
     glm::vec3 getDirection() const { return direction; }
     float getIntensity() const { return intensity; }
+    float* getIntensity() { return &intensity; } // intensity getter for the UI intensity slider
     glm::vec3 getColour() const { return colour; }
+    glm::vec3* getColour() { return &colour; } // colour getter for the UI colour picker
 
     void setDirection(const glm::vec3& direction);
-    void setIntensity(float intensity);
-    void setColour(const glm::vec3& colour);
 
     void setUniforms(ShaderProgram& shaderProgram);
 };

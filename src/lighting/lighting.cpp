@@ -69,5 +69,5 @@ void Lighting::setLightingUniforms(ShaderProgram& shaderProgram) {
         pointLights[i].setLightingUniforms(shaderProgram, std::to_string(i));
     }
 
-    lightCaster.setUniforms(shaderProgram);
+    this->lightCaster.setUniforms(shaderProgram);
 }
