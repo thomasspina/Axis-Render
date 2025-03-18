@@ -67,6 +67,8 @@ public:
 
     Camera(float modelRadius, glm::vec3 modelCenter);
 
+    void setCameraConfiguration();
+
     void applyZoom(float yOffset);
 
     void applyRotation(float xOffset, float yOffset);

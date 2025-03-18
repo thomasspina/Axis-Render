@@ -12,15 +12,7 @@ Camera::Camera() {
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 }
 
-Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
-    globalUp = DEFAULT_GLOBAL_UP;
-
-    // Calculates camera distance required so the model sphere fits within the camera's vertical fov
-    float requiredDistance = modelRadius / sin(glm::radians(fov) / 2.0f);
-
-    this->modelRadius = requiredDistance;
-    this->modelCenter = modelCenter;
-
+void Camera::setCameraConfiguration() {
     cameraPos = modelCenter + glm::vec3(modelRadius * 2, modelRadius / 2, this->modelRadius);
     cameraTarget = modelCenter;
 
@@ -31,6 +23,18 @@ Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
 
     calculateYawPitchFromVector(cameraFront);
+}
+
+Camera::Camera(float modelRadius, glm::vec3 modelCenter) {
+    globalUp = DEFAULT_GLOBAL_UP;
+
+    // Calculates camera distance required so the model sphere fits within the camera's vertical fov
+    float requiredDistance = modelRadius / sin(glm::radians(fov) / 2.0f);
+
+    this->modelRadius = requiredDistance;
+    this->modelCenter = modelCenter;
+
+    setCameraConfiguration();
 }
 
 void Camera::calculateYawPitchFromVector(const glm::vec3& direction) {
@@ -161,15 +165,7 @@ void Camera::moveLeft() {
 void Camera::reset() {
     yaw = DEFAULT_YAW_ANGLE;
     pitch = DEFAULT_PITCH_ANGLE;
-    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 
-    cameraPos = modelCenter + glm::vec3(0.0f, 0.0f, modelRadius);
-    cameraTarget = modelCenter;
-
-    cameraDirection = glm::normalize(cameraPos - cameraTarget);
-    cameraRight = glm::normalize(glm::cross(globalUp, cameraDirection));
-    cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
-
-    calculateYawPitchFromVector(cameraFront);
+    setCameraConfiguration();
 }
 

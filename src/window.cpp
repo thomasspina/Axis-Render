@@ -175,13 +175,14 @@ void Window::drawPerformanceUI() {
 void Window::drawCameraUI(Camera& camera) {
     ImGui::TextDisabled("[Scroll] to zoom ");
     ImGui::TextDisabled("[ESC] to release mouse cursor");
+    ImGui::TextDisabled("[TAB] to close/open UI");
 
     bool status = true;
-    ImGui::Checkbox("Camera Rotation", camera.getIsCameraRotationEnabled());
+    ImGui::Checkbox("Camera Rotation, [Hold Mouse 2]", camera.getIsCameraRotationEnabled());
     ImGui::Separator();
 
     // ImGui::SliderFloat("Matching Factor", flocking.getMatchingFactorPointer(), 0.f, FLOCK_MAXIMUM_MATCHING_FACTOR);
-    ImGui::Checkbox("Free Camera", camera.getIsFreeCameraEnabled());
+    ImGui::Checkbox("Free Camera, [WASD] to move", camera.getIsFreeCameraEnabled());
     ImGui::Separator();
 
     if (ImGui::Button("Reset Camera [R]")) {
