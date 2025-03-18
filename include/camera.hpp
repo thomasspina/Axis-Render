@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 
-
+#include <iostream>
 #include "constants.hpp"
 
 class Camera {
@@ -48,6 +48,8 @@ private:
 
     // Standard FOV
     float fov = DEFAULT_CAMERA_FOV;
+
+    void applyMovementSmoothing(glm::vec3 targetPos);
 
     void moveForward();
 

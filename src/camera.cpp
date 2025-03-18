@@ -65,7 +65,7 @@ void Camera::applyRotation(float xOffset, float yOffset) {
     if (cameraRotationEnabled) {
         xOffset *= DEFAULT_CAMERA_SENSITIVITY;
         yOffset *= DEFAULT_CAMERA_SENSITIVITY;
-
+        
         yaw += xOffset;
         pitch += yOffset;
 
@@ -88,7 +88,8 @@ void Camera::setCameraPos(glm::vec3 newCameraPos) {
 }
 
 void Camera::updateCameraSpeed(float deltaTime) {
-    cameraSpeed = DEFAULT_CAMERA_SPEED * deltaTime;
+    float scaleFactor = (modelRadius / DEFAULT_CAMERA_SPEED_SCALING_FACTOR);
+    cameraSpeed =  deltaTime * scaleFactor;
 }
 
 glm::mat4 Camera::getViewMatrix() const {
@@ -133,21 +134,28 @@ void Camera::move(const std::string& dir) {
     }
 }
 
+void Camera::applyMovementSmoothing(glm::vec3 targetPos) {
+    cameraPos = cameraPos + (targetPos - cameraPos) * 0.5f; 
+}
 
 void Camera::moveForward() {
-    cameraPos += cameraSpeed * cameraFront;
+    glm::vec3 targetPos = cameraPos + cameraSpeed * cameraFront;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::moveBackward() {
-    cameraPos -= cameraSpeed * cameraFront;
+    glm::vec3 targetPos = cameraPos - cameraSpeed * cameraFront;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::moveRight() {
-    cameraPos += glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    glm::vec3 targetPos = cameraPos + glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::moveLeft() {
-    cameraPos -= glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    glm::vec3 targetPos = cameraPos - glm::normalize(glm::cross(cameraFront, globalUp)) * cameraSpeed;
+    applyMovementSmoothing(targetPos);
 }
 
 void Camera::reset() {
