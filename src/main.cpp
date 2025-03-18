@@ -103,6 +103,11 @@ void handleInput(Window& window, Camera& camera, Model& model) {
             }
 
             case SDL_MOUSEWHEEL: {
+                // Separate UI scrolling and camera zooming
+                if (!relativeMouseMode && io.WantCaptureMouse) {
+                    break;
+                }
+
                 float yOffset = event.wheel.y;
                 camera.applyZoom(yOffset);
                 break;
