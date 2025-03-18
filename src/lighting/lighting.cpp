@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "lighting/lighting.hpp"
 #include "constants.hpp"
 
@@ -17,7 +19,35 @@ void Lighting::addLightCaster(LightCaster lightCaster) {
     }
 }
 
-void Lighting::addPointLight(PointLight pointLight) {
+void Lighting::addPointLight() {
+    if (this->pointLights.size() >= MAX_POINT_LIGHTS) {
+        this->pointLights.erase(this->pointLights.begin());
+    }
+
+
+    glm::vec3 cameraPos = camera->getCameraPos();
+    glm::vec3 cameraFront = camera->getCameraFront();
+    glm::vec3 cameraUp = camera->getGlobalUp();
+    glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+
+
+    float near = 1.0f;    // Near plane distance
+    float far = model->getModelRadius() * 3;    // Far plane distance (adjust based on your scene)
+    float fov = camera->getFov();
+    float aspectRatio = DEFAULT_ASPECT_RATIO;
+
+    float depth = near + ((float)rand() / RAND_MAX) * (far - near);
+    float tanHalfFov = glm::tan(glm::radians(fov * 0.5f));
+    float halfHeight = depth * tanHalfFov;
+    float halfWidth = halfHeight * aspectRatio;
+
+    float randX = ((float)rand() / RAND_MAX) * 2.0f - 1.0f;
+    float randY = ((float)rand() / RAND_MAX) * 2.0f - 1.0f;
+
+    glm::vec3 center = cameraPos + cameraFront * depth;
+    glm::vec3 position = center + cameraRight * (randX * halfWidth) + cameraUp * (randY * halfHeight);
+
+    PointLight pointLight = PointLight(position, 2.0f, 1.0f);
     this->pointLights.push_back(pointLight);
 }
 

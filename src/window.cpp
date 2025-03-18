@@ -217,7 +217,6 @@ void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
     ImGui::Combo("Select Shader", &shaderSelect, ShaderSelection::shaders, IM_ARRAYSIZE(ShaderSelection::shaders));
 }
 
-// TODO: create lighting UI
 void Window::drawLightingUI(Lighting& lighting) {
     ImGui::Separator();
     ImGui::Text("Light Caster");
@@ -244,6 +243,42 @@ void Window::drawLightingUI(Lighting& lighting) {
 
     ImGui::Separator();
     ImGui::Text("Point Lights");
+
+    int* nPointLights = lighting.getNPointLights();
+    int prev = *nPointLights;
+    if (ImGui::InputInt("num point lights", nPointLights, 1.0f)) {
+        if (*nPointLights < 0) *nPointLights = 0;
+        if (*nPointLights > 4) *nPointLights = 4;
+
+        if (*nPointLights < prev) {
+            for (int i = 0; i < prev - *nPointLights; i++) {
+                lighting.removePointLight();
+            }
+        } else {
+            for (int i = 0; i < *nPointLights - prev; i++) {
+                lighting.addPointLight();
+            }
+        }
+
+    }
+
+    for (int i = 1; i <= *nPointLights; i++) {
+        ImGui::Text("Point Light %d", i);
+        PointLight& pointLight = lighting.getPointLights()[i - 1];
+        
+        // ImGui requires unique labels for each UI element
+        char intensityLabel[50];
+        sprintf(intensityLabel, "Intensity %d", i);
+        float* intensity = pointLight.getIntensityPointer();
+        ImGui::SliderFloat(intensityLabel, intensity, 0.0f, 10.0f);
+
+        char colourLabel[50];
+        sprintf(colourLabel, "Colour %d", i);
+        glm::vec3* colour = pointLight.getColourPointer();
+        ImGui::ColorEdit3(colourLabel, &(*colour)[0]);
+
+        ImGui::Separator();
+    }
 }
 
 
@@ -273,16 +308,12 @@ void Window::drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelS
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Model")) {
         drawModelUI(obj, modelSelect, shaderSelect);
+        drawMiscUI(showGrid);
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Lighting")) {
         drawLightingUI(lighting);
-    }
-
-    ImGui::SetNextItemOpen(true, ImGuiCond_Once);
-    if (ImGui::CollapsingHeader("Miscellaneous")) {
-        drawMiscUI(showGrid);
     }
 
     ImGui::End();

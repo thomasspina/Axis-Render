@@ -28,7 +28,7 @@ struct DirLight {
     vec3 specular;
 };
 
-#define MAX_POINT_LIGHTS 10
+#define MAX_POINT_LIGHTS 4
 uniform int nr_point_lights;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 

@@ -89,8 +89,7 @@ namespace ShaderSelection {
 #define DEFAULT_LIGHT_COLOUR glm::vec3(1.0f)
 
 // Define light numbers
-#define MAX_POINT_LIGHTS 10
-#define MAX_DIRECTIONAL_LIGHTS 3
+#define MAX_POINT_LIGHTS 4
 
 // Width / Height to prevent distortion
 constexpr float DEFAULT_ASPECT_RATIO = 800.0f / 600.0f;

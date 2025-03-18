@@ -177,6 +177,8 @@ int main(int argc, char* argv[]) {
     // Create a lighting object
     Lighting lighting = Lighting();
     lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f)); // add a default light caster for the scene not to be dark
+    lighting.setCamera(&camera);
+    lighting.setModel(objModel.get());
 
     // World grid setup
     GLuint worldGridVao;
@@ -199,6 +201,8 @@ int main(int argc, char* argv[]) {
         if (selectedModel != modelSelect) {
             objModel = loadNewModel();
             camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
+            lighting.setCamera(&camera);
+            lighting.setModel(objModel.get());
             selectedModel = modelSelect;
         }
 
@@ -222,7 +226,7 @@ int main(int argc, char* argv[]) {
         // render lights TODO: add option to toggle this off
         lighting.updateView(view);
         lighting.updateProjection(projection);
-        lighting.drawPointLights(pointLightShader);
+        // lighting.drawPointLights(pointLightShader); TODO: for some reason, drawing them gives a seg fault
 
         // render model
         currShader.use();

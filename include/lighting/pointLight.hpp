@@ -20,5 +20,8 @@ public:
 
     const glm::vec3& getColour() const;
 
+    float* getIntensityPointer() { return &intensity; }
+    glm::vec3* getColourPointer() { return &colour; }
+
     void setLightingUniforms(ShaderProgram& shaderProgram, const std::string& i); // Set the uniforms coming from the light source
 };
