@@ -262,6 +262,9 @@ void Window::drawLightingUI(Lighting& lighting) {
 
     }
 
+    ImGui::Separator();
+
+
     for (int i = 1; i <= *nPointLights; i++) {
         ImGui::Text("Point Light %d", i);
         PointLight& pointLight = lighting.getPointLights()[i - 1];
