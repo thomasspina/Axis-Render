@@ -35,12 +35,17 @@ float selectedScaleValue = scaleValue;
 
 bool isUiCollapsed = false;
 
+int counter = 0;
+
 void handleInput(Window& window, Camera& camera, Model& model) {
-    SDL_Event event = window.getEvent();
-
+    SDL_Event event;
+    ImGuiIO& io = ImGui::GetIO();
+    bool escapePressed = false;
+    
     while (SDL_PollEvent(&event) > 0) {
-
-        ImGui_ImplSDL2_ProcessEvent(&event);
+        if (!relativeMouseMode) {
+            ImGui_ImplSDL2_ProcessEvent(&event);
+        }
 
         switch(event.type) {
             case SDL_QUIT:
@@ -48,38 +53,32 @@ void handleInput(Window& window, Camera& camera, Model& model) {
                 break;
 
             case SDL_WINDOWEVENT:
-
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     int width, height;
                     SDL_GetWindowSize(window.getWindow(), &width, &height);
-
                     glViewport(0, 0, width, height);
-                    // camera.setCameraConfiguration();
                 }
-            
                 break;
 
             case SDL_KEYDOWN: {
-
                 switch(event.key.keysym.sym) {
                     case SDLK_ESCAPE:
-                        SDL_SetRelativeMouseMode(SDL_FALSE);
-                        relativeMouseMode = false;
+                        escapePressed = true;
                         break;
                     case SDLK_RETURN:
                         model.resetModel();
                         break;
                     case SDLK_w:
-                        camera.move("w");
+                        if (relativeMouseMode) camera.move("w");
                         break;
                     case SDLK_a:
-                        camera.move("a");
+                        if (relativeMouseMode) camera.move("a");
                         break;
                     case SDLK_s:
-                        camera.move("s");
+                        if (relativeMouseMode) camera.move("s");
                         break;
                     case SDLK_d:
-                        camera.move("d");
+                        if (relativeMouseMode) camera.move("d");
                         break;
                     case SDLK_r:
                         camera.reset();
@@ -93,40 +92,49 @@ void handleInput(Window& window, Camera& camera, Model& model) {
             }
 
             case SDL_MOUSEBUTTONDOWN: {
-                if (SDL_BUTTON(SDL_BUTTON_LEFT)) {
-                    if (!ImGui::GetIO().WantCaptureMouse) { 
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    // Set relative mouse to true if cursor is on context and not on UI
+                    if (!relativeMouseMode && !io.WantCaptureMouse) {
                         SDL_SetRelativeMouseMode(SDL_TRUE);
                         relativeMouseMode = true;
                     }
                 }
-
                 break;
             }
 
             case SDL_MOUSEWHEEL: {
                 float yOffset = event.wheel.y;
-                
                 camera.applyZoom(yOffset);
-
                 break;
             }
 
             case SDL_MOUSEMOTION: {
-                if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
-                    float xOffset = event.motion.xrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
-                    float yOffset = event.motion.yrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
-
-                    model.updateObjectYaw(xOffset);
-                    model.updateObjectPitch(yOffset);
-                } else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-                    float xOffset = event.motion.xrel;
-                    float yOffset = event.motion.yrel;
+                if (relativeMouseMode || 
+                    (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)) ||
+                    (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
                     
-                    camera.applyRotation(xOffset, yOffset);
+                    if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
+                        float xOffset = event.motion.xrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
+                        float yOffset = event.motion.yrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
+                        model.updateObjectYaw(xOffset);
+                        model.updateObjectPitch(yOffset);
+                    } else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+                        float xOffset = event.motion.xrel;
+                        float yOffset = event.motion.yrel;
+                        camera.applyRotation(xOffset, yOffset);
+                    }
                 }
                 break;
             }
         }
+    }
+
+    if (escapePressed && relativeMouseMode) {
+        SDL_SetRelativeMouseMode(SDL_FALSE);
+        relativeMouseMode = false;
+        
+        // Set left mouse button as not pressed
+        io.MouseDown[0] = false;
     }
 }
 
