@@ -30,18 +30,19 @@ class Window {
         void initializeOpenGL();
         void initializeImGui();
 
-        void drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect);
+        void drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid);
 
         double getMemoryUsage() const;
         void drawPerformanceUI();
         void drawCameraUI(Camera& camera);
         void drawModelUI(Object& obj, int& modelSelect, int& shaderSelect);
         void drawLightingUI();
+        void drawMiscUI(bool& showGrid);
 
     public:
         Window();
 
-        void renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect);
+        void renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid);
 
         void setWindowFullscreen();
         void setWindowRestore();

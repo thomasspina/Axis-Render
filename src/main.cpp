@@ -188,6 +188,7 @@ int main(int argc, char* argv[]) {
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
     ShaderProgram currShader = gouraudShader;
+    bool showGrid = true;
 
     while (!window.isQuit()) {
 
@@ -236,17 +237,19 @@ int main(int argc, char* argv[]) {
         objModel->draw(currShader);
 
         // render world grid
-        worldGridShader.use();
-        worldGridShader.setUniform("view", view);
-        worldGridShader.setUniform("projection", projection);
-        worldGridShader.setUniform("cameraPos", camera.getCameraPos());
-        worldGridShader.setUniform("modelRadius", objModel->getModelRadius());
-        glBindVertexArray(worldGridVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDrawArrays(GL_LINES, 6, 2);
+        if (showGrid) {
+            worldGridShader.use();
+            worldGridShader.setUniform("view", view);
+            worldGridShader.setUniform("projection", projection);
+            worldGridShader.setUniform("cameraPos", camera.getCameraPos());
+            worldGridShader.setUniform("modelRadius", objModel->getModelRadius());
+            glBindVertexArray(worldGridVao);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_LINES, 6, 2);
+        }
 
         // Render UI
-        window.renderImGui(camera, *objModel, modelSelect, shaderSelect);
+        window.renderImGui(camera, *objModel, modelSelect, shaderSelect, showGrid);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

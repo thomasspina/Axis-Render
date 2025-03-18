@@ -220,7 +220,15 @@ void Window::drawLightingUI() {
     ImGui::Separator();
 }
 
-void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect) {
+
+void Window::drawMiscUI(bool& showGrid) {
+    ImGui::Checkbox("Show Grid", &showGrid);
+
+    ImGui::Separator();
+}
+
+
+void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid) {
     ImGui::Begin("Engine Menu");
 
     ImGui::SetWindowPos(ImVec2(1000, 20), ImGuiCond_Once);
@@ -246,15 +254,20 @@ void Window::drawUI(Camera& camera, Object& obj, int& modelSelect, int& shaderSe
         drawLightingUI();
     }
 
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+    if (ImGui::CollapsingHeader("Miscellaneous")) {
+        drawMiscUI(showGrid);
+    }
+
     ImGui::End();
 }
 
-void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect) {
+void Window::renderImGui(Camera& camera, Object& obj, int& modelSelect, int& shaderSelect, bool& showGrid) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    drawUI(camera, obj, modelSelect, shaderSelect);
+    drawUI(camera, obj, modelSelect, shaderSelect, showGrid);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
