@@ -13,22 +13,15 @@ namespace RotationMode {
 }
 
 namespace ModelSelection {
-    enum class Model {
-        Cube,
-        Triangle,
-        Backpack,
-        SpaceShuttle
-    };
-
     constexpr const char* models[] = { 
+        "Backpack",
+        "Brick Cylinder",
+        "Bunny",
         "Cube",
-        "Brick Cylinder", 
-        "Space Shuttle", 
-        "Backpack", 
-        "Planet", 
-        "Cyborg", 
-        "Nanosuit", 
-        "Bunny", 
+        "Cyborg",
+        "Nanosuit",
+        "Planet",
+        "Space Shuttle",
         "Vase"
     };
 

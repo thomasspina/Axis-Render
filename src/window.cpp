@@ -49,7 +49,7 @@ void Window::configureOpenGL() {
 }
 
 void Window::createWindow() {
-    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("Axis Render", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     if (!window) {
         std::cerr << "Failed to creating a window! Error: " << SDL_GetError() << std::endl;
@@ -87,6 +87,10 @@ void Window::initializeOpenGL() {
 
     // Enables depth comparison, only rendering closes fragments
     glEnable(GL_DEPTH_TEST);
+
+    // Enable blending for grid shader
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Window::initializeImGui() {
