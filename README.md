@@ -1,4 +1,4 @@
-# Axis Render
+# Axis Render Engine
 
 Axis Render is a rasterization-based 3D model rendering engine designed to visualize OBJ models. This project serves as an initial step in developing a game engine, providing the foundational tools for rendering and interacting with 3D models. As a standalone application, Axis Render offers a straightforward UI that allows users to manipulate and explore 3D models in real-time. With features like free-roam camera movement, real-time shader application, dynamic lighting adjustments, and model transformations, it provides a flexible platform for visualizing and fine-tuning 3D assets, laying the groundwork for more advanced game engine development.
 
