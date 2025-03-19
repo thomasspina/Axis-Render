@@ -262,6 +262,8 @@ void Window::drawLightingUI(Lighting& lighting) {
     }
 
     ImGui::Checkbox("Draw Point Lights", lighting.drawPointLightsBool());
+    ImGui::Separator();
+
 
     for (int i = 1; i <= *nPointLights; i++) {
         ImGui::Text("Point Light %d", i);
