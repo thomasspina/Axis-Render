@@ -234,7 +234,7 @@ int main(int argc, char* argv[]) {
         // render lights TODO: add option to toggle this off
         lighting.updateView(view);
         lighting.updateProjection(projection);
-        // lighting.drawPointLights(pointLightShader); TODO: for some reason, drawing them gives a seg fault
+        lighting.drawPointLights(pointLightShader); // TODO: for some reason, drawing them gives a seg fault
 
         // render model
         currShader.use();

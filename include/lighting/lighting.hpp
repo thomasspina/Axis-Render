@@ -24,6 +24,8 @@ private:
 
     Camera* camera; // Camera is needed for random point light generation in view frustum
     Model* model; // Model is needed for the model radius and center
+
+    bool isDrawPointLights = true;
 public:
     Lighting() = default;
     void setCamera(Camera* camera) { this->camera = camera; }
@@ -36,6 +38,7 @@ public:
     float* getCasterAzimuth() { return &azimuth; } // getter for the UI azimuth slider
     float* getCasterElevation() { return &elevation; } // getter for the UI elevation slider
     void updateCasterDirection(); // updates the light caster direction based on the azimuth and elevation
+    bool* drawPointLightsBool() { return &isDrawPointLights; } // getter for the UI point light toggle
 
     LightCaster* getLightCaster() { return &lightCaster; } // light caster getter for the UI intensity sliders and colour pickers
     std::vector<PointLight>& getPointLights() { return pointLights; }

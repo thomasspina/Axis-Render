@@ -47,7 +47,7 @@ void Lighting::addPointLight() {
     glm::vec3 center = cameraPos + cameraFront * depth;
     glm::vec3 position = center + cameraRight * (randX * halfWidth) + cameraUp * (randY * halfHeight);
 
-    PointLight pointLight = PointLight(position, 2.0f, 1.0f);
+    PointLight pointLight = PointLight(position, 0.5f, 1.0f);
     this->pointLights.push_back(pointLight);
 }
 
@@ -76,6 +76,10 @@ void Lighting::updateCasterDirection() {
 }
 
 void Lighting::drawPointLights(ShaderProgram& pointLightShader) {
+    if (!isDrawPointLights) {
+        return;
+    }
+
     pointLightShader.use();
     pointLightShader.setUniform("view", this->view);
     pointLightShader.setUniform("projection", this->projection);
@@ -83,7 +87,7 @@ void Lighting::drawPointLights(ShaderProgram& pointLightShader) {
     for (PointLight& pointLight : this->pointLights) {
         pointLightShader.setUniform("model", pointLight.getModelMatrix());
         pointLightShader.setUniform("lightColour", pointLight.getColour());
-        pointLight.draw(pointLightShader);
+        pointLight.draw();
     }
 }
 

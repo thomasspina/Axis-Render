@@ -259,19 +259,30 @@ void Window::drawLightingUI(Lighting& lighting) {
                 lighting.addPointLight();
             }
         }
-
     }
+
+    ImGui::Checkbox("Draw Point Lights", lighting.drawPointLightsBool());
 
     for (int i = 1; i <= *nPointLights; i++) {
         ImGui::Text("Point Light %d", i);
         PointLight& pointLight = lighting.getPointLights()[i - 1];
         
-        // ImGui requires unique labels for each UI element
+        // Intensity control
         char intensityLabel[50];
         sprintf(intensityLabel, "Intensity %d", i);
         float* intensity = pointLight.getIntensityPointer();
         ImGui::SliderFloat(intensityLabel, intensity, 0.0f, 10.0f);
 
+        // Position control
+        char positionLabel[50];
+        sprintf(positionLabel, "Position %d", i);
+        glm::vec3 position = pointLight.getPosition();
+        if (ImGui::DragFloat3(positionLabel, &position[0], 0.1f)) {
+            pointLight.updatePosition(position);
+        }
+        
+
+        // Colour control
         char colourLabel[50];
         sprintf(colourLabel, "Colour %d", i);
         glm::vec3* colour = pointLight.getColourPointer();

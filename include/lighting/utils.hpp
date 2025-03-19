@@ -3,49 +3,41 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "rendering/mesh.hpp"
 
-inline std::vector<Vertex> getCubeVertices(float size) {
+inline std::vector<glm::vec3> getCubeVertices(float size) {
     float halfSize = size / 2.0f;
-    
-    std::vector<Vertex> vertices = {
+    std::vector<glm::vec3> vertices = {
         // Front face
-        {{-halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}}, // Bottom-left
-        {{ halfSize, -halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}}, // Bottom-right
-        {{ halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}}, // Top-right
-        {{-halfSize,  halfSize,  halfSize}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}}, // Top-left
-        
+        {-halfSize, -halfSize, halfSize}, // Bottom-left
+        {halfSize, -halfSize, halfSize}, // Bottom-right
+        {halfSize, halfSize, halfSize}, // Top-right
+        {-halfSize, halfSize, halfSize}, // Top-left
         // Back face
-        {{-halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}}, // Bottom-left
-        {{-halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}}, // Top-left
-        {{ halfSize,  halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}}, // Top-right
-        {{ halfSize, -halfSize, -halfSize}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}}, // Bottom-right
-        
+        {-halfSize, -halfSize, -halfSize}, // Bottom-left
+        {-halfSize, halfSize, -halfSize}, // Top-left
+        {halfSize, halfSize, -halfSize}, // Top-right
+        {halfSize, -halfSize, -halfSize}, // Bottom-right
         // Top face
-        {{-halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}}, // Bottom-left
-        {{-halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}, // Top-left
-        {{ halfSize,  halfSize,  halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}}, // Top-right
-        {{ halfSize,  halfSize, -halfSize}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}}, // Bottom-right
-        
+        {-halfSize, halfSize, -halfSize}, // Bottom-left
+        {-halfSize, halfSize, halfSize}, // Top-left
+        {halfSize, halfSize, halfSize}, // Top-right
+        {halfSize, halfSize, -halfSize}, // Bottom-right
         // Bottom face
-        {{-halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}}, // Bottom-left
-        {{ halfSize, -halfSize, -halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}}, // Bottom-right
-        {{ halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}}, // Top-right
-        {{-halfSize, -halfSize,  halfSize}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}}, // Top-left
-        
+        {-halfSize, -halfSize, -halfSize}, // Bottom-left
+        {halfSize, -halfSize, -halfSize}, // Bottom-right
+        {halfSize, -halfSize, halfSize}, // Top-right
+        {-halfSize, -halfSize, halfSize}, // Top-left
         // Right face
-        {{ halfSize, -halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}, // Bottom-left
-        {{ halfSize,  halfSize, -halfSize}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}, // Top-left
-        {{ halfSize,  halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}, // Top-right
-        {{ halfSize, -halfSize,  halfSize}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}, // Bottom-right
-        
+        {halfSize, -halfSize, -halfSize}, // Bottom-left
+        {halfSize, halfSize, -halfSize}, // Top-left
+        {halfSize, halfSize, halfSize}, // Top-right
+        {halfSize, -halfSize, halfSize}, // Bottom-right
         // Left face
-        {{-halfSize, -halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}, // Bottom-left
-        {{-halfSize, -halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}, // Bottom-right
-        {{-halfSize,  halfSize,  halfSize}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}, // Top-right
-        {{-halfSize,  halfSize, -halfSize}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}  // Top-left
+        {-halfSize, -halfSize, -halfSize}, // Bottom-left
+        {-halfSize, -halfSize, halfSize}, // Bottom-right
+        {-halfSize, halfSize, halfSize}, // Top-right
+        {-halfSize, halfSize, -halfSize} // Top-left
     };
-
     return vertices;
 }
 
