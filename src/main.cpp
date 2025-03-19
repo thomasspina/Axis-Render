@@ -1,30 +1,20 @@
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-#include "shader/shaderProgram.hpp"
 #include "config.h"
-
-#include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include "imgui_impl_opengl3.h"
-
-#include "constants.hpp"
 #include "camera.hpp"
 #include "window.hpp"
+#include "UIHandler.hpp"
+
 #include "rendering/model.hpp"
 
-#include "lighting/lighting.hpp"
-#include "lighting/pointLight.hpp"
-#include "lighting/lightCaster.hpp"
-#include "lighting/utils.hpp"
+#include "shader/shaderProgram.hpp"
 
-#include "UIHandler.hpp"
+#include "lighting/lighting.hpp"
+
 
 int main(int argc, char* argv[]) {
 
