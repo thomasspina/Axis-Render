@@ -1,61 +1,103 @@
 #pragma once
+
 #include <glm/glm.hpp>
-#include "constants.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
+
+#include <iostream>
+#include "constants.hpp"
 
 class Camera {
-    private:
-        // Global Y axis
-        glm::vec3 globalUp;
+private:
+    glm::vec3 modelCenter;
 
-        glm::vec3 cameraFront;
+    float modelRadius;
 
-        // World space vectort pointing to camera position
-        glm::vec3 cameraPos;
+    bool cameraRotationEnabled = true;
+    bool freeCameraEnabled = false;
 
-        // Camera target set as Origin
-        glm::vec3 cameraTarget;
+    // Global Y axis
+    glm::vec3 globalUp;
 
-        // Vector that points to the Z axis
-        glm::vec3 cameraDirection;
+    glm::vec3 cameraFront;
 
-        // Vector that points to the X axis
-        glm::vec3 cameraRight;
+    // World space vectort pointing to camera position
+    glm::vec3 cameraPos;
 
-        // Camera Y axis Vector
-        glm::vec3 cameraUp;
+    // Camera target set as Origin
+    glm::vec3 cameraTarget;
 
-        float cameraSpeed;
+    // Vector that points to the Z axis
+    glm::vec3 cameraDirection;
 
-        // Yaw angle: Rotates the camera left/right around the Y-axis (horizontal rotation).
-        float yaw = DEFAULT_YAW_ANGLE;
+    // Vector that points to the X axis
+    glm::vec3 cameraRight;
 
-        // Pitch angle: Rotates the camera up/down around the X-axis (vertical rotation).
-        float pitch = DEFAULT_PITCH_ANGLE;
+    // Camera Y axis Vector
+    glm::vec3 cameraUp;
 
-        // Standard FOV
-        float fov = DEFAULT_CAMERA_FOV;
+    float cameraSpeed;
 
-    public:
-        Camera();
+    // Yaw angle: Rotates the camera left/right around the Y-axis (horizontal rotation).
+    float yaw = DEFAULT_YAW_ANGLE;
 
-        void applyZoom(float yOffset);
+    // Pitch angle: Rotates the camera up/down around the X-axis (vertical rotation).
+    float pitch = DEFAULT_PITCH_ANGLE;
 
-        void applyRotation(float xOffset, float yOffset);
+    // Standard FOV
+    float fov = DEFAULT_CAMERA_FOV;
 
-        void setCameraPos(glm::vec3 newCameraPos);
+    void applyMovementSmoothing(glm::vec3 targetPos);
 
-        void updateCameraSpeed(float deltaTime);
+    void moveForward();
 
-        const glm::vec3 getCameraPos();
+    void moveBackward();
 
-        const glm::vec3 getCameraFront();
+    void moveRight();
 
-        const glm::vec3 getGlobalUp();
+    void moveLeft();
 
-        const float getCameraSpeed();
+    void init();
 
-        const float getFov();
+public:
+    Camera();
+    ~Camera() = default;
+
+    Camera(float modelRadius, glm::vec3 modelCenter);
+
+    void setCameraConfiguration();
+
+    void applyZoom(float yOffset);
+
+    void applyRotation(float xOffset, float yOffset);
+
+    void setCameraPos(glm::vec3 newCameraPos);
+
+    void updateCameraSpeed(float deltaTime);
+
+    glm::mat4 getViewMatrix() const;
+
+    glm::mat4 getProjectionMatrix() const;
+
+    const glm::vec3 getCameraPos() const;
+
+    const glm::vec3 getCameraFront() const;
+
+    const glm::vec3 getGlobalUp() const;
+
+    const float getCameraSpeed() const;
+
+    const float getFov() const;
+
+    void move(const std::string& dir);
+
+    bool* getIsCameraRotationEnabled() { return &this->cameraRotationEnabled; }
+
+    bool* getIsFreeCameraEnabled() { return &this->freeCameraEnabled; }
+
+    void calculateYawPitchFromVector(const glm::vec3& direction);
+
+    void reset();
 };
