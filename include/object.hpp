@@ -1,8 +1,9 @@
 #pragma once
 
-#include "constants.hpp"
 #include <glm/glm.hpp>
 #include <SDL2/SDL_timer.h>
+
+#include "constants.hpp"
 
 class Object {
 private:

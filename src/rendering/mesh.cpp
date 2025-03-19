@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <iostream>
 
 #include "rendering/mesh.hpp"
 
@@ -47,7 +46,7 @@ void Mesh::setupMesh() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
-    // Set color attribute pointers
+    // Set normals attribute pointers
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
