@@ -29,13 +29,7 @@
 int main(int argc, char* argv[]) {
 
     Window window = Window();
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-
-    // Enable blending for grid shader
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    
     // ============================ INITIALIZATION SECTION =====================================
 
     UIHandler uiHandler;
@@ -60,8 +54,7 @@ int main(int argc, char* argv[]) {
     ShaderProgram worldGridShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/worldGrid.vert", std::string(ASSETS_PATH) + "shaders/worldGrid.frag");
 
     // Create a model
-    std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/Space Shuttle/Space Shuttle.obj");
-    objModel->setModelName(2);
+    std::unique_ptr<Model> objModel = std::make_unique<Model>(std::string(ASSETS_PATH) + "models/" + ModelSelection::models[uiHandler.getModelSelect()] + "/" + ModelSelection::models[uiHandler.getModelSelect()] + ".obj");
 
     // Create a camera object
     Camera camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
@@ -80,7 +73,7 @@ int main(int argc, char* argv[]) {
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
-    ShaderProgram currShader = gouraudShader;
+    ShaderProgram currShader = shaders[uiHandler.getShaderSelect()];
 
     while (!window.isQuit()) {
 

@@ -6,8 +6,11 @@
 
 class UIHandler {
     private:
-        int modelSelect = 2;
-        int shaderSelect = 1;
+        // Select default model as Space Shuttle
+        int modelSelect = 7;
+
+        // Select default shader as Phong
+        int shaderSelect = 0;
 
         int selectedModel;
         int selectedShader;
@@ -15,8 +18,6 @@ class UIHandler {
         bool relativeMouseMode = false;
         bool isUiCollapsed = false;
         bool showGrid = true;
-
-        // ShaderProgram currShader = gouraudShader;
 
     public:
         UIHandler() : selectedModel(modelSelect), selectedShader(shaderSelect) {};
@@ -33,5 +34,7 @@ class UIHandler {
         int& getShaderSelectRef() { return shaderSelect; }
         bool& getShowGridRef() { return showGrid; }
 
+        int getModelSelect() { return modelSelect; }
+        int getShaderSelect() { return shaderSelect; }
         bool getShowGrid() { return showGrid; }
 };
