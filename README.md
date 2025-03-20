@@ -84,23 +84,22 @@ TODO
 ---
 
 ## Installation
-### MacOS
+### Linux
 
 TODO : Change to Linux
 
-To run this program on MacOS you need to have XCode Command line tools installed
+To run this program on linux, it's best to first install needed libraries, not necessary, but best. Otherwise you will have to build them all yourself when you make and that can take quite some time.
 ~~~
-xcode-select --install
-~~~
-
-Then install CMake using [Homebrew](https://brew.sh)
-~~~
-brew install cmake
+apt update 
+apt install libglm-dev # For glm
+apt install libassimp-dev # For assimp
+apt install libsdl2-dev # For SDL2
+apt install libglew-dev # For GLEW
 ~~~
 
 Then clone the github repo onto your computer
 ~~~
-git clone https://github.com/thomasspina/Superchip-emulator.git
+git clone https://github.com/thomasspina/Axis-Render.git
 ~~~
 
 In the repo make a build directory in which the project will be built and switch to that directory
@@ -110,12 +109,12 @@ mkdir build && cd ./build
 
 From within this build directory you can build the project using cmake and make with the following command
 ~~~
-cmake .. && make -j 4
+cmake .. && make -j 8
 ~~~
 
 Then to run the project you have to run the generated binary in the bin directory within the build directory
 ~~~
-./bin/Superchip-emulator
+./bin/Axis-Render
 ~~~
 
 ### Windows
@@ -124,7 +123,7 @@ Install Cmake (PATH recommended) (https://cmake.org/download/)
 
 Then clone the github repo onto your computer
 ~~~
-git clone https://github.com/thomasspina/Superchip-emulator.git
+git clone https://github.com/thomasspina/Axis-Render.git
 ~~~
 
 #### Choose one of the following toolchains:
