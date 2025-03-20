@@ -63,7 +63,7 @@ brightness is then used to choose a bitmask, which encodes a 5x5 character grid.
 
 The result is a pixelated output that simulates ASCII characters, effectively transforming the 3D model into a low-resolution, text-based visual representation.
 
-This shader was created from this [tutoria](https://tympanus.net/codrops/2024/11/13/creating-an-ascii-shader-using-ogl/)
+This shader was created from this [tutorial](https://tympanus.net/codrops/2024/11/13/creating-an-ascii-shader-using-ogl/).
 
 <img src="https://github.com/user-attachments/assets/771b8e45-1e96-4e1c-bc2d-48221804fd98" width="1500" />
 
