@@ -40,7 +40,7 @@ Axis Render is a rasterization-based 3D model rendering engine designed to visua
 
 ### Camera Controls and Navigation
 - **Toggleable Camera Options**:
-  - **Camera Rotation**: Enables users to rotate the camera view from a first-person point of view (POV).
+  - **Camera Rotation**: Enables users to rotate the camera view from a first-person point of view.
   - **Free Roam Camera**: Allows the user to freely fly around the 3D space.
 
 - **Camera Zoom**: Users can zoom in and out for a closer or wider view of the scene.
