@@ -15,17 +15,25 @@ Axis Render is a rasterization-based 3D model rendering engine designed to visua
 - [Sources](#sources)
 
 ## Feature Demo
+### Model Interaction
+<img src="https://github.com/user-attachments/assets/8141882e-8cd8-4b60-9c14-146676f82e28" width="1500" />
+
+---
+
 ### Camera Controls and Navigation
-<img src="https://github.com/user-attachments/assets/ddf05a7e-e1db-4660-9b3d-041035659d72" width="1500" />
+<img src="https://github.com/user-attachments/assets/1be77441-b612-473a-a2cd-421bb1e9c471" width="1500" />
 
-### Model Interaction and Switching
-![alien](https://github.com/user-attachments/assets/ec6dc7a4-d810-487f-a763-97fd04b8f6e8)
+---
 
-### Shader Program Selection
-![alien](https://github.com/user-attachments/assets/ec6dc7a4-d810-487f-a763-97fd04b8f6e8)
+### Shader Programs 
 
-### Grid View
-<img src="https://github.com/user-attachments/assets/ddf05a7e-e1db-4660-9b3d-041035659d72" width="1500" />
+#### Phong
+<img src="https://github.com/user-attachments/assets/75deaca9-6a12-4d71-9c40-62b3f7ed5b35" width="1500" />
+
+#### ASCII
+<img src="https://github.com/user-attachments/assets/771b8e45-1e96-4e1c-bc2d-48221804fd98" width="1500" />
+
+---
 
 ### Light Caster Settings
 ![alien](https://github.com/user-attachments/assets/ec6dc7a4-d810-487f-a763-97fd04b8f6e8)
