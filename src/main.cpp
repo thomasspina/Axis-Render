@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 
     // Create a lighting object
     Lighting lighting = Lighting();
-    lighting.addLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f)); // add a default light caster for the scene not to be dark
+    lighting.setLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f)); // set a default light caster for the scene not to be dark
     lighting.setCamera(&camera);
     lighting.setModel(objModel.get());
 

@@ -225,25 +225,28 @@ void Window::drawLightingUI(Lighting& lighting) {
     ImGui::Separator();
     ImGui::Text("Light Caster");
 
-    float* azimuth = lighting.getCasterAzimuth();
-    if (ImGui::SliderFloat("Azimuth", azimuth, 0.0f, 360.0f, "%.1f°")) {
-        lighting.updateCasterDirection();
+    LightCaster* lightCaster = lighting.getLightCasterPointer();
+
+    float azimuth = lightCaster->getAzimuth();
+    float elevation = lightCaster->getElevation();
+
+    if (ImGui::SliderFloat("Azimuth", &azimuth, 0.0f, 360.0f, "%.1f°")) {
+        lightCaster->setDirection(azimuth, elevation);
     }
 
-    float* elevation = lighting.getCasterElevation();
-    if (ImGui::SliderFloat("Elevation", elevation, -90.0f, 90.0f, "%.1f°")) {
-        // Clamp elevation to -90 to 90
-        if (*elevation > 90.0f) *elevation = 90.0f;
-        if (*elevation < -90.0f) *elevation = -90.0f;
-
-        lighting.updateCasterDirection();
+    if (ImGui::SliderFloat("Elevation", &elevation, -90.0f, 90.0f, "%.1f°")) {
+        lightCaster->setDirection(azimuth, elevation);
     }
 
-    float* intensity = lighting.getLightCaster()->getIntensity();
-    ImGui::SliderFloat("Intensity", intensity, 0.0f, 2.0f);
+    float intensity = lightCaster->getIntensity();
+    if (ImGui::SliderFloat("Intensity", &intensity, 0.0f, 2.0f)) {
+        lightCaster->setIntensity(intensity);
+    }
 
-    glm::vec3* colour = lighting.getLightCaster()->getColour();
-    ImGui::ColorEdit3("Colour", &(*colour)[0]);
+    glm::vec3 colour = lightCaster->getColour();
+    if (ImGui::ColorEdit3("Colour", &colour[0])) {
+        lightCaster->setColour(colour);
+    }
 
     ImGui::Separator();
     ImGui::Text("Point Lights");
@@ -265,7 +268,7 @@ void Window::drawLightingUI(Lighting& lighting) {
         }
     }
 
-    ImGui::Checkbox("Draw Point Lights", lighting.drawPointLightsBool());
+    ImGui::Checkbox("Draw Point Lights", lighting.toggleDrawPointLightsPointer());
     ImGui::Separator();
 
 
@@ -286,7 +289,6 @@ void Window::drawLightingUI(Lighting& lighting) {
         if (ImGui::DragFloat3(positionLabel, &position[0], 0.1f)) {
             pointLight.updatePosition(position);
         }
-        
 
         // Colour control
         char colourLabel[50];

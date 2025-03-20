@@ -18,10 +18,6 @@ private:
     std::vector<PointLight> pointLights;
     int nPointLights = 0;
 
-    glm::vec3 anglestoDirection(float azimuth, float elevation);
-    float azimuth;
-    float elevation;
-
     Camera* camera; // Camera is needed for random point light generation in view frustum
     Model* model; // Model is needed for the model radius and center
 
@@ -34,13 +30,10 @@ public:
     void updateView(const glm::mat4& view);
     void updateProjection(const glm::mat4& projection);
 
-    void addLightCaster(LightCaster lightCaster);
-    float* getCasterAzimuth() { return &azimuth; } // getter for the UI azimuth slider
-    float* getCasterElevation() { return &elevation; } // getter for the UI elevation slider
-    void updateCasterDirection(); // updates the light caster direction based on the azimuth and elevation
-    bool* drawPointLightsBool() { return &isDrawPointLights; } // getter for the UI point light toggle
+    void setLightCaster(LightCaster lightCaster);
+    bool* toggleDrawPointLightsPointer() { return &isDrawPointLights; } // getter for the UI point light toggle
 
-    LightCaster* getLightCaster() { return &lightCaster; } // light caster getter for the UI intensity sliders and colour pickers
+    LightCaster* getLightCasterPointer() { return &lightCaster; } // light caster getter for the UI intensity sliders and colour pickers
     std::vector<PointLight>& getPointLights() { return pointLights; }
     int* getNPointLights() { return &nPointLights; } // getter for the UI point light count input
 
