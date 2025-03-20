@@ -4,6 +4,13 @@ Axis Render is a rasterization-based 3D model rendering engine designed to visua
 
 ## Navigation
 - [Features](#features)
+  - [Model Interaction](#model-interaction)
+  - [Camera Controls and Navigation](#camera-controls-and-navigation)
+  - [Shader Programs](#shader-programs)
+    - [Phong](#phong)
+    - [ASCII](#ascii)
+  - [Light Caster Settings](#light-caster-settings)
+  - [Point Light Configuration](#point-light-configuration)
 - [Installation](#installation)
   - [MacOS](#macos)
   - [Windows](#windows)
@@ -70,11 +77,16 @@ This shader was created from this [tutorial](https://tympanus.net/codrops/2024/1
 ---
 
 ### Light Caster Settings
-
+TODO
 ### Point Light Configuration
+TODO
+
+---
 
 ## Installation
 ### MacOS
+
+TODO : Change to Linux
 
 To run this program on MacOS you need to have XCode Command line tools installed
 ~~~
@@ -166,13 +178,13 @@ GLSL (OpenGL Shading Language) is the standard shader language used for OpenGL a
 Future improvements include expanding the engine's capability to process additional 3D model formats, such as GLTF and FBX, beyond just OBJ files. Other desirable features would include enabling users to modify model coordinates using drag-and-drop functionality, as well as supporting the rendering of multiple objects simultaneously. More flashy shaders would also be neat.
 
 ## Sources
-Technical references for Chip8: 
-  - https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/ 
-  - http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
-Technical references for Super-CHIP:
-  - https://chip-8.github.io/extensions/#super-chip-10
-  - http://devernay.free.fr/hacks/chip8/schip.txt
+Technical references for OpenGL: 
+  - https://learnopengl.com/
+  - https://webglfundamentals.org/webgl/lessons/resources/webgl-state-diagram.html
+    
+Shader reference:
+  - https://tympanus.net/codrops/2024/11/13/creating-an-ascii-shader-using-ogl/
 
-Super-CHIP and Chip8 Game Library:
-  - https://www.zophar.net/pdroms/chip8/super-chip-games-pack.html
-  - https://archive.org/details/chip-8-games
+Model sources:
+  - https://casual-effects.com/data/
+  - https://3d.si.edu/
