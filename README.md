@@ -4,7 +4,7 @@ Axis Render is a rasterization-based 3D model rendering engine designed to visua
 
 ## Navigation
 - [Demo](#demo)
-- [Feature Demo](#Feature Demo)
+- [Feature Demo](#feature-demo)
 - [Installation](#installation)
   - [MacOS](#macos)
   - [Windows](#windows)
@@ -23,6 +23,9 @@ Axis Render is a rasterization-based 3D model rendering engine designed to visua
 
 ### Shader Program Selection
 ![alien](https://github.com/user-attachments/assets/ec6dc7a4-d810-487f-a763-97fd04b8f6e8)
+
+### Grid View
+<img src="https://github.com/user-attachments/assets/ddf05a7e-e1db-4660-9b3d-041035659d72" width="1500" />
 
 ### Light Caster Settings
 ![alien](https://github.com/user-attachments/assets/ec6dc7a4-d810-487f-a763-97fd04b8f6e8)
@@ -103,18 +106,24 @@ C++ was chosen as the core language for this project due to its low-level memory
 
 #### OpenGL
 
+OpenGL was chosen as the graphics API due to its widespread use and lower hardware requirements. This ensures that our engine can run efficiently on a wide range of devices, including lower-end systems, providing a broader accessibility to users with varying hardware capabilities.
+
 #### GLSL
 
+GLSL (OpenGL Shading Language) is the standard shader language used for OpenGL applications, enabling efficient and flexible GPU programming for rendering tasks.
+
 #### SDL2
-[SDL2](https://www.libsdl.org/) is the graphics, sound and periferals library chosen since it is lightweight and had all the basics required for a Chip8 system which isn't super complex to start with.
+[SDL2](https://www.libsdl.org/) was used to create and manage the application window and OpenGL context. It is a easy-to-use library that not only streamlines development but also allows for seamless portability to other platforms, including WebAssembly (WASM), if needed.
 
 #### ImGui
+[ImGui](https://github.com/ocornut/imgui) was used for the UI due to its lightweight nature and straightforward approach to creating complex UIs
 
 #### Assimp
+[Assimp](https://www.assimp.org/) was used for processing 3D model files. It simplifies the process of importing and converting model data into a format that can be efficiently integrated into the GPU for rendering.
 
 ## Future Improvements
 
-This project is the final evolution of the chip8. Any improvements would simply be another system.
+Future improvements include expanding the engine's capability to process additional 3D model formats, such as GLTF and FBX, beyond just OBJ files. Other desirable features would include enabling users to modify model coordinates using drag-and-drop functionality, as well as supporting the rendering of multiple objects simultaneously. More flashy shaders would also be neat.
 
 ## Sources
 Technical references for Chip8: 
