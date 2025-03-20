@@ -17,6 +17,7 @@
 #endif
 
 #include "window.hpp"
+#include "UIHandler.hpp"
 #include "utils/constants.hpp"
 
 Window::Window() {
@@ -197,16 +198,22 @@ void Window::drawCameraUI(Camera& camera) {
     ImGui::Separator();
 }
 
-void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
-    if (ImGui::RadioButton("Input Rotation [Hold Mouse 3]", obj.getRotationalMode() == RotationMode::inputRotation)) {
-        obj.setRotationMode(RotationMode::inputRotation);
+void Window::drawModelUI(Model& obj, UIHandler& uiHandler) {
+
+    RotationMode rotationMode = uiHandler.getModelRotationMode();
+    if (ImGui::RadioButton("Input Rotation [Hold Mouse 3]", rotationMode == RotationMode::INPUT_ROTATION)) {
+        uiHandler.setModelRotationMode(RotationMode::INPUT_ROTATION);
+        obj.resetModel();
     }
 
-    if (ImGui::RadioButton("Natural Rotation", obj.getRotationalMode() == RotationMode::naturalRotation)) {
-        obj.setRotationMode(RotationMode::naturalRotation);
+    if (ImGui::RadioButton("Natural Rotation", rotationMode == RotationMode::NATURAL_ROTATION)) {
+        uiHandler.setModelRotationMode(RotationMode::NATURAL_ROTATION);
     }
 
-    ImGui::SliderFloat("Model Scale", obj.getModelScale(), 0.1, 2.0);
+    float scale =  obj.getModelScale();
+    if (ImGui::SliderFloat("Model Scale", &scale, 0.1, 2.0)) {
+        obj.scale(scale);
+    }
 
     if (ImGui::Button("Reset Model [Enter]")) {
         obj.resetModel();
@@ -214,11 +221,17 @@ void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
 
     ImGui::Separator();
 
-    ImGui::Combo("Select Model", &modelSelect, ModelSelection::models, IM_ARRAYSIZE(ModelSelection::models));
+    int modelSelect = uiHandler.getModelSelect();
+    if (ImGui::Combo("Select Model", &modelSelect, ModelSelection::models, IM_ARRAYSIZE(ModelSelection::models))) {
+        uiHandler.setModelSelect(modelSelect);
+    }
 
-    ImGui::Separator();
+    ImGui::Separator(); 
 
-    ImGui::Combo("Select Shader", &shaderSelect, ShaderSelection::shaders, IM_ARRAYSIZE(ShaderSelection::shaders));
+    int shaderSelect = uiHandler.getShaderSelect();
+    if (ImGui::Combo("Select Shader", &shaderSelect, ShaderSelection::shaders, IM_ARRAYSIZE(ShaderSelection::shaders))) {
+        uiHandler.setShaderSelect(shaderSelect);
+    }
 }
 
 void Window::drawLightingUI(Lighting& lighting) {
@@ -306,13 +319,11 @@ void Window::drawLightingUI(Lighting& lighting) {
 
 
 void Window::drawMiscUI(bool& showGrid) {
-    ImGui::Checkbox("Show Grid", &showGrid);
-
-    ImGui::Separator();
+    
 }
 
 
-void Window::drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid) {
+void Window::drawUI(Camera& camera, Model& obj, Lighting& lighting, UIHandler& uiHandler) {
     ImGui::Begin("Engine Menu");
 
     ImGui::SetWindowPos(ImVec2(875, 20), ImGuiCond_Once);
@@ -330,8 +341,13 @@ void Window::drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelS
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
     if (ImGui::CollapsingHeader("Model")) {
-        drawModelUI(obj, modelSelect, shaderSelect);
-        drawMiscUI(showGrid);
+        drawModelUI(obj, uiHandler);
+        
+        bool showGrid = uiHandler.getShowGrid();
+        if (ImGui::Checkbox("Show Grid", &showGrid)) {
+            uiHandler.setShowGrid(showGrid);
+        }
+
     }
 
     drawLightingUI(lighting);
@@ -339,12 +355,12 @@ void Window::drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelS
     ImGui::End();
 }
 
-void Window::renderImGui(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid) {
+void Window::renderImGui(Camera& camera, Model& obj, Lighting& lighting, UIHandler& uiHandler) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    drawUI(camera, obj, lighting, modelSelect, shaderSelect, showGrid);
+    drawUI(camera, obj, lighting, uiHandler);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -7,10 +7,10 @@ namespace CameraMode {
     constexpr int orbitCamera = 1;
 }
 
-namespace RotationMode {
-    constexpr int inputRotation = 0;
-    constexpr int naturalRotation = 1;
-}
+enum class RotationMode {
+    INPUT_ROTATION = 0,
+    NATURAL_ROTATION
+};
 
 namespace ModelSelection {
     constexpr const char* models[] = { 
@@ -48,6 +48,11 @@ namespace ShaderSelection {
 #define MODEL_ROTATION_MODE "Input Rotation"
 // #define MODEL_ROTATION_MODE "Natural Rotation"
 
+
+/****************************************/
+/*           Camera Constants           */
+/****************************************/
+
 #define DEFAULT_CAMERA_SPEED_SCALING_FACTOR 200
 #define DEFAULT_CAMERA_FOV 45.0f
 #define DEFAULT_CAMERA_SENSITIVITY 0.05f
@@ -63,9 +68,6 @@ namespace ShaderSelection {
 #define MIN_CAMERA_PITCH_ANGLE -89.0f
 
 #define SPINNING_CAMERA_RADIUS 10.0f
-
-
-
 
 
 /****************************************/
@@ -103,12 +105,14 @@ namespace ShaderSelection {
 
 
 /****************************************/
-/*          Other Constants          */
+/*           Other Constants            */
 /****************************************/
+
+#define DEFAULT_SHININESS 30.0f
 
 // Width / Height to prevent distortion
 constexpr float DEFAULT_ASPECT_RATIO = 800.0f / 600.0f;
 
 const glm::mat4 IDENTITY_MATRIX = glm::mat4(1.0f);
-const glm::vec3 DEFAULT_ROTATION_AXIS = glm::vec3(0.5f, 1.0f, 0.0f);
+const glm::vec3 DEFAULT_ROTATION_AXIS = glm::vec3(0.5f, 1.0f, 0.5f);
 const glm::vec3 DEFAULT_GLOBAL_UP = glm::vec3(0.0f, 1.0f, 0.0f);

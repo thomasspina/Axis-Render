@@ -7,53 +7,39 @@
 
 class Object {
 private:
-    float objectYaw = 0.0f;
-    float objectPitch = 0.0f;
-    int rotationMode = RotationMode::naturalRotation;
-    int modelName;
-    float objectScale = 1.0f;
-    uint64_t initialTime = SDL_GetTicks64();
-    
+    float yaw = 0.0f;
+    float pitch = 0.0f;
+    float roll = 0.0f;
+
+    float objScale = 1.0f;
+
+    void updateModelMatrix();
 protected:
     glm::vec3 position = glm::vec3(0.0f);
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
     
 public:
-    Object();
+    Object() = default;
     Object(glm::vec3 position);
     virtual ~Object() = default;
 
-    const glm::mat4& getModelMatrix() const;
-    const glm::mat3& getNormalMatrix() const;
-    const glm::vec3& getPosition() const;
+    glm::mat4 getModelMatrix() const { return model; }
+    glm::mat3 getNormalMatrix() const { return normalMatrix;}
+    glm::vec3 getPosition() const { return position; }
+    float getModelScale() const { return objScale; }
 
     void setPosition(const glm::vec3& newPosition);
 
-    void translate(const glm::vec3& translation);
     void rotate(float angle, const glm::vec3& axis);
-    void rotateX(float angle);
-    void rotateY(float angle);
-    void rotateZ(float angle);
-    void scale(const glm::vec3& scale);
+    void translate(const glm::vec3& translation);
     void scale(float scale);
 
-    // Reset model matrix to identity matrix
     void resetModel();
 
     void updateNormalMatrix(const glm::mat4& view);
 
-    void updateObjectYaw(float yoffset);
-    void updateObjectPitch(float xoffset);
-
-    void updateModelMatrix();
-    void naturalRotation();
-    void inputRotation();
-    
-    void setModelName(int modelName) { this->modelName = modelName; }
-    int getModelName() { return this->modelName; }
-    void setRotationMode(int newRotationMode) { rotationMode = newRotationMode; }
-    int getRotationalMode() { return this->rotationMode; }
-
-    float* getModelScale() { return &this->objectScale; }
+    void incrementYaw(float incr);
+    void incrementPitch(float incr);
+    void incrementRoll(float incr);
 };

@@ -1,40 +1,46 @@
 #pragma once
 
 #include "camera.hpp"
-#include "window.hpp"
 #include "rendering/model.hpp"
+#include "utils/constants.hpp"
+
+class Window;
 
 class UIHandler {
-    private:
-        // Select default model as Space Shuttle
-        int modelSelect = 7;
+private:
+    // Select default model as Space Shuttle
+    int modelSelect = 7;
 
-        // Select default shader as Phong
-        int shaderSelect = 0;
+    // Select default shader as Phong
+    int shaderSelect = 0;
 
-        int selectedModel;
-        int selectedShader;
+    int selectedModel;
+    int selectedShader;
 
-        bool relativeMouseMode = false;
-        bool isUiCollapsed = false;
-        bool showGrid = true;
+    bool relativeMouseMode = false;
+    bool isUiCollapsed = false;
+    bool showGrid = true;
 
-    public:
-        UIHandler() : selectedModel(modelSelect), selectedShader(shaderSelect) {};
+    RotationMode modelRotationMode = RotationMode::NATURAL_ROTATION;
 
-        void handleInput(Window& window, Camera& camera, Model& model);
+public:
+    UIHandler() : selectedModel(modelSelect), selectedShader(shaderSelect) {};
 
-        void changeModel(std::unique_ptr<Model>& model, Camera& camera);
+    void handleInput(Window& window, Camera& camera, Model& model);
 
-        int changeShader();
+    void changeModel(std::unique_ptr<Model>& model, Camera& camera);
 
-        std::unique_ptr<Model> loadNewModel();
+    int changeShader();
 
-        int& getModelSelectRef() { return modelSelect; }
-        int& getShaderSelectRef() { return shaderSelect; }
-        bool& getShowGridRef() { return showGrid; }
+    std::unique_ptr<Model> loadNewModel();
 
-        int getModelSelect() { return modelSelect; }
-        int getShaderSelect() { return shaderSelect; }
-        bool getShowGrid() { return showGrid; }
+    void setModelSelect(int newModelSelect) { modelSelect = newModelSelect; }
+    void setShaderSelect(int newShaderSelect) { shaderSelect = newShaderSelect; }
+    void setShowGrid(bool newShowGrid) { showGrid = newShowGrid; }
+    void setModelRotationMode(RotationMode newMode) { modelRotationMode = newMode; }
+
+    int getModelSelect() const { return modelSelect; }
+    int getShaderSelect() const { return shaderSelect; }
+    bool getShowGrid() const { return showGrid; }
+    RotationMode getModelRotationMode() const { return modelRotationMode; }
 };

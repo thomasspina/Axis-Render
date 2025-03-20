@@ -8,12 +8,10 @@
 #include "camera.hpp"
 #include "window.hpp"
 #include "UIHandler.hpp"
-
 #include "rendering/model.hpp"
-
 #include "shader/shaderProgram.hpp"
-
 #include "lighting/lighting.hpp"
+#include "utils/constants.hpp"
 
 
 int main(int argc, char* argv[]) {
@@ -29,11 +27,8 @@ int main(int argc, char* argv[]) {
 
     // phong lighting shaders
     ShaderProgram phongShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/phongObj.vert", std::string(ASSETS_PATH) + "shaders/phongObj.frag");
-
     ShaderProgram grayscaleShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/grayscale.frag");
-
     ShaderProgram sketchShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/sketch.frag");
-
     ShaderProgram asciiShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/ascii.frag");
 
     // Selectable shaders
@@ -93,7 +88,13 @@ int main(int argc, char* argv[]) {
 
         // render model
         currShader.use();
-        objModel->updateModelMatrix();
+        if (uiHandler.getModelRotationMode() == RotationMode::NATURAL_ROTATION) {
+            const float rotationSpeed = 30.0f;
+    
+            float rotationAngle = rotationSpeed * (deltaTime / 1000.0f); 
+            
+            objModel->rotate(rotationAngle, DEFAULT_ROTATION_AXIS);
+        } 
         objModel->updateNormalMatrix(view);
         currShader.setUniform("view", view);
         currShader.setUniform("projection", projection);
@@ -115,7 +116,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Render UI
-        window.renderImGui(camera, *objModel, lighting, uiHandler.getModelSelectRef(), uiHandler.getShaderSelectRef(), uiHandler.getShowGridRef());
+        window.renderImGui(camera, *objModel, lighting, uiHandler);
 
         // OpenGL double buffering buffer swap
         window.swapWindow();

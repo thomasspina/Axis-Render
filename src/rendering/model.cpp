@@ -5,6 +5,7 @@
 #include <assimp/postprocess.h>
 
 #include "rendering/model.hpp"
+#include "utils/constants.hpp"
 
 
 Model::Model(const std::string &path) {
@@ -127,7 +128,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
 
 // MMesh: Positions, Normals and texture coordinate
 std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
-    float shininess = 32.0f;
+    float shininess = DEFAULT_SHININESS;
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;

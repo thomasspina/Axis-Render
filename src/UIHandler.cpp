@@ -1,7 +1,10 @@
-#include "UIHandler.hpp"
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include "imgui_impl_opengl3.h"
+
+#include "UIHandler.hpp"
+#include "window.hpp"
+
 #include "utils/constants.hpp"
 #include "config.h"
 
@@ -88,10 +91,13 @@ void UIHandler::handleInput(Window& window, Camera& camera, Model& model) {
                     (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
                     
                     if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
+
+                        if (modelRotationMode != RotationMode::INPUT_ROTATION) { break; }
+                        
                         float xOffset = event.motion.xrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
                         float yOffset = event.motion.yrel * DEFAULT_MODEL_ROTATION_SENSITIVITY;
-                        model.updateObjectYaw(xOffset);
-                        model.updateObjectPitch(yOffset);
+                        model.incrementYaw(xOffset);
+                        model.incrementPitch(yOffset);
                     } else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
                         float xOffset = event.motion.xrel;
                         float yOffset = event.motion.yrel;

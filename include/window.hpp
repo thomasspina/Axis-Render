@@ -6,54 +6,56 @@
 #include "object.hpp"
 #include "camera.hpp"
 
+class UIHandler;
+
 class Window {
-    private:  
-        // FPS UI graph
-        static const int FPS_HISTORY_SIZE = 600;
-        float fpsHistory[FPS_HISTORY_SIZE] = {0};
-        int fpsOffset = 0;
+private:  
+    // FPS UI graph
+    static const int FPS_HISTORY_SIZE = 600;
+    float fpsHistory[FPS_HISTORY_SIZE] = {0};
+    int fpsOffset = 0;
 
-        // Memory UI graph
-        static const int MEMORY_HISTORY_SIZE = 600;
-        float memoryHistory[MEMORY_HISTORY_SIZE] = {0};
-        int memoryOffset = 0;
+    // Memory UI graph
+    static const int MEMORY_HISTORY_SIZE = 600;
+    float memoryHistory[MEMORY_HISTORY_SIZE] = {0};
+    int memoryOffset = 0;
 
-        SDL_Window* window;
-        SDL_Surface* winSurface;
-        bool quit;
-        SDL_Event event;
-        SDL_GLContext mainContext;
-        
-        void initializeSDL();
-        void configureOpenGL();
-        void createWindow();
-        void createContext();
-        void initializeOpenGL();
-        void initializeImGui();
+    SDL_Window* window;
+    SDL_Surface* winSurface;
+    bool quit;
+    SDL_Event event;
+    SDL_GLContext mainContext;
+    
+    void initializeSDL();
+    void configureOpenGL();
+    void createWindow();
+    void createContext();
+    void initializeOpenGL();
+    void initializeImGui();
 
-        void drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid);
+    void drawUI(Camera& camera, Model& obj, Lighting& lighting, UIHandler& uiHandler);
 
-        double getMemoryUsage() const;
-        void drawPerformanceUI();
-        void drawCameraUI(Camera& camera);
-        void drawModelUI(Object& obj, int& modelSelect, int& shaderSelect);
-        void drawLightingUI(Lighting& lighting);
-        void drawMiscUI(bool& showGrid);
+    double getMemoryUsage() const;
+    void drawPerformanceUI();
+    void drawCameraUI(Camera& camera);
+    void drawModelUI(Model& obj, UIHandler& uiHandler);
+    void drawLightingUI(Lighting& lighting);
+    void drawMiscUI(bool& showGrid);
 
-    public:
-        Window();
+public:
+    Window();
 
-        void renderImGui(Camera& camera, Object& obj, Lighting& lighting, int& modelSelect, int& shaderSelect, bool& showGrid);
+    void renderImGui(Camera& camera, Model& obj, Lighting& lighting, UIHandler& uiHandler);
 
-        void setWindowFullscreen();
-        void setWindowRestore();
+    void setWindowFullscreen();
+    void setWindowRestore();
 
-        void swapWindow();
-        void closeWindow();
+    void swapWindow();
+    void closeWindow();
 
-        void setQuit();
-        bool isQuit();
-        SDL_Event getEvent();
+    void setQuit();
+    bool isQuit();
+    SDL_Event getEvent();
 
-        SDL_Window* getWindow() const;
+    SDL_Window* getWindow() const;
 };
