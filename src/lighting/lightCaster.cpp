@@ -1,7 +1,7 @@
 #include "lighting/lightCaster.hpp"
 
 /*****************************************/
-/*            Public Methods            */
+/*            Public Methods             */
 /*****************************************/
 
 LightCaster::LightCaster(float azimuth, float elevation) {
