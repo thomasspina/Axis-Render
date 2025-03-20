@@ -40,7 +40,6 @@ private:
     void drawCameraUI(Camera& camera);
     void drawModelUI(Model& obj, UIHandler& uiHandler);
     void drawLightingUI(Lighting& lighting);
-    void drawMiscUI(bool& showGrid);
 
 public:
     Window();

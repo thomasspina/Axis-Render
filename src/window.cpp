@@ -318,11 +318,6 @@ void Window::drawLightingUI(Lighting& lighting) {
 }
 
 
-void Window::drawMiscUI(bool& showGrid) {
-    
-}
-
-
 void Window::drawUI(Camera& camera, Model& obj, Lighting& lighting, UIHandler& uiHandler) {
     ImGui::Begin("Engine Menu");
 
