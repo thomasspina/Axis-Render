@@ -3,8 +3,7 @@
 Axis Render is a rasterization-based 3D model rendering engine designed to visualize OBJ models. This project serves as an initial step in developing a game engine, providing the foundational tools for rendering and interacting with 3D models. As a standalone application, Axis Render offers a straightforward UI that allows users to manipulate and explore 3D models in real-time. With features like free-roam camera movement, real-time shader application, dynamic lighting adjustments, and model transformations, it provides a flexible platform for visualizing and fine-tuning 3D assets, laying the groundwork for more advanced game engine development.
 
 ## Navigation
-- [Demo](#demo)
-- [Feature Demo](#feature-demo)
+- [Features](#features)
 - [Installation](#installation)
   - [MacOS](#macos)
   - [Windows](#windows)
@@ -14,32 +13,65 @@ Axis Render is a rasterization-based 3D model rendering engine designed to visua
 - [Future Improvements](#future-improvements)
 - [Sources](#sources)
 
-## Feature Demo
+## Features
 ### Model Interaction
+- **Two Rotation Modes**:
+  - **Input Rotation**: Control the model's rotation using mouse movement.
+  - **Natural Rotation**: The model rotates smoothly in a continuous diagonal motion.
+
+- **Adjust Model Scale**: Change the size of the model to fit your preference.
+
+- **Select Model**: Choose the model you want to render.
+
+- **Select Shader**: Apply custom shaders to enhance the model's visual appearance.
+
+- **Grid**: A grid can be toggled to provide a better perspective in 3D space.
+
 <img src="https://github.com/user-attachments/assets/8141882e-8cd8-4b60-9c14-146676f82e28" width="1500" />
 
 ---
 
 ### Camera Controls and Navigation
+- **Toggleable Camera Options**:
+  - **Camera Rotation**: Enables users to rotate the camera view from a first-person point of view (POV).
+  - **Free Roam Camera**: Allows the user to freely fly around the 3D space.
+
+- **Camera Zoom**: Users can zoom in and out for a closer or wider view of the scene.
 <img src="https://github.com/user-attachments/assets/1be77441-b612-473a-a2cd-421bb1e9c471" width="1500" />
 
 ---
 
 ### Shader Programs 
+Several shader programs are currently available for selection, with more being developed and updated over time. Below are shaders that stand out a little more.
 
 #### Phong
+The Phong shading model is a technique used in computer graphics to simulate the way light interacts with surfaces. It is widely used in rasterization engines for real-time rendering and produces smooth lighting effects. The model combines three components:
+
+Ambient Lighting: A constant light that affects all surfaces equally, providing a baseline level of light.
+
+Diffuse Reflection: Simulates how light scatters on a rough surface, resulting in a matte finish.
+
+Specular Reflection: Models the shiny highlights on smooth surfaces where light reflects at specific angles, contributing to the glossy appearance.
+
 <img src="https://github.com/user-attachments/assets/75deaca9-6a12-4d71-9c40-62b3f7ed5b35" width="1500" />
 
 #### ASCII
+The ASCII Shader converts 3D models or images into stylized ASCII art by using a bitmask pattern that is selected based on the pixel's brightness. 
+
+The shader first computes the diffuse and specular lighting, which contribute to the final pixel brightness. This 
+brightness is then used to choose a bitmask, which encodes a 5x5 character grid. The shader scales and translates the pixel's screen position into this grid, checking whether each grid cell should be "on" or "off" based on the bitmask. 
+
+The result is a pixelated output that simulates ASCII characters, effectively transforming the 3D model into a low-resolution, text-based visual representation.
+
+This shader was created from this [tutoria](https://tympanus.net/codrops/2024/11/13/creating-an-ascii-shader-using-ogl/)
+
 <img src="https://github.com/user-attachments/assets/771b8e45-1e96-4e1c-bc2d-48221804fd98" width="1500" />
 
 ---
 
 ### Light Caster Settings
-![alien](https://github.com/user-attachments/assets/ec6dc7a4-d810-487f-a763-97fd04b8f6e8)
 
 ### Point Light Configuration
-![alien](https://github.com/user-attachments/assets/ec6dc7a4-d810-487f-a763-97fd04b8f6e8)
 
 ## Installation
 ### MacOS
