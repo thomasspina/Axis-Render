@@ -1,6 +1,10 @@
 #pragma once
+
 #include <glm/glm.hpp>
+
 #include "shader/shaderProgram.hpp"
+#include "utils/constants.hpp"
+
 
 /**
  * @class LightCaster
@@ -8,13 +12,14 @@
  * 
  * The LightCaster class simulates a directional light source like the sun,
  * where all light rays are parallel. It can be defined using either angular
- * coordinates (azimuth/elevation) or a direction vector.
+ * coordinates (azimuth/elevation) or a direction vector. The light uses
+ * default values from constants.hpp for intensity and color.
  */
 class LightCaster {
 private:
     glm::vec3 direction;  ///< Normalized direction vector (points from light toward scene)
-    float intensity;      ///< Light brightness multiplier
-    glm::vec3 colour;     ///< Light color (RGB)
+    float intensity;      ///< Light brightness multiplier (set to DEFAULT_LIGHT_INTENSITY by default)
+    glm::vec3 colour;     ///< Light color (RGB) (set to DEFAULT_LIGHT_COLOUR by default)
     float azimuth;        ///< Horizontal angle in degrees (0-360°)
     float elevation;      ///< Vertical angle in degrees (-90° to 90°)
 
@@ -36,23 +41,34 @@ private:
 public:
     /**
      * @brief Default constructor
+     * 
+     * Creates a light with default intensity (DEFAULT_LIGHT_INTENSITY) and
+     * default color (DEFAULT_LIGHT_COLOUR). The light direction is set to
+     * DEFAULT_LIGHT_CASTER_DIRECTION.
      */
-    LightCaster() = default;
+    LightCaster() : LightCaster(DEFAULT_LIGHT_CASTER_DIRECTION) {}
 
     /**
      * @brief Constructs a directional light using angular coordinates
+     * 
+     * Creates a light with default intensity (DEFAULT_LIGHT_INTENSITY) and
+     * default color (DEFAULT_LIGHT_COLOUR).
+     * 
      * @param azimuth Horizontal angle in degrees (0-360° where 0° is along negative z-axis)
      * @param elevation Vertical angle in degrees (-90° to 90° where 90° points upward)
-     * @param intensity Brightness multiplier for the light
      */
-    LightCaster(float azimuth, float elevation, float intensity);
+    LightCaster(float azimuth, float elevation);
 
     /**
      * @brief Constructs a directional light using a direction vector
+     * 
+     * Creates a light with default intensity (DEFAULT_LIGHT_INTENSITY) and
+     * default color (DEFAULT_LIGHT_COLOUR). Automatically calculates the
+     * corresponding azimuth and elevation angles.
+     * 
      * @param direction Vector pointing from the light source toward the scene (will be normalized)
-     * @param intensity Brightness multiplier for the light
      */
-    LightCaster(const glm::vec3& direction, float intensity);
+    LightCaster(const glm::vec3& direction);
 
     /**
      * @brief Gets the light's normalized direction vector

@@ -1,18 +1,21 @@
 #include "lighting/lightCaster.hpp"
-#include "constants.hpp"
 
-LightCaster::LightCaster(float azimuth, float elevation, float intensity) {
+/*****************************************/
+/*            Public Methods            */
+/*****************************************/
+
+LightCaster::LightCaster(float azimuth, float elevation) {
     this->azimuth = azimuth;
     this->elevation = elevation;
-    this->intensity = intensity;
+    this->intensity = DEFAULT_LIGHT_INTENSITY;
     this->colour = DEFAULT_LIGHT_COLOUR;
     this->direction = anglestoDirection(azimuth, elevation);
 }
 
-LightCaster::LightCaster(const glm::vec3& direction, float intensity) {
+LightCaster::LightCaster(const glm::vec3& direction) {
     this->direction = glm::normalize(direction);
     this->colour = DEFAULT_LIGHT_COLOUR;
-    this->intensity = intensity;
+    this->intensity = DEFAULT_LIGHT_INTENSITY;
     
     // Calculate equivalent angular coordinates from the direction vector
     float elevationRad = glm::asin(direction.y);
@@ -40,6 +43,12 @@ void LightCaster::setDirection(float azimuth, float elevation) {
     this->elevation = elevation;
     this->direction = anglestoDirection(azimuth, elevation);
 }
+
+
+/*****************************************/
+/*            Private Methods            */
+/*****************************************/
+
 
 void LightCaster::setUniformsForShaderProgram(ShaderProgram& shaderProgram) {
     shaderProgram.setUniform("dirLight.direction", this->direction);

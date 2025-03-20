@@ -64,16 +64,21 @@ namespace ShaderSelection {
 
 #define SPINNING_CAMERA_RADIUS 10.0f
 
+
+
+
+
+/****************************************/
+/*          Lighting Constants          */
+/****************************************/
+
 // Define visible depth range
 #define DEFAULT_NEAR_CLIPPING_PLANE 0.1f
 #define DEFAULT_FAR_CLIPPING_PLANE 500.0f
 
 // Define light constants
-// #define DEFAULT_LIGHT_AMBIENT 0.1f
 #define DEFAULT_LIGHT_AMBIENT 0.3f
-// #define DEFAULT_LIGHT_DIFFUSE 0.5f
 #define DEFAULT_LIGHT_DIFFUSE 0.7f
-// #define DEFAULT_LIGHT_SPECULAR 1.0f
 #define DEFAULT_LIGHT_SPECULAR 0.5f
 
 // Define light attenuation constants
@@ -86,6 +91,20 @@ namespace ShaderSelection {
 
 // Define light numbers
 #define MAX_POINT_LIGHTS 4
+
+// Define light intensity
+#define DEFAULT_LIGHT_INTENSITY 1.0f
+
+// Define light caster direction
+#define DEFAULT_LIGHT_CASTER_DIRECTION glm::vec3(-0.2f, -1.0f, -0.3f)
+
+// Define point light mesh size
+#define DEFAULT_POINT_LIGHT_SIZE 0.5f
+
+
+/****************************************/
+/*          Other Constants          */
+/****************************************/
 
 // Width / Height to prevent distortion
 constexpr float DEFAULT_ASPECT_RATIO = 800.0f / 600.0f;

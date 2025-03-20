@@ -52,10 +52,7 @@ int main(int argc, char* argv[]) {
     Camera camera = Camera(objModel->getModelRadius(), objModel->getModelCenter());
 
     // Create a lighting object
-    Lighting lighting = Lighting();
-    lighting.setLightCaster(LightCaster(glm::vec3(-0.2f, -1.0f, -0.3f), 1.0f)); // set a default light caster for the scene not to be dark
-    lighting.setCamera(&camera);
-    lighting.setModel(objModel.get());
+    Lighting lighting = Lighting(&camera, objModel.get());
 
     // World grid setup
     GLuint worldGridVao;
@@ -90,8 +87,8 @@ int main(int argc, char* argv[]) {
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = camera.getProjectionMatrix();
 
-        lighting.updateView(view);
-        lighting.updateProjection(projection);
+        lighting.setView(view);
+        lighting.setProjection(projection);
         lighting.drawPointLights(pointLightShader);
 
         // render model
@@ -102,7 +99,7 @@ int main(int argc, char* argv[]) {
         currShader.setUniform("projection", projection);
         currShader.setUniform("model", objModel->getModelMatrix());
         currShader.setUniform("normalMatrix", objModel->getNormalMatrix());
-        lighting.setLightingUniforms(currShader);
+        lighting.setUniformsForShaderProgram(currShader);
         objModel->draw(currShader);
 
         // render world grid

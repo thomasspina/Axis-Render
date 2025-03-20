@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <SDL2/SDL_timer.h>
 
-#include "constants.hpp"
+#include "utils/constants.hpp"
 
 class Object {
 private:

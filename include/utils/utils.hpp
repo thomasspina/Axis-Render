@@ -3,7 +3,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-
 inline std::vector<glm::vec3> getCubeVertices(float size) {
     float halfSize = size / 2.0f;
     std::vector<glm::vec3> vertices = {

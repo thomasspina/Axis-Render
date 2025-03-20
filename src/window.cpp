@@ -17,7 +17,7 @@
 #endif
 
 #include "window.hpp"
-#include "constants.hpp"
+#include "utils/constants.hpp"
 
 Window::Window() {
     quit = false;
@@ -222,81 +222,85 @@ void Window::drawModelUI(Object& obj, int& modelSelect, int& shaderSelect) {
 }
 
 void Window::drawLightingUI(Lighting& lighting) {
-    ImGui::Separator();
-    ImGui::Text("Light Caster");
+    if (ImGui::CollapsingHeader("Light Caster")) {
+        LightCaster* lightCaster = lighting.getLightCasterPointer();
 
-    LightCaster* lightCaster = lighting.getLightCasterPointer();
-
-    float azimuth = lightCaster->getAzimuth();
-    float elevation = lightCaster->getElevation();
-
-    if (ImGui::SliderFloat("Azimuth", &azimuth, 0.0f, 360.0f, "%.1f°")) {
-        lightCaster->setDirection(azimuth, elevation);
-    }
-
-    if (ImGui::SliderFloat("Elevation", &elevation, -90.0f, 90.0f, "%.1f°")) {
-        lightCaster->setDirection(azimuth, elevation);
-    }
-
-    float intensity = lightCaster->getIntensity();
-    if (ImGui::SliderFloat("Intensity", &intensity, 0.0f, 2.0f)) {
-        lightCaster->setIntensity(intensity);
-    }
-
-    glm::vec3 colour = lightCaster->getColour();
-    if (ImGui::ColorEdit3("Colour", &colour[0])) {
-        lightCaster->setColour(colour);
-    }
-
-    ImGui::Separator();
-    ImGui::Text("Point Lights");
-
-    int* nPointLights = lighting.getNPointLights();
-    int prev = *nPointLights;
-    if (ImGui::InputInt("num point lights", nPointLights, 1.0f)) {
-        if (*nPointLights < 0) *nPointLights = 0;
-        if (*nPointLights > 4) *nPointLights = 4;
-
-        if (*nPointLights < prev) {
-            for (int i = 0; i < prev - *nPointLights; i++) {
-                lighting.removePointLight();
-            }
-        } else {
-            for (int i = 0; i < *nPointLights - prev; i++) {
-                lighting.addPointLight();
-            }
+        float azimuth = lightCaster->getAzimuth();
+        float elevation = lightCaster->getElevation();
+    
+        if (ImGui::SliderFloat("Azimuth", &azimuth, 0.0f, 360.0f, "%.1f°")) {
+            lightCaster->setDirection(azimuth, elevation);
         }
-    }
-
-    ImGui::Checkbox("Draw Point Lights", lighting.toggleDrawPointLightsPointer());
-    ImGui::Separator();
-
-
-    for (int i = 1; i <= *nPointLights; i++) {
-        ImGui::Text("Point Light %d", i);
-        PointLight& pointLight = lighting.getPointLights()[i - 1];
-        
-        // Intensity control
-        char intensityLabel[50];
-        sprintf(intensityLabel, "Intensity %d", i);
-        float* intensity = pointLight.getIntensityPointer();
-        ImGui::SliderFloat(intensityLabel, intensity, 0.0f, 10.0f);
-
-        // Position control
-        char positionLabel[50];
-        sprintf(positionLabel, "Position %d", i);
-        glm::vec3 position = pointLight.getPosition();
-        if (ImGui::DragFloat3(positionLabel, &position[0], 0.1f)) {
-            pointLight.updatePosition(position);
+    
+        if (ImGui::SliderFloat("Elevation", &elevation, -90.0f, 90.0f, "%.1f°")) {
+            lightCaster->setDirection(azimuth, elevation);
         }
-
-        // Colour control
-        char colourLabel[50];
-        sprintf(colourLabel, "Colour %d", i);
-        glm::vec3* colour = pointLight.getColourPointer();
-        ImGui::ColorEdit3(colourLabel, &(*colour)[0]);
-
+    
+        float intensity = lightCaster->getIntensity();
+        if (ImGui::SliderFloat("Intensity", &intensity, 0.0f, 2.0f)) {
+            lightCaster->setIntensity(intensity);
+        }
+    
+        glm::vec3 colour = lightCaster->getColour();
+        if (ImGui::ColorEdit3("Colour", &colour[0])) {
+            lightCaster->setColour(colour);
+        }
+    
         ImGui::Separator();
+    }
+
+    
+    if (ImGui::CollapsingHeader("Point Lights")) {
+        int nPointLights = lighting.getNPointLights();
+        int prev = nPointLights;
+        if (ImGui::InputInt("num point lights", &nPointLights, 1.0f)) {
+            if (nPointLights < 0) nPointLights = 0;
+            if (nPointLights > 4) nPointLights = 4;
+
+            if (nPointLights < prev) {
+                for (int i = 0; i < prev - nPointLights; i++) { lighting.removePointLight(); }
+            } else {
+                for (int i = 0; i < nPointLights - prev; i++) { lighting.addPointLight(); }
+            }
+        }
+
+        bool showPointLights = lighting.getShowPointLights();
+        if (ImGui::Checkbox("Draw Point Lights", &showPointLights)){
+            lighting.setShowPointLights(showPointLights);
+        }
+        ImGui::Separator();
+
+        std::vector<PointLight>& pointLights = *lighting.getPointLightsPointer();
+        for (int i = 1; i <= lighting.getNPointLights(); i++) {
+            ImGui::Text("Point Light %d", i);
+            PointLight& pointLight = pointLights[i - 1];
+            
+            // Intensity control
+            char intensityLabel[50];
+            sprintf(intensityLabel, "Intensity %d", i);
+            float intensity = pointLight.getIntensity();
+            if (ImGui::SliderFloat(intensityLabel, &intensity, 0.0f, 10.0f)) {
+                pointLight.setIntensity(intensity);
+            }
+
+            // Position control
+            char positionLabel[50];
+            sprintf(positionLabel, "Position %d", i);
+            glm::vec3 position = pointLight.getPosition();
+            if (ImGui::DragFloat3(positionLabel, &position[0], 0.1f)) {
+                pointLight.setPosition(position);
+            }
+
+            // Colour control
+            char colourLabel[50];
+            sprintf(colourLabel, "Colour %d", i);
+            glm::vec3 colour = pointLight.getColour();
+            if (ImGui::ColorEdit3(colourLabel, &colour[0])) {
+                pointLight.setColour(colour);
+            }
+
+            ImGui::Separator();
+        }
     }
 }
 
@@ -330,10 +334,7 @@ void Window::drawUI(Camera& camera, Object& obj, Lighting& lighting, int& modelS
         drawMiscUI(showGrid);
     }
 
-    ImGui::SetNextItemOpen(true, ImGuiCond_Once); 
-    if (ImGui::CollapsingHeader("Lighting")) {
-        drawLightingUI(lighting);
-    }
+    drawLightingUI(lighting);
 
     ImGui::End();
 }
