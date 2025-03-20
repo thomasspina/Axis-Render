@@ -22,7 +22,10 @@ namespace ModelSelection {
         "Nanosuit",
         "Planet",
         "Space Shuttle",
-        "Vase"
+        "Vase",
+        "Dragon",
+        "Head",
+        "Triceratops"
     };
 
 }
@@ -31,6 +34,7 @@ namespace ShaderSelection {
     constexpr const char* shaders[] = { 
         "Phong",
         "Gouraud",
+        "Grayscale",
         "Sketch",
         "ASCII", 
     };

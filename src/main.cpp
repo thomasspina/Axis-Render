@@ -30,12 +30,14 @@ int main(int argc, char* argv[]) {
     // phong lighting shaders
     ShaderProgram phongShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/phongObj.vert", std::string(ASSETS_PATH) + "shaders/phongObj.frag");
 
+    ShaderProgram grayscaleShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/grayscale.frag");
+
     ShaderProgram sketchShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/sketch.frag");
 
     ShaderProgram asciiShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/gouraudObj.vert", std::string(ASSETS_PATH) + "shaders/ascii.frag");
 
     // Selectable shaders
-    ShaderProgram shaders[] = { phongShader, gouraudShader, sketchShader, asciiShader };
+    ShaderProgram shaders[] = { phongShader, gouraudShader, grayscaleShader, sketchShader, asciiShader };
 
     // init PointLight shader
     ShaderProgram pointLightShader = ShaderProgram(std::string(ASSETS_PATH) + "shaders/pointLight.vert", std::string(ASSETS_PATH) + "shaders/pointLight.frag");
