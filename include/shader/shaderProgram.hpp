@@ -13,8 +13,7 @@
  */
 class ShaderProgram {
 private:
-    /** @brief OpenGL program object ID */
-    GLuint programID;
+    GLuint programID; ///< OpenGL program object ID
 
 public:
     /**

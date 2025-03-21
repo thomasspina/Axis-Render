@@ -14,18 +14,11 @@
  */
 class Object {
 private:
-    /** @brief Rotation around Y-axis in degrees */
-    float yaw = 0.0f;
-    
-    /** @brief Rotation around X-axis in degrees */
-    float pitch = 0.0f;
-    
-    /** @brief Rotation around Z-axis in degrees */
-    float roll = 0.0f;
-    
-    /** @brief Uniform scale factor for the object */
-    float objScale = 1.0f;
-    
+    float yaw = 0.0f; ///< Rotation around Y-axis in degrees.
+    float pitch = 0.0f; ///< Rotation around X-axis in degrees.
+    float roll = 0.0f; ///< Rotation around Z-axis in degrees.
+    float objScale = 1.0f; ///< Uniform scale factor for the object.
+
     /**
      * @brief Updates the model matrix based on current position, rotation, and scale.
      * 
@@ -35,14 +28,9 @@ private:
     void updateModelMatrix();
 
 protected:
-    /** @brief Object's position in world space */
-    glm::vec3 position = glm::vec3(0.0f);
-    
-    /** @brief Model transformation matrix */
-    glm::mat4 model = glm::mat4(1.0f);
-    
-    /** @brief Normal transformation matrix for lighting calculations */
-    glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+    glm::vec3 position = glm::vec3(0.0f); ///< Object's position in world space.
+    glm::mat4 model = glm::mat4(1.0f); ///< Model transformation matrix.
+    glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model))); ///< Normal transformation matrix for lighting calculations.
 
 public:
     /** @brief Default constructor */
