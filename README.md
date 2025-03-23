@@ -75,11 +75,25 @@ This shader was created from this [tutorial](https://tympanus.net/codrops/2024/1
 <img src="https://github.com/user-attachments/assets/771b8e45-1e96-4e1c-bc2d-48221804fd98" width="1500" />
 
 ---
-
+In this we decided to opt for only two types of lighting and chose the ones which are most commonly used.
 ### Light Caster Settings
-TODO
+A sun-like light caster is already in place once models are loaded.
+- **Azimuth**: The horizontal rotation of the light caster around its vertical axis.
+- **Elevation**: Measures the vertical tilt of a light caster above or below the horizontal plane.
+- **Intensity**: Brightness or strength of the light source.
+- **Colour**: Spectral distribution or hue of the emitted light.
+![Peek 2025-03-23 17-45](https://github.com/user-attachments/assets/930b5b45-97ce-4415-b398-0d9267657ac6)
+
 ### Point Light Configuration
-TODO
+Point lights which emit a light from a specific point in the world. These lights can be rendered.
+- **num point lights**: the number of point lights in the scene, maximum of 4.
+- **Draw point lights**: the option to either render or not render the point lights.
+Each point light added has its own settings as well.
+- **Intensity**: Brightness or strength of the light source.
+- **Position**: the xyz coordinates of the point light.
+- **Colour**: Spectral distribution or hue of the emitted light.
+![Peek 2025-03-23 17-55](https://github.com/user-attachments/assets/d92a11c8-104c-49e3-9743-8deb42caf0da)
+
 
 ---
 
