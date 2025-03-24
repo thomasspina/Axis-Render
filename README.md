@@ -92,7 +92,7 @@ A sun-like light caster is already in place once models are loaded.
 ### Point Light Configuration
 Point lights which emit a light from a specific point in the world. These lights can be rendered.
 - **num point lights**: The number of point lights in the scene, maximum of 4.
-- **Draw point lights**: The option to either render or not render the point lights.
+- **Draw point lights**: The option to either render or not render the point lights.<br />
 Each point light added has its own settings as well.
 - **Intensity**: Brightness or strength of the light source.
 - **Position**: The xyz coordinates of the point light.
