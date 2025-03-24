@@ -2,7 +2,7 @@
 
 Axis Render is a rasterization-based 3D model rendering engine designed to visualize OBJ models. This project serves as an initial step in developing a game engine, providing the foundational tools for rendering and interacting with 3D models. As a standalone application, Axis Render offers a straightforward UI that allows users to manipulate and explore 3D models in real-time. With features like free-roam camera movement, real-time shader application, dynamic lighting adjustments, and model transformations, it provides a flexible platform for visualizing and fine-tuning 3D assets, laying the groundwork for more advanced game engine development.
 
-## Demo
+## Youtube Demo
 [![Axis Render Engine Demo](https://img.youtube.com/vi/yRPXU9SDxic/0.jpg)](https://www.youtube.com/watch?v=yRPXU9SDxic)
 
 
@@ -16,7 +16,7 @@ Axis Render is a rasterization-based 3D model rendering engine designed to visua
   - [Light Caster Settings](#light-caster-settings)
   - [Point Light Configuration](#point-light-configuration)
 - [Installation](#installation)
-  - [MacOS](#macos)
+  - [Linux](#linux)
   - [Windows](#windows)
     - [MinGW](#for-mingw)
     - [Visual Studio](#for-visual-studio)
@@ -86,6 +86,7 @@ A sun-like light caster is already in place once models are loaded.
 - **Elevation**: Measures the vertical tilt of a light caster above or below the horizontal plane.
 - **Intensity**: Brightness or strength of the light source.
 - **Colour**: Spectral distribution or hue of the emitted light.
+
 ![Peek 2025-03-23 17-45](https://github.com/user-attachments/assets/930b5b45-97ce-4415-b398-0d9267657ac6)
 
 ### Point Light Configuration
@@ -96,15 +97,18 @@ Each point light added has its own settings as well.
 - **Intensity**: Brightness or strength of the light source.
 - **Position**: the xyz coordinates of the point light.
 - **Colour**: Spectral distribution or hue of the emitted light.
+  
 ![Peek 2025-03-23 17-55](https://github.com/user-attachments/assets/d92a11c8-104c-49e3-9743-8deb42caf0da)
 
 
 ---
 
 ## Installation
-### Linux
 
-TODO : Change to Linux
+### MacOS
+While Axis Render can technically run on macOS, it uses OpenGL, which is deprecated on this platform. As a result, performance and compatibility may vary depending on your macOS version and hardware. For this reason, we have not configured or tested the project specifically for macOS support.
+
+### Linux
 
 To run this program on linux, it's best to first install needed libraries, not necessary, but best. Otherwise you will have to build them all yourself when you make and that can take quite some time.
 ~~~
