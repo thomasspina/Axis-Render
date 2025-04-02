@@ -1,4 +1,4 @@
-# Axis Render Engine
+# Axis Render Engine [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![C++](https://img.shields.io/badge/C++-17-blue.svg) ![OpenGL](https://img.shields.io/badge/OpenGL-4.5-green.svg) ![Status](https://img.shields.io/badge/status-active-success.svg) ![Size](https://img.shields.io/badge/size-lightweight-informational)
 
 Axis Render is a rasterization-based 3D model rendering engine designed to visualize OBJ models. This project serves as an initial step in developing a game engine, providing the foundational tools for rendering and interacting with 3D models. As a standalone application, Axis Render offers a straightforward UI that allows users to manipulate and explore 3D models in real-time. With features like free-roam camera movement, real-time shader application, dynamic lighting adjustments, and model transformations, it provides a flexible platform for visualizing and fine-tuning 3D assets, laying the groundwork for more advanced game engine development.
 
